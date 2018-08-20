@@ -796,7 +796,9 @@ namespace ParaParaView
                     dy = -(int)key_accel;
                 if (keys.HasFlag(CursorKey.Down))
                     dy = +(int)key_accel;
-                ScrollImage(dx, dy);
+                offset.X += dx;
+                offset.Y += dy;
+                ScrollImageLimit();
             } else
                 key_accel = 0;
             last_keys = keys;
@@ -804,33 +806,30 @@ namespace ParaParaView
             //Photo.Invalidate();
         }
 
-        void ScrollImage(int dx, int dy)
+        void ScrollImageLimit()
         {
             float scale = GetActualScale();
+            int cx = Photo.Width/2;
+            int cy = Photo.Height/2;
             int w = (int)(bitmap.Width*scale + 0.5);
             int h = (int)(bitmap.Height*scale + 0.5);
             int x0 = (Photo.Width-w)/2 + offset.X;
             int y0 = (Photo.Height-h)/2 + offset.Y;
             int x1 = (Photo.Width-w)/2 + offset.X + w;
             int y1 = (Photo.Height-h)/2 + offset.Y + h;
-            if (dx > 0) {
-                if (x0 > Photo.Width/2)
-                    dx = 0;
-            }
-            if (dx < 0) {
-                if (x1 < Photo.Width/2)
-                    dx = 0;
-            }
-            if (dy > 0) {
-                if (y0 > Photo.Height/2)
-                    dy = 0;
-            }
-            if (dy < 0) {
-                if (y1 < Photo.Height/2)
-                    dy = 0;
-            }
-            offset.X += dx;
-            offset.Y += dy;
+
+            int ox = offset.X;// + dx;
+            int oy = offset.Y;// + dy;
+            if (x0 > cx)
+                ox -= x0 - cx;
+            if (x1 < cx)
+                ox -= x1 - cx;
+            if (y0 > cy)
+                oy -= y0 - cy;
+            if (y1 < cy)
+                oy -= y1 - cy;
+            offset.X = ox;
+            offset.Y = oy;
             Photo.Invalidate();
         }
 
@@ -1427,6 +1426,7 @@ namespace ParaParaView
                 //DebugOut("button={0}, dragsize={1}", e.Button, SystemInformation.DragSize);
                 offset.X += e.Location.X - last_loc.X;
                 offset.Y += e.Location.Y - last_loc.Y;
+                ScrollImageLimit();
                 last_loc = e.Location;
                 GoHaste(1, HASTE_MSEC);
                 Photo.Invalidate();
