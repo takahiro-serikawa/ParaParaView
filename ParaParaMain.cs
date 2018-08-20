@@ -786,18 +786,51 @@ namespace ParaParaView
             if (keys != 0 && keys == last_keys) {
                 key_accel += 1f;
 
+                int dx = 0, dy = 0;
                 if (keys.HasFlag(CursorKey.Left))
-                    offset.X -= (int)key_accel;
+                    //offset.X -= (int)key_accel;
+                    dx = -(int)key_accel;
                 if (keys.HasFlag(CursorKey.Right))
-                    offset.X += (int)key_accel;
+                    dx = +(int)key_accel;
                 if (keys.HasFlag(CursorKey.Up))
-                    offset.Y -= (int)key_accel;
+                    dy = -(int)key_accel;
                 if (keys.HasFlag(CursorKey.Down))
-                    offset.Y += (int)key_accel;
+                    dy = +(int)key_accel;
+                ScrollImage(dx, dy);
             } else
                 key_accel = 0;
             last_keys = keys;
 
+            //Photo.Invalidate();
+        }
+
+        void ScrollImage(int dx, int dy)
+        {
+            float scale = GetActualScale();
+            int w = (int)(bitmap.Width*scale + 0.5);
+            int h = (int)(bitmap.Height*scale + 0.5);
+            int x0 = (Photo.Width-w)/2 + offset.X;
+            int y0 = (Photo.Height-h)/2 + offset.Y;
+            int x1 = (Photo.Width-w)/2 + offset.X + w;
+            int y1 = (Photo.Height-h)/2 + offset.Y + h;
+            if (dx > 0) {
+                if (x0 > Photo.Width/2)
+                    dx = 0;
+            }
+            if (dx < 0) {
+                if (x1 < Photo.Width/2)
+                    dx = 0;
+            }
+            if (dy > 0) {
+                if (y0 > Photo.Height/2)
+                    dy = 0;
+            }
+            if (dy < 0) {
+                if (y1 < Photo.Height/2)
+                    dy = 0;
+            }
+            offset.X += dx;
+            offset.Y += dy;
             Photo.Invalidate();
         }
 
@@ -819,7 +852,7 @@ namespace ParaParaView
             }
         }
 
-            void Photo_MouseWheel(object sender, MouseEventArgs e)
+        void Photo_MouseWheel(object sender, MouseEventArgs e)
         {
             //DebugOut("MouseWheel(button:{0}, clickes:{1}, delta:{2})", e.Button, e.Clicks, e.Delta);
             //? e.Button, e.Clicks 多分データはいってない
