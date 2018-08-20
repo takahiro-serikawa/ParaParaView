@@ -1,0 +1,137 @@
+# en: english resource for ParaParaView (UTF-8)
+
+NO PHOTO=NO PHOTO\r\ndrop image files of directory.
+
+FileMenu.Text=&File
+FileMenu.Hint=File menu
+FileNewItem.Text=&New ...
+FileNewItem.Hint=
+OpenFolderItem.Text=&Open Folder ...
+OpenFolderItem.Hint=Select folder
+OpenFileItem.Text=Open &Images ...
+OpenFileItem.Hint=Open image files.
+RecentMenu.Text=&Recent
+RecentClear.Text=&Clear
+FileaSaveItem.Text=&Save ...
+FileaSaveItem.Hint=Save image to other file.
+FileCloseItem.Text=&Close
+FileCloseItem.Hint=Close catalog and all imagesÅB
+EjectItem.Text=e&Ject ...
+eject {0}=e&Ject "{0}" ...
+EjectItem.Hint=Eject removal media.
+AppSettingsItem.Text=Prefernces ...
+AppSettingsItem.Hint=Open Preferences window.
+AppExitItem.Text=e&Xit
+AppExitItem.Hint=Quit 'ParaParaView' application.
+
+EditMenu.Text=&Edit
+EditMenu.Hint=Edit menu
+ExplorerItem.Text=EXPLORER ...
+ExplorerItem.Hint=Show in EXPLORER.EXE
+FileDeleteItem.Text=&Delete ...
+FileDeleteItem.Hint=Delete image file.
+FileTrashItem.Text=&Trash ...
+FileTrashItem.Hint=Move image file to trash.
+OpenTrashItem.Text=Open Trash ...
+OpenTrashItem.Hint=Open trash
+EditCutItem.Text=Cu&T
+EditCutItem.Hint=
+EditCopyItem.Text=&Copy
+EditCopyItem.Hint=Copy photo to clipboard.
+EditPasteItem.Text=&Paste
+EditPasteItem.Hint=Paste photo from clipboard.
+
+ViewMenu.Text=&View
+ViewMenu.Hint=View menu
+FitToWindowItem.Text=Fit to &Window
+FitToWindowItem.Hint=Scale up/down image according to window size.
+FullSizeItem.Text=Full &Size
+FullSizeItem.Hint=Show photo by actulal pixels (x100%).
+FullScreenItem.Text=&Full Screen
+FullScreenItem.Hint=Show photo on full screen.
+FullScreenLabel.Text=Press F11 to Exit Full Screen.
+
+ScrollMenu.Text=&Scroll
+ScrollMenu.Hint=Scroll photo.
+ScrollLeftItem.Text=&Left
+ScrollLeftItem.Hint=Scroll photo to left.
+ScrollRightItem.Text=&Right
+ScrollRightItem.Hint=Scroll photo to right.
+ScrollUpItem.Text=&Up
+ScrollUpItem.Hint=Scroll photo to up.
+ScrollDownItem.Text=&Down
+ScrollDownItem.Hint=Scroll photo to down.
+ScrollCenterItem.Text=&Center
+ScrollCenterItem.Hint=Scroll photo to center.
+
+ScaleUpItem.Text=Scale &Up
+ScaleUpItem.Hint=Enlarges photo.
+ScaleDownItem.Text=Scale &Down
+ScaleDownItem.Hint=Shrinks photo.
+RotateRightItem.Text=Rotate &Right
+RotateRightItem.Hint=Rotate photo clockwise.
+RotateLeftItem.Text=Rotate &Left
+RotateLeftItem.Hint=Rotate photo conter-clockwise.
+FlipHorizItem.Text=Flip &Horizontal
+FlipHorizItem.Hint=Flip horizontal
+FlipVertItem.Text=Flip &Vertical
+FlipVertItem.Hint=Flip vertical
+ViewExifItem.Text=EXIF
+ViewExifItem.Hint=Show EXIF (image information).
+OnlyPhotoItem.Text=&Only Photo
+OnlyPhotoItem.Hint=Hide image information and other tools.
+
+WindowMenu.Text=&Window
+WindowMenu.Hint=Window menu
+
+BrowseMenu.Text=&Browse
+BrowseMenu.Hint=Browse menu
+PhotoMenu.Text=&Photo
+PhotoMenu.Hint=Photo menu
+PhotoPrevItem.Text=&Previous
+PhotoPrevItem.Hint=Show previous photo.
+PhotoNextItem.Text=&Next
+PhotoNextItem.Hint=Show next photo.
+PhotoHomeItem.Text=&Home
+PhotoHomeItem.Hint=Show top of list.
+PhotoEndItem.Text=End
+PhotoEndItem.Hint=Show end of list.
+ShuffleNextItem.Text=&Shuffle
+ShuffleNextItem.Hint=Show random photo.
+PhotoBackItem.Text=Shuffle &Back
+PhotoBackItem.Hint=Show last photo.
+SlideShowItem.Text=Slide Show
+SlideShowItem.Hint=Start slide show.
+SlideShowSettItem.Text= settings ...
+SlideShowSettItem.Hint=Open slide show settings window.
+
+HelpMenu.Text=&Help
+HelpMenu.Hint=Help menu
+HelpAboutItem.Text=&About 'ParaParaView' ...
+HelpAboutItem.Hint=Show version and lisences.
+
+ScaleBar.Hint=Change image scale.
+ScaleLabel.Text=scale x
+#scale: x{0}=scale x {0:P1}
+#scale: x{0} (1/{1})=scale x {0:P1} (1/{1:F})
+Thumb.Hint=Scroll on thumbnail.
+ExifLabel.Text=image information
+ExifLabel.Hint=SHow image information.
+
+openFileDialog1.Title=Open Image files, or directory.
+openFileDialog1.Filter=catalog(*.ppPv)|*.ppPv|JPEG image(*.jpg)|*.jpg|all files(*.*)|*.*
+saveFileDialog1.Title=Save Image
+saveFileDialog1.Filter=JPEG image(*.jpg)|*.jpg|Windows bitmap(*.bmp)|*.bmp|PNG image(*.png)|*.png
+
+# SlideShowDialog
+SlideShowDialog.Text=Slide Show
+IntervalLabel.Text=interval
+SlideShowIntervalText.Hint=Specify waiting time to switch next image.
+OkButton.Text=&OK
+CancelButton.Text=&Cancel
+SecLabel.Text=sec
+ShuffleCheck.Text=shuffle
+ShuffleCheck.Hint=Image order is random.
+
+# message
+Delete image file=Delete image file '{0}'?

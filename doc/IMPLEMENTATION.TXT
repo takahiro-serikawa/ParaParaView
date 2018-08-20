@@ -1,0 +1,112 @@
+﻿梗概 Synopsis
+
+カタログ拡張子 .ppPv
+ParaParaVew.exe 
+「para para Photo viewer」
+
+編集や現像機能は持たない。
+ファイルの削除くらいは...
+
+メニューは素朴に
+ノートPCなどでマウスなしでもある程度快適に操作できるよう
+
+二重起動どうするか
+案1. 二重起動禁止
+案2. 二重起動容認
+ キャッシュは共有する。排他制御が必要
+ 設定ファイルはのマージ、特にrecent
+
+/* ファイル名指定のとき、catalogは作らない、複数ファイルも画像リストに次々と追加する。
+
+フォルダ名指定のとき、catalogを作る。
+複数フォルダを開くとき、最初の一つを自プロセスで開き、２つ目以降を新しいプロセスを起動して開く
+*/
+
+画像ファイルあるいはフォルダごとドラッグアンドドロップ
+ProCaptureなどの連写画層をパラパラアニメ
+
+画像補間モード切り替え 高速/高画質
+キー入力(オートリピート)や、スライドショー時は低画質高速描画
+落ち着いてから高画質で再描画する。
+
+可能なら .ORF olympus RAW など対応
+susieプラグイン
+
+■FullScreen
+タイトルバー、ウィンドウ枠、メインメニューなどを消して可能な限りモニタの面積を最大限に
+
+F11のトグル
+タイトルバーのダブルクリック、最大化ボタンによる最大化のときにフルスクリーン化する。
+
+F11でフルスクリーン切り替え Chromeとおなじ
+
+■Recent Items
+
+■Eject (リムーバルメディア)、残量表示
+
+■EXIF
+jpegのみ、あれば表示
+なくても画像サイズのみ
+
+■ViewPortによる二次元スクロール
+
+■ScaleMode
+ F9 FitToWindows 規定値	ウィンドウサイズに合わせて自動的に倍率調整
+    FixedScale	1/16 .. x16 倍まで、刻みは pow(2, 1/12)=約1.06
+F10 FullSize	ピクセル等倍
+
+F9, F10はトグル動作、すなわち、すでに FitToWindowのとき F9 をおすと FixedScale 
+FitToWindowのときの、Scale Up または Scale Down は FitToWin の自動倍率から
+
+指定した点(たとえばマウスカーソル)を中心として拡大縮小。
+
+enum ImageScaleMode { FitToWindow, FixedScale, FullSize };
+ImageScaleMode ScaleMode
+float ImageScale
+float GetActualScale()
+int ScaleIndex
+
+■Rotate Right/Left, Flip Vert/Horiz
+
+■shrinked
+画像読み込み時、内部的には Bitmap 化。
+縮小表示のとき縮小されたBitmapをキャッシュとして持つ。より滑らかなスクロールが可能。
+拡大表示はもともと、それほど重くない。
+
+DrawBitmap
+描画座標をfloatで指定すると遅い。なんらかの補間処理？
+補間方法
+Nearestneighbor最速、ただしモザイク
+bycubic
+拡大はそこそこ速い
+縮小は遅いので shrinked_bitmap
+
+キャッシュの意義
+jpegの展開
+縮小
+
+
+■SUSIEプラグイン
+■？ORF表示
+
+■外部アプリケーションによる画像処理
+パノラマ合成、ストロボ合成など
+
+■連写画像の(ProCaptureなど)グループ分け
+■ぱらぱらアニメーション
+
+■Shuffle
+[End] 
+[Back Space]
+
+■Slide Show
+範囲指定、逆転、シャッフル/ストレート、間隔
+ループ
+
+スクリーンセーバ抑制　スライドショウのとき
+
+■AboutBox
+lisence.htmlを組み込みリソースとして、WebBrowserコンポーネントで表示
+バージョン、著作権表示、簡易操作説明など
+表示中の画像にかぶせて半透明で
+場合によっては自動的にスクロール　スタッフロール的に

@@ -1,0 +1,137 @@
+# ja: 日本語リソース for ParaParaView (UTF-8)
+
+NO PHOTO=画像がありません\r\n画像ファイルか、フォルダをドラッグアンドドロップしてください。
+
+FileMenu.Text=ファイル(&F)
+FileMenu.Hint=ファイル関連メニュー
+FileNewItem.Text=新規(&N) ...
+FileNewItem.Hint=
+OpenFolderItem.Text=フォルダを開く(&O) ...
+OpenFolderItem.Hint=画像を含むファルダを選択してひらきます。
+OpenFileItem.Text=画像を開く(&I) ...
+OpenFileItem.Hint=画像ファイルを開くきます。
+RecentMenu.Text=最近使った(&R)
+RecentClear.Text=履歴を消去(&C)
+FileaSaveItem.Text=保存(&S)
+FileaSaveItem.Hint=画像を別の名前のファイルに書き込んで保存します。
+FileCloseItem.Text=閉じる(&C)
+FileCloseItem.Hint=カタログと画像を閉じます。
+EjectItem.Text=イジェクト(&E) ...
+eject {0}=イジェクト(&J) "{0}" ...
+EjectItem.Hint=リムーバブルメディアをイジェクトします。
+AppSettingsItem.Text=設定画面 ...
+AppSettingsItem.Hint=設定画面を開きます。
+AppExitItem.Text=終了(&X)
+AppExitItem.Hint=ParaParaView を終了します。
+
+EditMenu.Text=編集(&E)
+EditMenu.Hint=編集関連メニュー
+ExplorerItem.Text=エクスプローラで表示 ...
+ExplorerItem.Hint=画像ファイルをエクスプローラで表示します。
+FileDeleteItem.Text=削除(&D)
+FileDeleteItem.Hint=画像ファイルを削除します。
+FileTrashItem.Text=ゴミ箱に捨てる(&T)
+FileTrashItem.Hint=画像ファイルをゴミ箱に移動します。あとでゴミ箱から戻すことができるかもしれません。
+OpenTrashItem.Text=ゴミ箱を開く ...
+OpenTrashItem.Hint=ゴミ箱を開いてみます。
+EditCutItem.Text=切り取り(&T)
+EditCutItem.Hint=
+EditCopyItem.Text=コピー(&C)
+EditCopyItem.Hint=画像をクリップボードにコピーします。
+EditPasteItem.Text=貼り付け(&P)
+EditPasteItem.Hint=画像をクリップボードから貼り付けます。
+
+ViewMenu.Text=表示(&V)
+ViewMenu.Hint=表示関連メニュー
+FitToWindowItem.Text=ウィンドウに合わせる(&W)
+FitToWindowItem.Hint=画像をウィンドウサイズに合わせて拡大/縮小表示します。
+FullSizeItem.Text=フルサイズ(&S)
+FullSizeItem.Hint=写真を(×1)ピクセル等倍で表示します。
+FullScreenItem.Text=全画面モード(&F)
+FullScreenItem.Hint=全画面モードで写真を表示します。
+FullScreenLabel.Text=全画面モードから抜けるには F11 を押してください。
+
+ScrollMenu.Text=スクロール(&S)
+ScrollMenu.Hint=画像スクロール
+ScrollLeftItem.Text=左(&L)
+ScrollLeftItem.Hint=画像を左にスクロールします。
+ScrollRightItem.Text=右(&R)
+ScrollRightItem.Hint=画像を右にスクロールします。
+ScrollUpItem.Text=上(&U)
+ScrollUpItem.Hint=画像を上にスクロールします。
+ScrollDownItem.Text=下(&D)
+ScrollDownItem.Hint=画像を下にスクロールします。
+ScrollCenterItem.Text=中央(&C)
+ScrollCenterItem.Hint=画像を中央に戻して表示します。
+
+ScaleUpItem.Text=拡大(&U)
+ScaleUpItem.Hint=画像を拡大表示します。
+ScaleDownItem.Text=縮小(&D)
+ScaleDownItem.Hint=画像を縮小表示します。
+RotateRightItem.Text=右回転(&R)
+RotateRightItem.Hint=画像を右に90度回転(時計回り)して表示します。
+RotateLeftItem.Text=左回転(&L)
+RotateLeftItem.Hint=画像を左に90度回転(反時計回り)して表示します。
+FlipHorizItem.Text=左右反転(&H)
+FlipHorizItem.Hint=画像を左右反転して表示します。
+FlipVertItem.Text=上下反転(&V)
+FlipVertItem.Hint=画像を上下反転して表示します。
+ViewExifItem.Text=EXIF
+ViewExifItem.Hint=画像ファイルに埋め込まれている、EXIF(撮影条件)を表示します。
+OnlyPhotoItem.Text=画像のみ(&O)
+OnlyPhotoItem.Hint=画像情報や各種ツールをすべて非表示にして画像だけを表示します。
+
+WindowMenu.Text=ウィンドウ(&W)
+WindowMenu.Hint=ウィンドウメニュー
+
+BrowseMenu.Text=閲覧(&B)
+BrowseMenu.Hint=画像閲覧メニュー
+PhotoMenu.Text=フォト(&P)
+PhotoMenu.Hint=フォト関連メニュー
+PhotoPrevItem.Text=前の画像(&P)
+PhotoPrevItem.Hint=前の画像を表示します。
+PhotoNextItem.Text=次の画像(&N)
+PhotoNextItem.Hint=次の画像を表示します。
+PhotoHomeItem.Text=最初の画像(&H)
+PhotoHomeItem.Hint=最初の画像を表示します。
+PhotoEndItem.Text=最後の画像(&H)
+PhotoEndItem.Hint=最後の画像を表示します。
+ShuffleNextItem.Text=シャッフル(&S)
+ShuffleNextItem.Hint=画像をランダムに表示します。
+PhotoBackItem.Text=戻る(&B)
+PhotoBackItem.Hint=直前に表示していた画像に戻ります。
+SlideShowItem.Text=スライドショー
+SlideShowItem.Hint=スライドショーを開始します。
+SlideShowSettItem.Text= 設定 ...
+SlideShowSettItem.Hint=スライドショー設定画面を開きます。
+
+HelpMenu.Text=ヘルプ(&H)
+HelpMenu.Hint=ヘルプ関連メニュー
+HelpAboutItem.Text=ParaParaView について(&A) ...
+HelpAboutItem.Hint=ParaParaView のバージョン情報を表示します。
+
+ScaleBar.Hint=画像の表示倍率を変更できます。
+ScaleLabel.Text=倍率×
+#scale: x{0}=倍率 x {0:P1}
+#scale: x{0} (1/{1})=倍率 x {0:P1} (1/{1:F})
+Thumb.Hint=縮小画像の上で表示範囲をスクロールできます。
+ExifLabel.Text=画像情報
+ExifLabel.Hint=画像の情報を表示します。
+
+openFileDialog1.Title=画像、またはカタログを開く
+openFileDialog1.Filter=カタログ(*.ppPv)|*.ppPv|JPEG画像ファイル(*.jpg)|*.jpg|すべてのファイル(*.*)|*.*
+saveFileDialog1.Title=画像をファイルに保存
+saveFileDialog1.Filter=JPEG画像(*.jpg)|*.jpg|Windowsビットマップ(*.bmp)|*.bmp|PNG画像(*.png)|*.png
+
+# SlideShowDialog
+SlideShowDialog.Text=スライドショー
+IntervalLabel.Text=間隔
+SlideShowIntervalText.Hint=次の画像に切り替わる待ち時間を指定します。
+OkButton.Text=&OK
+CancelButton.Text=キャンセル(&C)
+SecLabel.Text=秒
+ShuffleCheck.Text=シャッフル
+ShuffleCheck.Hint=ランダムに表示します。
+
+# message
+Delete image file=画像ファイル「{0}」を削除しますか？
