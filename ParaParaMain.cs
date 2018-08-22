@@ -58,6 +58,8 @@ namespace ParaParaView
             DebugOut("command line: {0}", string.Join(" ", aa.Skip(1)));
             if (Array.IndexOf(aa, "--nosett") < 0)
                 RestoreAppSettings();
+            else
+                sett = new ParaSettings();
 
             string culture = "";
             var files = new List<string>();
@@ -75,6 +77,8 @@ namespace ParaParaView
                     case "--file":
                     case "-f":
                         files.Add(_next_arg(aa, ref i, ""));
+                        break;
+                    case "--nosett":
                         break;
                     default:
                         DebugOut(Color.Fuchsia, "unknown option {0}", aa[i]);
@@ -176,7 +180,6 @@ namespace ParaParaView
             Photo.Focus();
 
             if ((FormWindowState)sett.WinState == FormWindowState.Maximized)
-                //FullScreen = true;
                 this.WindowState = (FormWindowState)sett.WinState;
         }
 
@@ -190,7 +193,6 @@ namespace ParaParaView
             public bool open_last_files = true;
             public string catalog = "";
             public string filename = "";
-            //public string[] recent = new string[10];
             public List<string> recent = new List<string>();
 
             public int scale_mode;
@@ -199,6 +201,8 @@ namespace ParaParaView
 
             public ParaSettings()
             {
+                sett_revision = 1;
+                WinState = (int)FormWindowState.Maximized;
             }
 
             public static ParaSettings Restore()
@@ -251,31 +255,14 @@ namespace ParaParaView
             //var sett = Properties.Settings.Default;
             sett = SettManager<ParaSettings>.Restore();
             DebugOut("restore from {0}", SettManager<ParaSettings>.GetDefaultFilename());
-            if (sett.sett_revision == 0) {
-                //sett.Upgrade();
-                sett.sett_revision++;
-                //DebugOut(Color.White, "settings Upgrade: sett_revision={0}", sett.sett_revision);
-            }// else
-            //    DebugOut(Color.White, "settings non-upgrade: sett_revision={0}", sett.sett_revision);
 
             //DebugOut("RestoureBoudns={0}", sett.RestoreBounds);
             this.WindowState = FormWindowState.Normal;
             if (sett.RestoreBounds.Width > 0)
                 this.Bounds = sett.RestoreBounds;
             //Console.WriteLine("RestoreBounds={0}", this.Bounds);
-#if xxx
-            if ((FormWindowState)sett.WinState == FormWindowState.Maximized)
-                //FullScreen = true;
-                this.WindowState = (FormWindowState)sett.WinState;
-#endif
             catalog_filename = sett.catalog;
             image_filename = sett.filename;
-
-            //recent.LoadSettings(sett, "recent");
-            //recent.Clear();
-            //for (int i = 0; i < 10; i++)
-            //recent.Add((string)sett["recent"+i.ToString()]);
-            //    recent.Add(sett.recent[i]);
 
             ScaleMode = (ImageScaleMode)sett.scale_mode;
             //ImageScale = sett.image_scale;
