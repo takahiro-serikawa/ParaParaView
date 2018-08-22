@@ -750,7 +750,7 @@ namespace ParaParaView
         }
 
         CursorKey keys = 0, last_keys = 0;
-        float key_accel = 0;
+        int key_accel = 0;
 
         void KeyScrollAccel(Keys key)
         {
@@ -772,53 +772,19 @@ namespace ParaParaView
             }
 
             if (keys != 0 && keys == last_keys) {
-                key_accel += 1f;
-
-                int dx = 0, dy = 0;
+                key_accel++;
                 if (keys.HasFlag(CursorKey.Left))
-                    //offset.X -= (int)key_accel;
-                    dx = -(int)key_accel;
+                    offset.X -= key_accel;
                 if (keys.HasFlag(CursorKey.Right))
-                    dx = +(int)key_accel;
+                    offset.X += key_accel;
                 if (keys.HasFlag(CursorKey.Up))
-                    dy = -(int)key_accel;
+                    offset.Y -= key_accel;
                 if (keys.HasFlag(CursorKey.Down))
-                    dy = +(int)key_accel;
-                offset.X += dx;
-                offset.Y += dy;
+                    offset.Y += key_accel;
                 ScrollImageLimit();
             } else
                 key_accel = 0;
             last_keys = keys;
-
-            //Photo.Invalidate();
-        }
-
-        void ScrollImageLimit()
-        {
-            float scale = GetActualScale();
-            int cx = Photo.Width/2;
-            int cy = Photo.Height/2;
-            int w = (int)(bitmap.Width*scale + 0.5);
-            int h = (int)(bitmap.Height*scale + 0.5);
-            int x0 = (Photo.Width-w)/2 + offset.X;
-            int y0 = (Photo.Height-h)/2 + offset.Y;
-            int x1 = (Photo.Width-w)/2 + offset.X + w;
-            int y1 = (Photo.Height-h)/2 + offset.Y + h;
-
-            int ox = offset.X;// + dx;
-            int oy = offset.Y;// + dy;
-            if (x0 > cx)
-                ox -= x0 - cx;
-            if (x1 < cx)
-                ox -= x1 - cx;
-            if (y0 > cy)
-                oy -= y0 - cy;
-            if (y1 < cy)
-                oy -= y1 - cy;
-            offset.X = ox;
-            offset.Y = oy;
-            Photo.Invalidate();
         }
 
         void KeyScrollOff(Keys key)
@@ -836,6 +802,40 @@ namespace ParaParaView
             case Keys.Down:     // 40
                 keys &= ~CursorKey.Down;
                 break;
+            }
+        }
+
+        void ScrollImageLimit()
+        {
+            if (bitmap == null)
+                return;
+
+            float scale = GetActualScale();
+            int w = (int)(bitmap.Width*scale + 0.5);
+            int h = (int)(bitmap.Height*scale + 0.5);
+
+            if (offset.X > w/2)
+                offset.X = w/2;
+            else if (offset.X < -w/2)
+                offset.X = -w/2;
+
+            if (offset.Y > h/2)
+                offset.Y = h/2;
+            else if (offset.Y < -h/2)
+                offset.Y = -h/2;
+
+            Photo.Invalidate();
+            Thumb.Invalidate();
+        }
+
+        Size ViewSize
+        {
+            get
+            {
+                float scale = GetActualScale();
+                int w = (int)(bitmap.Width*scale + 0.5);
+                int h = (int)(bitmap.Height*scale + 0.5);
+                return new Size(w, h);
             }
         }
 
@@ -1748,17 +1748,14 @@ namespace ParaParaView
             }
         }
 
-        Pen thumb_pen = null;
+        Pen thumb_pen = new Pen(Color.Black);
 
         private void Thumb_Paint(object sender, PaintEventArgs e)
         {
             const int DASH = 6;
-            if (thumb_pen == null)
-                thumb_pen = new Pen(Color.Yellow);
             thumb_pen.DashPattern = new float[] { 3, DASH-3 };
             thumb_pen.DashOffset = -Environment.TickCount % (DASH*100) / 100;
             //thumb_pen.Color = ColorCycle.Degree(Environment.TickCount / 10 % 360);
-            thumb_pen.Color = Color.Black;
 
             var g = e.Graphics;
             if (thumb_bitmap != null) {
@@ -1775,14 +1772,7 @@ namespace ParaParaView
                     th = 5f;
                 g.DrawRectangle(Pens.White, (Thumb.Width-tw)/2 + tx, (Thumb.Height-th)/2 + ty, tw-1, th-1);
                 g.DrawRectangle(thumb_pen, (Thumb.Width-tw)/2 + tx, (Thumb.Height-th)/2 + ty, tw-1, th-1);
-                //g.DrawString("thumb nail", Thumb.Font, Brushes.White, 0, 0);
             }
-
-            /*using (var pen = new Pen(Color.Black))
-                for (int x = 0, d = 0; d < 360; x++, d += 4) {
-                    pen.Color = ColorCycle.Degree(d);
-                    g.DrawLine(pen, x, 0, x, 10);
-                }*/
         }
 
         bool thumb_mouse_flag = false;
