@@ -384,10 +384,11 @@ namespace ParaParaView
             this.Close();
         }
 
+        AboutForm about_box = new AboutForm();
+
         private void HelpAboutItem_Click(object sender, EventArgs e)
         {
-            var form = new AboutForm();
-            form.FadeIn(this.Bounds);
+            about_box.FadeIn(this.Bounds);
         }
 
         private void ParaParaMain_DragEnter(object sender, DragEventArgs e)

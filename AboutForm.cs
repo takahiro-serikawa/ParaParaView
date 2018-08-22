@@ -12,8 +12,14 @@ using System.IO;
 
 namespace ParaParaView
 {
+    /// <summary>
+    /// display version, lisence and usage.
+    /// </summary>
     public partial class AboutForm: Form
     {
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public AboutForm()
         {
             InitializeComponent();
@@ -23,54 +29,71 @@ namespace ParaParaView
 
         void LoadLisence()
         {
-            //string name = this.GetType().Namespace+@".lisence.rtf";
             string name = this.GetType().Namespace+@".lisence.html";
             var asm = System.Reflection.Assembly.GetExecutingAssembly();
             var stream = asm.GetManifestResourceStream(name);
             if (stream != null) {
-                using (var sr = new StreamReader(stream, Encoding.UTF8)) {
-                    string lisence = sr.ReadToEnd();
-                    webBrowser1.DocumentText = lisence;
-
-                    //richTextBox1.Rtf =  lisence;
-                    //Point pt = richTextBox1.GetPositionFromCharIndex(richTextBox1.Text.Length-1);
-                    //richTextBox1.Height = pt.Y;
-                }
+                using (var sr = new StreamReader(stream, Encoding.UTF8))
+                    webBrowser1.DocumentText = sr.ReadToEnd();
                 stream.Dispose();
             }
         }
 
-        int fade_tc;
-
+        /// <summary>
+        /// fade in AboutBox
+        /// </summary>
+        /// <param name="bounds"></param>
         public void FadeIn(Rectangle bounds)
         {
             this.Bounds = bounds;
-            //richTextBox1.Left = bounds.Width/2;
-            //webBrowser1.Left = bounds.Width/2;
 
             this.Opacity = 0;
-            fade_tc = Environment.TickCount;
+            fade_start_tc = Environment.TickCount;
             this.Show();
-            timer1.Enabled = true;
             this.Focus();
+            timer1.Enabled = true;
         }
 
-        int open_tc = Environment.TickCount;
+        /// <summary>
+        /// fade out AboutBox, and hide.
+        /// </summary>
+        public void FadeOut()
+        {
+            this.Opacity = DEF_OPACITY;
+            fade_start_tc = Environment.TickCount;
+            timer2.Enabled = true;
+        }
+
+        const float DEF_OPACITY = 0.75f;
+        const int FADE_IN_MSEC = 1000;
+        const int FADE_OUT_MSEC = 500;
+        int fade_start_tc;
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            int tc = Environment.TickCount - fade_tc;
-            if (tc > 1000)
+            int tc = Environment.TickCount - fade_start_tc;
+            if (tc > FADE_IN_MSEC)
                 timer1.Enabled = false;
             else
-                this.Opacity = 0.75*tc/1000;
+                this.Opacity = DEF_OPACITY*tc/FADE_IN_MSEC;
         }
 
         private void timer2_Tick(object sender, EventArgs e)
         {
-            int tc = Environment.TickCount;
-            //richTextBox1.Top = -(tc - open_tc)/30;
-            //richTextBox1.Height = 10000;
+            int tc = Environment.TickCount - fade_start_tc;
+            if (tc > FADE_OUT_MSEC) {
+                timer2.Enabled = false;
+                this.Hide();
+            } else
+                this.Opacity = DEF_OPACITY - DEF_OPACITY*tc/FADE_OUT_MSEC;
+        }
+
+        private void AboutForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing) {
+                this.Visible = false;
+                e.Cancel = true;
+            }
         }
 
         private void AboutForm_KeyUp(object sender, KeyEventArgs e)
@@ -80,12 +103,18 @@ namespace ParaParaView
 
         private void AboutForm_MouseUp(object sender, MouseEventArgs e)
         {
-            this.Close();
+            FadeOut();
         }
 
         private void AboutForm_KeyDown(object sender, KeyEventArgs e)
         {
-            this.Close();
+            if (!timer1.Enabled)
+                FadeOut();
+        }
+
+        private void AboutForm_Deactivate(object sender, EventArgs e)
+        {
+            this.Hide();
         }
     }
 }
