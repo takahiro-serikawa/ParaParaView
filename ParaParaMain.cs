@@ -1222,7 +1222,7 @@ namespace ParaParaView
                 in_haste = false;
 
                 // redraw Photo high quality
-                if (opt_redraw_later && !dbg_last_quality.Contains('H'))
+                if (opt_redraw_later && !dbg_draw_quality.Contains('H'))
                     Redraw();
 
                 if (thumb_bitmap == null)
@@ -1451,7 +1451,8 @@ namespace ParaParaView
 
         InterpolationMode fast_draw_mode = InterpolationMode.NearestNeighbor;   // Lowよりかなり早いが、拡大したときはモザイク
         //InterpolationMode fast_draw_mode = InterpolationMode.Low;
-        InterpolationMode high_quality_mode = InterpolationMode.HighQualityBicubic;
+        InterpolationMode high_quality_shrink_mode = InterpolationMode.HighQualityBicubic;
+        InterpolationMode high_quality_expand_mode = InterpolationMode.HighQualityBicubic;
         int opt_shrink = 2; // 0: none, 1: < 1.0, 2: 0.5x0.5 quatro
         float shrink_scale = -1f;
         string shrink_name = "";
@@ -1510,27 +1511,27 @@ namespace ParaParaView
 
                             if (image_orientation != RotateFlipType.RotateNoneFlipNone)
                                 shrink_bitmap.RotateFlip(image_orientation);
-                            dbg_last_quality = "Hc";
+                            dbg_draw_quality = "Hc";
                         } else {
                             if (opt_shrink == 2 && 0.5f <= scale && scale < 1f) {
                                 shrink_bitmap = new Bitmap(bitmap.Width/2, bitmap.Height/2, bitmap.PixelFormat);
                                 shrink_scale = 0.5f;
-                                dbg_last_quality = "q";
+                                dbg_draw_quality = "q";
                             } else {
                                 shrink_bitmap = new Bitmap(w, h, bitmap.PixelFormat);
                                 shrink_scale = scale;
-                                dbg_last_quality = "s";
+                                dbg_draw_quality = "s";
                             }
 
                             using (var sg = Graphics.FromImage(shrink_bitmap)) {
                                 if (InHaste) {
                                     sg.InterpolationMode = fast_draw_mode;
                                     sg.PixelOffsetMode = PixelOffsetMode.HighSpeed;
-                                    dbg_last_quality = "L"+dbg_last_quality;
+                                    dbg_draw_quality = "L"+dbg_draw_quality;
                                 } else {
-                                    sg.InterpolationMode = high_quality_mode;
+                                    sg.InterpolationMode = high_quality_shrink_mode;
                                     sg.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                                    dbg_last_quality = "H"+dbg_last_quality;
+                                    dbg_draw_quality = "H"+dbg_draw_quality;
                                 }
                                 sg.DrawImage(bitmap, 0, 0, shrink_bitmap.Width, shrink_bitmap.Height);
 
@@ -1552,19 +1553,19 @@ namespace ParaParaView
                         if (InHaste) {
                             g.InterpolationMode = fast_draw_mode;
                             g.PixelOffsetMode = PixelOffsetMode.HighSpeed;
-                            dbg_last_quality = "L";
+                            dbg_draw_quality = "L";
                         } else {
-                            g.InterpolationMode = high_quality_mode;
+                            g.InterpolationMode = (scale < 1.0f) ? high_quality_shrink_mode : high_quality_expand_mode;
                             g.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                            dbg_last_quality = "H";
+                            dbg_draw_quality = "H";
                         }
 
                         if (scale == 1.0f) {
                             g.DrawImage(bitmap, x, y, bitmap.Width, bitmap.Height);
-                            dbg_last_quality = "Ho";
+                            dbg_draw_quality = "Ho";
                         } else {
                             g.DrawImage(bitmap, x, y, w, h);    // stretch
-                            //dbg_last_quality = "HO";
+                            //dbg_draw_quality = "HO";
                         }
                     }
 
@@ -1901,12 +1902,12 @@ namespace ParaParaView
             g.FillRectangle(Brushes.Aqua, 1, 11, 100*(media_bytes[0]-media_bytes[1])/media_bytes[0], 8);
         }
 
-        string dbg_last_quality = "?";  // H: high, L: fast, s: shrinked
+        string dbg_draw_quality = "?";  // H: high, L: fast, s: shrinked
 
         void _refresh_benchi()
         {
             DrawBenchLabel.Text = string.Format("{0} load{1}+th{2} sh{3}/dr{4}",
-               dbg_last_quality, dbg_time_load, dbg_time_thumb,
+               dbg_draw_quality, dbg_time_load, dbg_time_thumb,
                dbg_time_shrink, dbg_time_draw);
         }
 

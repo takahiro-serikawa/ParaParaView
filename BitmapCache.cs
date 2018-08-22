@@ -61,13 +61,16 @@ namespace ParaParaView
             _timer_Tick(null, null);
 
             RestorePerformance();
+            t = new BackgroundCacheWriter();
         }
 
-        //~BitmapCache() { }
+        BackgroundCacheWriter t;
+
         public void Dispose()
         {
             timer_min.Dispose();
             md5.Dispose();
+            t.Dispose();
 
             Finish();
         }
@@ -451,6 +454,68 @@ namespace ParaParaView
                 reg.SetValue(TOTAL_CACHE_WRITE, total_cache_write.ToString());
                 reg.SetValue("last_update_time", DateTime.Now.ToShortDateString());
             }
+        }
+
+        class BackgroundCacheWriter: IDisposable
+        {
+            public BackgroundCacheWriter()
+            {
+                thread = new Thread(ThreadProc);
+                thread.Priority = ThreadPriority.BelowNormal;
+                thread.IsBackground = true;
+                thread.Start();
+            }
+            
+            public void Dispose()
+            {
+                ev.Dispose();
+            }
+
+            Thread thread;
+            volatile bool stop_flag = false;
+            AutoResetEvent ev = new AutoResetEvent(false);
+            Queue<string> queue = new Queue<string>(100);
+
+            void ThreadProc()
+            {
+                for (; !stop_flag;) {
+                    string name = null;
+                    lock (queue)
+                        if (queue.Count > 0)
+                            name = queue.Dequeue();
+
+                    if (name != null) {
+                        try {
+
+                        } catch (Exception ex) {
+                            Console.WriteLine("BackgroundCacheWriter:" + ex.Message);
+                        }
+                    } else
+                        ev.WaitOne();
+                }
+                Console.WriteLine("BackgroundCacheWriter.thread quit normally");
+            }
+
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="filename"></param>
+            public void AddReq(string filename)
+            {
+                lock (queue)
+                    queue.Enqueue(filename);
+                ev.Set();
+            }
+
+            /// <summary>
+            /// Stop background thread.
+            /// </summary>
+            public void Stop()
+            {
+                stop_flag = true;
+                ev.Set();
+            }
+
         }
 
     }
