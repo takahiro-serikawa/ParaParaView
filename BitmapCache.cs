@@ -343,7 +343,7 @@ namespace ParaParaView
 
             // delete all files in cache directory
             var di = new DirectoryInfo(cache_root);
-            foreach (var f in di.GetFiles("*.bmp"))
+            foreach (var f in di.GetFiles(/*"*.bmp"*/))
                 try {
                     File.Delete(f.FullName);
                 } catch (Exception ex) {
