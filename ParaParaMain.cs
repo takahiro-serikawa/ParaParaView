@@ -59,6 +59,10 @@ namespace ParaParaView
             //new MovablePanel(mainMenuStrip, null);
             this.MouseWheel += Photo_MouseWheel;
             InitScaleBar();
+            ScrollLeftItem.Tag = Keys.Left;
+            ScrollUpItem.Tag = Keys.Up;
+            ScrollRightItem.Tag = Keys.Right;
+            ScrollDownItem.Tag = Keys.Down;
 
             var aa = Environment.GetCommandLineArgs();
             DebugOut("command line: {0}", string.Join(" ", aa.Skip(1)));
@@ -291,7 +295,7 @@ namespace ParaParaView
             ScaleMode = (ImageScaleMode)sett.scale_mode;
             //ImageScale = sett.image_scale;
             ImageScale = 1.0f;
-            offset.X = offset.Y = 0;
+            scroll.X = scroll.Y = 0;
 
             if (sett.slide_show_interval > 0)
                 SlideShowTimer.Interval = sett.slide_show_interval;
@@ -806,13 +810,13 @@ namespace ParaParaView
             if (keys != 0 && keys == last_keys) {
                 key_accel++;
                 if (keys.HasFlag(CursorKey.Left))
-                    offset.X -= key_accel;
+                    scroll.X -= key_accel;
                 if (keys.HasFlag(CursorKey.Right))
-                    offset.X += key_accel;
+                    scroll.X += key_accel;
                 if (keys.HasFlag(CursorKey.Up))
-                    offset.Y -= key_accel;
+                    scroll.Y -= key_accel;
                 if (keys.HasFlag(CursorKey.Down))
-                    offset.Y += key_accel;
+                    scroll.Y += key_accel;
                 ScrollImageLimit();
             } else
                 key_accel = 0;
@@ -846,15 +850,15 @@ namespace ParaParaView
             int w = (int)(bitmap.Width*scale + 0.5);
             int h = (int)(bitmap.Height*scale + 0.5);
 
-            if (offset.X > w/2)
-                offset.X = w/2;
-            else if (offset.X < -w/2)
-                offset.X = -w/2;
+            if (scroll.X > w/2)
+                scroll.X = w/2;
+            else if (scroll.X < -w/2)
+                scroll.X = -w/2;
 
-            if (offset.Y > h/2)
-                offset.Y = h/2;
-            else if (offset.Y < -h/2)
-                offset.Y = -h/2;
+            if (scroll.Y > h/2)
+                scroll.Y = h/2;
+            else if (scroll.Y < -h/2)
+                scroll.Y = -h/2;
 
             Photo.Invalidate();
             Thumb.Invalidate();
@@ -1279,7 +1283,7 @@ namespace ParaParaView
                     //if (_scale_mode == ImageScaleMode.FullSize)
                     //    ScaleBar.Value = 0;
                     if (_scale_mode == ImageScaleMode.FitToWindow)
-                        offset.X = offset.Y = 0;
+                        scroll.X = scroll.Y = 0;
 
                     Redraw();
                 }
@@ -1415,7 +1419,7 @@ namespace ParaParaView
         }
 
         // image scrolling
-        Point offset = new Point(0, 0);
+        Point scroll = new Point(0, 0);
         bool mouse_down_flag = false;
         Point last_loc;
 
@@ -1443,8 +1447,8 @@ namespace ParaParaView
         {
             if (mouse_down_flag) {
                 //DebugOut("button={0}, dragsize={1}", e.Button, SystemInformation.DragSize);
-                offset.X += e.Location.X - last_loc.X;
-                offset.Y += e.Location.Y - last_loc.Y;
+                scroll.X += e.Location.X - last_loc.X;
+                scroll.Y += e.Location.Y - last_loc.Y;
                 ScrollImageLimit();
                 last_loc = e.Location;
                 GoHaste(1, HASTE_MSEC);
@@ -1466,12 +1470,27 @@ namespace ParaParaView
 
         private void Scroll_Click(object sender, EventArgs e)
         {
-
+            var menu = sender as ToolStripItem;
+            switch ((Keys)menu.Tag) {
+            case Keys.Right:
+                scroll.X += 1;
+                break;
+            case Keys.Up:
+                scroll.Y -= 1;
+                break;
+            case Keys.Left:
+                scroll.X -= 1;
+                break;
+            case Keys.Down:
+                scroll.Y += 1;
+                break;
+            }
+            ScrollImageLimit();
         }
 
         private void ScrollCenterItem_Click(object sender, EventArgs e)
         {
-            offset.X = offset.Y = 0;
+            scroll.X = scroll.Y = 0;
             Photo.Invalidate();
         }
 
@@ -1503,6 +1522,16 @@ namespace ParaParaView
             Photo.Invalidate();
         }
 
+        private void ViewRefreshItem_Click(object sender, EventArgs e)
+        {
+            Photo.Refresh();
+        }
+
+        private void ViewClearShrinkItem_Click(object sender, EventArgs e)
+        {
+            ClearShrink();
+        }
+
         long dbg_time_shrink, dbg_time_draw;
         long dbg_time_load, dbg_time_thumb;
 
@@ -1525,8 +1554,8 @@ namespace ParaParaView
 
                     int w = (int)(bitmap.Width*scale + 0.5);
                     int h = (int)(bitmap.Height*scale + 0.5);
-                    int x = (Photo.Width-w)/2 + offset.X;
-                    int y = (Photo.Height-h)/2 + offset.Y;
+                    int x = (Photo.Width-w)/2 + scroll.X;
+                    int y = (Photo.Height-h)/2 + scroll.Y;
 
                     if (InHaste && scale < shrink_scale
                      || shrink_name != image_filename)
@@ -1664,6 +1693,7 @@ namespace ParaParaView
                     if (dbg_verbose)
                         DebugOut(Color.Yellow, "cache hit FULL, fmt={0}, {1}x{2}", bitmap.PixelFormat, bitmap.Width, bitmap.Height);
 
+                    // cached bitmap has no EXIF, get EXIF from original photo.
                     using (var stream = new FileStream(filename, FileMode.Open, FileAccess.Read))
                     using (var b = Bitmap.FromStream(stream, false, false)) {
                         ExifLabel.Text = string.Format("{0}x{1} {2:N0}bytes", bitmap.Width, bitmap.Height, stream.Length);
@@ -1795,8 +1825,8 @@ namespace ParaParaView
                 g.DrawImage(thumb_bitmap, 0, 0);
                 
                 float scale = GetActualScale();
-                float tx = -offset.X * thumb_scale / scale; // THUMB_SIZE / Photo.Width
-                float ty = -offset.Y * thumb_scale / scale;
+                float tx = -scroll.X * thumb_scale / scale; // THUMB_SIZE / Photo.Width
+                float ty = -scroll.Y * thumb_scale / scale;
                 float tw = Photo.Width * Thumb.Width / (bitmap.Width*scale);
                 float th = Photo.Height * Thumb.Height / (bitmap.Height*scale);
                 if (tw < 5)
@@ -1999,15 +2029,6 @@ namespace ParaParaView
                 DebugOut(Color.Fuchsia, "action: unknwon key {0}.Tag={1}", name, tag);
         }
 
-        private void ViewRefreshItem_Click(object sender, EventArgs e)
-        {
-            Photo.Refresh();
-        }
-
-        private void ViewClearShrinkItem_Click(object sender, EventArgs e)
-        {
-            ClearShrink();
-        }
 
 
 
