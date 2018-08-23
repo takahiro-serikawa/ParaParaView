@@ -1,20 +1,19 @@
 ﻿■未実装
-0.62
+ver0.62
 	Thumbスクロール
 	キャッシュ先読み
 	キャッシュロジックの改善
-0.70
-0.80
-0.90
+ver0.70
+ver0.80
+ver0.90
 	アプリケーションアイコン	
 
+lisence.html動的更新
+ホイールスケール加速
 外部ツール
 印刷
 保存の際の rotate/flip, scale反映するべきか？
 二重起動
-
-画像サンプル
-http://photosku.com/kuchikomi/ds00140057/topicID=1301/
 
 キャッシュ保存、バックグランドで低い優先度で
 SUSIEプラグイン
@@ -36,7 +35,14 @@ ORF
 メディア挿入イベント？
 INotifyPropertyChanged カルチャー切り替え時に即座に
 
+ver99.99 対応予定なし
+現像
+
 ■バグ
 ○ 初回フルスクリーンのメニューが消えない
 回転とキャッシュのからみ
 24bit以外のBMP対応状況
+
+■画像サンプル　テスト用
+http://photosku.com/kuchikomi/ds00140057/topicID=1301/
+

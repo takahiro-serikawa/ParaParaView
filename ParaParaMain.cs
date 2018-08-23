@@ -128,6 +128,7 @@ namespace ParaParaView
         }
 
         string app_caption;
+        string app_ver;
 
         void CheckAppVer()
         {
@@ -135,6 +136,7 @@ namespace ParaParaView
             var ver = assembly.GetName().Version;
             var da = (AssemblyDescriptionAttribute[])assembly.GetCustomAttributes(typeof(AssemblyDescriptionAttribute), false);
             app_caption = string.Format("{0} ver{1}.{2:D2}: {3}", this.Text, ver.Major, ver.Minor, da[0].Description);
+            app_ver = string.Format("ver{1}.{2:D2}", this.Text, ver.Major, ver.Minor, da[0].Description);
 #if DEBUG
             app_caption += " DEBUG_BUILD";
 #endif
@@ -245,10 +247,26 @@ namespace ParaParaView
                 sett.slide_show_interval = SlideShowTimer.Interval;
 
                 sett.Save();
+
+                using (var reg = Microsoft.Win32.Registry.CurrentUser.CreateSubKey(PERFORMANCE_KEY, true)) {
+                    reg.SetValue(FIRST_DATE, first_date);
+                    //reg.SetValue(PHOTO_COUNT, photo_count);
+                    reg.GetValue(TOTAL_PHOTO_COUNT, total_photo_count);
+                }
+
             } catch (Exception ex) {
                 DebugOut(Color.Fuchsia, "SaveAppSettings: "+ex.Message);
             }
         }
+
+        const string PERFORMANCE_KEY = @"Software\ParaParaView\Performance";
+        const string FIRST_DATE = @"first_date";
+        //const string PHOTO_COUNT = @"photo_count";
+        const string TOTAL_PHOTO_COUNT = @"total_photo_count";
+
+        string first_date;
+        //int photo_count;
+        int total_photo_count;
 
         void RestoreAppSettings()
         {
@@ -271,6 +289,14 @@ namespace ParaParaView
 
             if (sett.slide_show_interval > 0)
                 SlideShowTimer.Interval = sett.slide_show_interval;
+
+            using (var reg = Microsoft.Win32.Registry.CurrentUser.CreateSubKey(PERFORMANCE_KEY)) {
+                first_date = (string)reg.GetValue(FIRST_DATE, "");
+                if (first_date == "")
+                    first_date = DateTime.Now.ToShortDateString();
+                //photo_count = (int)reg.GetValue(PHOTO_COUNT, 0);
+                total_photo_count = (int)reg.GetValue(TOTAL_PHOTO_COUNT, 0);
+            }
         }
 
         /* localize */
@@ -375,6 +401,13 @@ namespace ParaParaView
 
         private void HelpAboutItem_Click(object sender, EventArgs e)
         {
+            about_box.Params["app_ver"] = app_ver;
+            about_box.Params["first_date"] = first_date;
+            float[] w = { cache.TotalCacheWrite };
+            string u = _media_space_unit(w);
+            about_box.Params["cache_total_write"] = string.Format("{0} {1}", w[0], u);
+            about_box.Params["total_photo_count"] = total_photo_count.ToString();
+            //about_box.Params["photo_count"] = ;
             about_box.FadeIn(this.Bounds);
         }
 
@@ -1675,6 +1708,7 @@ namespace ParaParaView
                 IndexLabel.Text = string.Format("index {0}/{1}", photo_list.Index, photo_list.Count);
 
                 DebugOut(Color.Aqua, "LoadImage({0}); {1}msec", Path.GetFileName(filename), swx.ElapsedMilliseconds);
+                total_photo_count++;
 
                 if (!InHaste)
                     MakeThumb(bitmap);

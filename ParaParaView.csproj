@@ -142,7 +142,7 @@
   <ItemGroup>
     <Content Include="doc\IMPLEMENTATION.TXT" />
     <Content Include="doc\TODO.TXT" />
-    <EmbeddedResource Include="lisence.html" />
+    <EmbeddedResource Include="license.html" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">

@@ -24,12 +24,14 @@ namespace ParaParaView
         {
             InitializeComponent();
 
-            LoadLisence();
+            LoadLicense();
         }
 
-        void LoadLisence()
+        public Dictionary<string, string> Params = new Dictionary<string, string>();
+
+        void LoadLicense()
         {
-            string name = this.GetType().Namespace+@".lisence.html";
+            string name = this.GetType().Namespace+@".license.html";
             var asm = System.Reflection.Assembly.GetExecutingAssembly();
             var stream = asm.GetManifestResourceStream(name);
             if (stream != null) {
@@ -45,6 +47,12 @@ namespace ParaParaView
         /// <param name="bounds"></param>
         public void FadeIn(Rectangle bounds)
         {
+            foreach (var p in Params) {
+                var elem = webBrowser1.Document.GetElementById(p.Key);
+                if (elem != null)
+                    elem.InnerHtml = p.Value;
+            }
+
             this.Bounds = bounds;
 
             this.Opacity = 0;
@@ -115,6 +123,10 @@ namespace ParaParaView
         private void AboutForm_Deactivate(object sender, EventArgs e)
         {
             this.Hide();
+        }
+
+        private void webBrowser1_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
+        {
         }
     }
 }
