@@ -32,6 +32,12 @@ namespace ParaParaView
     {
         const string CATALOG_EXT = ".ppPv";
         const string CATALOG_PPPV = "catalog.ppPv";
+        Dictionary<string, ImageFormat> image_formats = new Dictionary<string, ImageFormat>() {
+            { ".jpg", ImageFormat.Jpeg },
+            { ".jpeg", ImageFormat.Jpeg },
+            { ".png", ImageFormat.Png },
+            { ".bmp", ImageFormat.Bmp }
+        };
 
         RecentMenu recent;
         static AppLog log;
@@ -350,13 +356,6 @@ namespace ParaParaView
             }
         }
 
-        Dictionary<string, ImageFormat> image_format_table = new Dictionary<string, ImageFormat>() {
-            { ".jpg", ImageFormat.Jpeg },
-            { ".jpeg", ImageFormat.Jpeg },
-            { ".png", ImageFormat.Png },
-            { ".bmp", ImageFormat.Bmp }
-        };
-
         private void FileaSaveItem_Click(object sender, EventArgs e)
         {
             if (bitmap == null)
@@ -367,7 +366,7 @@ namespace ParaParaView
             if (saveFileDialog1.ShowDialog() == DialogResult.OK) {
                 string filename = saveFileDialog1.FileName;
                 string ext = Path.GetExtension(filename).ToLower();
-                ImageFormat format = image_format_table.ContainsKey(ext) ? image_format_table[ext] : ImageFormat.Png;
+                ImageFormat format = image_formats.ContainsKey(ext) ? image_formats[ext] : ImageFormat.Png;
 
                 var sw = Stopwatch.StartNew();
                 using (var b = bitmap.Clone() as Bitmap) {
@@ -1035,7 +1034,6 @@ namespace ParaParaView
             }
         }
 
-        string[] image_ext_list = { ".jpg", ".bmp", ".gif", ".png" };   // should be lowercase
         int last_add_index = -1;
         bool opt_dir_sort = true;   // フォルダ一括追加時に名前でソート
 
@@ -1056,7 +1054,7 @@ namespace ParaParaView
         void AddFilename(string name)
         {
             string ext = Path.GetExtension(name).ToLower();
-            if (Array.IndexOf(image_ext_list, ext) < 0)
+            if (!image_formats.ContainsKey(ext))
                 return;
 
             string path = Path.GetFullPath(name);
@@ -1099,7 +1097,7 @@ namespace ParaParaView
                 var ss = new List<string>();
                 foreach (var f in ff) {
                     dbg_scan_count++;
-                    if (image_ext_list.Contains(f.Extension.ToLower())
+                    if (image_formats.ContainsKey(f.Extension.ToLower())
                      && !f.Attributes.HasFlag(FileAttributes.Hidden)) {
                         if (found_first == null) {
                             found_first = f.FullName;
