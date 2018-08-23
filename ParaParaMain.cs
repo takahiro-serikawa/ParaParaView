@@ -1,5 +1,6 @@
 ﻿/* デジカメ用画像ビュアー */
 
+// ver0.62 2018.8.23 Thumb scroll
 // ver0.60 2018.8.20 github
 // ver0.50 2018.8.2 主要機能実装完了
 // ver0.00 2018.7.1 
@@ -850,15 +851,26 @@ namespace ParaParaView
             int w = (int)(bitmap.Width*scale + 0.5);
             int h = (int)(bitmap.Height*scale + 0.5);
 
+            int m = 3;
             if (scroll.X > w/2)
                 scroll.X = w/2;
             else if (scroll.X < -w/2)
                 scroll.X = -w/2;
+            else
+                m ^= 1;
 
             if (scroll.Y > h/2)
                 scroll.Y = h/2;
             else if (scroll.Y < -h/2)
                 scroll.Y = -h/2;
+            else
+                m ^= 2;
+
+            // cancel thumb scroll
+            if (m != 0) {
+                Cursor.Current = Cursors.Default;
+                thumb_scroll_flag = false;
+            }
 
             Photo.Invalidate();
             Thumb.Invalidate();
@@ -1813,6 +1825,24 @@ namespace ParaParaView
 
         Pen thumb_pen = new Pen(Color.Black);
 
+        Rectangle GetViewPortRect()
+        {
+            float scale = GetActualScale();
+            float tx = -scroll.X * thumb_scale / scale; // THUMB_SIZE / Photo.Width
+            float ty = -scroll.Y * thumb_scale / scale;
+            float tw = Photo.Width * Thumb.Width / (bitmap.Width*scale);
+            float th = Photo.Height * Thumb.Height / (bitmap.Height*scale);
+            float x = (Thumb.Width-tw)/2 + tx;
+            float y = (Thumb.Height-th)/2 + ty;
+            if (tw < 5)
+                tw = 5f;
+            if (th < 5)
+                th = 5f;
+            return new Rectangle((int)x, (int)y, (int)tw, (int)th);
+        }
+
+        Rectangle thumb_rect = new Rectangle();
+
         private void Thumb_Paint(object sender, PaintEventArgs e)
         {
             const int DASH = 6;
@@ -1823,46 +1853,46 @@ namespace ParaParaView
             var g = e.Graphics;
             if (thumb_bitmap != null) {
                 g.DrawImage(thumb_bitmap, 0, 0);
-                
-                float scale = GetActualScale();
-                float tx = -scroll.X * thumb_scale / scale; // THUMB_SIZE / Photo.Width
-                float ty = -scroll.Y * thumb_scale / scale;
-                float tw = Photo.Width * Thumb.Width / (bitmap.Width*scale);
-                float th = Photo.Height * Thumb.Height / (bitmap.Height*scale);
-                if (tw < 5)
-                    tw = 5f;
-                if (th < 5)
-                    th = 5f;
-                g.DrawRectangle(Pens.White, (Thumb.Width-tw)/2 + tx, (Thumb.Height-th)/2 + ty, tw-1, th-1);
-                g.DrawRectangle(thumb_pen, (Thumb.Width-tw)/2 + tx, (Thumb.Height-th)/2 + ty, tw-1, th-1);
+
+                thumb_rect = GetViewPortRect();
+                g.DrawRectangle(Pens.White, thumb_rect);
+                g.DrawRectangle(thumb_pen, thumb_rect);
             }
         }
 
-        bool thumb_mouse_flag = false;
-        Point thumb_loc;
+        bool thumb_scroll_flag = false;
 
         private void Thumb_MouseDown(object sender, MouseEventArgs e)
         {
             Thumb.Focus();
 
-            if (e.Button == MouseButtons.Left) {
-                thumb_mouse_flag = true;
-                thumb_loc = e.Location;
-
-                //Photo.Invalidate();
+            if (e.Button == MouseButtons.Left && bitmap != null && thumb_rect.Contains(e.Location)) {
+                thumb_scroll_flag = true;
+                last_loc = e.Location;
             }
         }
 
         private void Thumb_MouseMove(object sender, MouseEventArgs e)
         {
-            if (thumb_mouse_flag) {
+            if (thumb_rect.Contains(e.Location)) {
+                Cursor.Current = Cursors.Hand;
+            } else {
+                Cursor.Current = Cursors.Arrow;
+            }
+
+            if (thumb_scroll_flag) {
+                float scale = GetActualScale();
+                scroll.X -= (int)((e.Location.X - last_loc.X) * scale / thumb_scale);
+                scroll.Y -= (int)((e.Location.Y - last_loc.Y) * scale / thumb_scale);
+                last_loc = e.Location;
+                ScrollImageLimit();
             }
         }
 
         private void Thumb_MouseUp(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left) {
-                thumb_mouse_flag = false;
+                thumb_scroll_flag = false;
             }
         }
 
