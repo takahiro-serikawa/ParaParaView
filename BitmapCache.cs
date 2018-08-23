@@ -117,9 +117,9 @@ namespace ParaParaView
         /// <summary>
         /// キャッシュに画像を追加
         /// </summary>
-        /// <param name="filename">追加する画像の読み込み元ファイル名</param>
-        /// <param name="scale"></param>
-        /// <param name="bitmap">追加する画像</param>
+        /// <param name="filename">original full path filename of image</param>
+        /// <param name="scale">image scale, or 0 for thumb</param>
+        /// <param name="bitmap">image to add</param>
         public async void AddAsync(string filename, float scale, Bitmap bitmap)
         {
             string key = MakeKey(filename, scale);
@@ -135,14 +135,12 @@ namespace ParaParaView
             {
                 System.Threading.Thread.Sleep(3000);
 
-                string cache_path = MakeFilename(key);
-                //var b = bitmap.Clone() as Bitmap;
-                //b.Save(cache_path, ImageFormat.Bmp);
-                //b.Dispose();
+                string cachename = MakeFilename(key);
+                //string tempname = Path.ChangeExtension(cachename, ".$$$");
                 sw.Start();
-                b.Save(cache_path, ImageFormat.Bmp);
+                b.Save(cachename, ImageFormat.Bmp);
                 b.Dispose();
-                return cache_path;
+                return cachename;
             });
             entries[key].filename = await task;
             Console.WriteLine("cache save: {0}msec", sw.ElapsedMilliseconds);
@@ -162,8 +160,17 @@ namespace ParaParaView
 
         class CacheEntry
         {
+            // cache file rule
+            // file is Windows bitmap
+            // KEY equals FILENAME (with .bmp, but no directory)
+            // KEY: MD5 hash of orginal photo filename + _ + scale + .bmp; hash is uppercase, .bmp is lowercase
+            // ${CACHE_PATH}/
+            //   7EE5D17FB6951C8B5B7C3685FA1B7598_01000.bmp
+            //   7EE5D17FB6951C8B5B7C3685FA1B7598_00500.bmp
+            //   7EE5D17FB6951C8B5B7C3685FA1B7598_00000.bmp thumbに限りscale=00000
+
             public Bitmap bitmap;       // メモリキャッシュ null ならメモリキャッシュなし
-            public string filename;     // ファイル名 null ならキャッシュファイルなし
+            public string filename;     // fullpath of cached bitmap, or null if not exists
             public float size;          // ディスク専有バイト数、またはメモリ専有バイト数
             public DateTime added;      // キャッシュ登録日時
             public DateTime last_used;  // 最後にhitした日時
@@ -193,26 +200,24 @@ namespace ParaParaView
         bool disk_usage_valid = false;
         System.Windows.Forms.Timer timer_min = new System.Windows.Forms.Timer();
 
-        Thread thread;
-
-        string cache_root;
+        string cache_path;
         DriveInfo drive_info;
 
         /// <summary>
-        /// 
+        /// switch cache directory, restore heritage cache
         /// </summary>
         public string CachePath
         {
-            get { return cache_root; }
+            get { return cache_path; }
             set
             {
-                cache_root = value;
-                if (!Directory.Exists(cache_root))
-                    Directory.CreateDirectory(cache_root);
+                cache_path = value;
+                if (!Directory.Exists(cache_path))
+                    Directory.CreateDirectory(cache_path);
 
-                drive_info = new DriveInfo(cache_root);
+                drive_info = new DriveInfo(cache_path);
 
-                var di = new DirectoryInfo(cache_root);
+                var di = new DirectoryInfo(cache_path);
                 foreach (var fi in di.GetFiles("*.bmp"))
                     entries[fi.Name] = new CacheEntry(fi.FullName, fi.Length, fi.LastAccessTime);
             }
@@ -269,7 +274,7 @@ namespace ParaParaView
         {
             var hash = MakeHash(filename);
             string s = BitConverter.ToString(hash).Replace("-", "");
-            return string.Format("{0}_{1:D5}", s, (int)(scale*1000));
+            return string.Format("{0}_{1:D5}.bmp", s, (int)(scale*1000));
         }
 
         static byte[] MakeHash(string filename)
@@ -280,7 +285,7 @@ namespace ParaParaView
 
         string MakeFilename(string key)
         {
-            return cache_root + key + ".bmp";
+            return cache_path + key;
         }
 
         /// <summary>
@@ -345,8 +350,8 @@ namespace ParaParaView
                 this.Remove(key);
 
             // delete all files in cache directory
-            var di = new DirectoryInfo(cache_root);
-            foreach (var f in di.GetFiles(/*"*.bmp"*/))
+            var di = new DirectoryInfo(cache_path);
+            foreach (var f in di.GetFiles())
                 try {
                     File.Delete(f.FullName);
                 } catch (Exception ex) {
@@ -465,7 +470,7 @@ namespace ParaParaView
                 thread.IsBackground = true;
                 thread.Start();
             }
-            
+
             public void Dispose()
             {
                 ev.Dispose();

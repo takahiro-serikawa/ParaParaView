@@ -174,7 +174,7 @@ namespace ParaParaView
 
             SaveAppSettings();
             log.Dispose();
-            cache.Finish();
+            cache.Dispose();
         }
 
         private void ParaParaMain_Shown(object sender, EventArgs e)
@@ -1744,7 +1744,7 @@ namespace ParaParaView
                     thumb_scale = THUMB_SIZE/bitmap.Height;
 
                 if (opt_cache_enabled)
-                    thumb_bitmap = cache.Get(image_filename, thumb_scale);
+                    thumb_bitmap = cache.Get(image_filename, 0);
 
                 if (thumb_bitmap != null) {
                     thumb_bitmap.RotateFlip(image_orientation);
@@ -1758,7 +1758,7 @@ namespace ParaParaView
                         g.DrawImage(bitmap, 0, 0, tw, th);
                     }
 
-                    cache.AddAsync(image_filename, thumb_scale, thumb_bitmap);
+                    cache.AddAsync(image_filename, 0, thumb_bitmap);
                 }
 
                 FitThumb();
