@@ -42,6 +42,7 @@
             this.OpenFolderItem = new System.Windows.Forms.ToolStripMenuItem();
             this.OpenFileItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RecentMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem8 = new System.Windows.Forms.ToolStripSeparator();
             this.FileaSaveItem = new System.Windows.Forms.ToolStripMenuItem();
             this.FileCloseItem = new System.Windows.Forms.ToolStripMenuItem();
             this.EjectItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -55,6 +56,7 @@
             this.FileTrashItem = new System.Windows.Forms.ToolStripMenuItem();
             this.OpenTrashItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ExplorerItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.CopyFullPathItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.EditCutItem = new System.Windows.Forms.ToolStripMenuItem();
             this.EditCopyItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -121,15 +123,22 @@
             this.SlideShowTimer = new System.Windows.Forms.Timer(this.components);
             this.ScaleBar = new System.Windows.Forms.TrackBar();
             this.ExifBox = new System.Windows.Forms.Panel();
+            this.Filename = new System.Windows.Forms.TextBox();
             this.Exif = new System.Windows.Forms.TextBox();
             this.ExifLabel = new System.Windows.Forms.Label();
             this.ScalePanel = new System.Windows.Forms.Panel();
-            this.ReciprocalLabel = new System.Windows.Forms.Label();
             this.ScaleEdit = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.ReciprocalLabel = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.ViewPort = new System.Windows.Forms.Panel();
-            this.toolStripMenuItem8 = new System.Windows.Forms.ToolStripSeparator();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.FilePrintItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem9 = new System.Windows.Forms.ToolStripSeparator();
+            this.printDialog1 = new System.Windows.Forms.PrintDialog();
+            this.printDocument1 = new System.Drawing.Printing.PrintDocument();
             this.mainMenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Photo)).BeginInit();
             this.DebugBox.SuspendLayout();
@@ -173,6 +182,8 @@
             this.OpenFolderItem,
             this.OpenFileItem,
             this.RecentMenu,
+            this.toolStripMenuItem9,
+            this.FilePrintItem,
             this.FileaSaveItem,
             this.FileCloseItem,
             this.EjectItem,
@@ -217,6 +228,11 @@
             this.RecentMenu.Name = "RecentMenu";
             this.RecentMenu.Size = new System.Drawing.Size(210, 22);
             this.RecentMenu.Text = "&Recent";
+            // 
+            // toolStripMenuItem8
+            // 
+            this.toolStripMenuItem8.Name = "toolStripMenuItem8";
+            this.toolStripMenuItem8.Size = new System.Drawing.Size(57, 6);
             // 
             // FileaSaveItem
             // 
@@ -277,6 +293,7 @@
             this.FileTrashItem,
             this.OpenTrashItem,
             this.ExplorerItem,
+            this.CopyFullPathItem,
             this.toolStripMenuItem1,
             this.EditCutItem,
             this.EditCopyItem,
@@ -321,6 +338,13 @@
             this.ExplorerItem.Size = new System.Drawing.Size(188, 22);
             this.ExplorerItem.Text = "Explorer ...";
             this.ExplorerItem.Click += new System.EventHandler(this.ExplorerItem_Click);
+            // 
+            // CopyFullPathItem
+            // 
+            this.CopyFullPathItem.Name = "CopyFullPathItem";
+            this.CopyFullPathItem.Size = new System.Drawing.Size(188, 22);
+            this.CopyFullPathItem.Text = "Copy &FullPath";
+            this.CopyFullPathItem.Click += new System.EventHandler(this.CopyFullPathItem_Click);
             // 
             // toolStripMenuItem1
             // 
@@ -928,7 +952,7 @@
             this.ScaleBar.AutoSize = false;
             this.ScaleBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.ScaleBar.LargeChange = 60;
-            this.ScaleBar.Location = new System.Drawing.Point(10, 22);
+            this.ScaleBar.Location = new System.Drawing.Point(10, 24);
             this.ScaleBar.Maximum = 240;
             this.ScaleBar.Minimum = -240;
             this.ScaleBar.Name = "ScaleBar";
@@ -942,12 +966,27 @@
             // ExifBox
             // 
             this.ExifBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.ExifBox.Controls.Add(this.Filename);
             this.ExifBox.Controls.Add(this.Exif);
             this.ExifBox.Controls.Add(this.ExifLabel);
-            this.ExifBox.Location = new System.Drawing.Point(12, 320);
+            this.ExifBox.Location = new System.Drawing.Point(12, 305);
             this.ExifBox.Name = "ExifBox";
-            this.ExifBox.Size = new System.Drawing.Size(180, 133);
+            this.ExifBox.Size = new System.Drawing.Size(180, 148);
             this.ExifBox.TabIndex = 14;
+            // 
+            // Filename
+            // 
+            this.Filename.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.Filename.BackColor = System.Drawing.Color.Black;
+            this.Filename.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.Filename.ForeColor = System.Drawing.Color.White;
+            this.Filename.Location = new System.Drawing.Point(2, 130);
+            this.Filename.Name = "Filename";
+            this.Filename.ReadOnly = true;
+            this.Filename.Size = new System.Drawing.Size(176, 16);
+            this.Filename.TabIndex = 18;
+            this.Filename.Text = "filename";
             // 
             // Exif
             // 
@@ -957,11 +996,11 @@
             this.Exif.BackColor = System.Drawing.Color.Black;
             this.Exif.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.Exif.ForeColor = System.Drawing.Color.White;
-            this.Exif.Location = new System.Drawing.Point(2, 21);
+            this.Exif.Location = new System.Drawing.Point(1, 19);
             this.Exif.Multiline = true;
             this.Exif.Name = "Exif";
             this.Exif.ReadOnly = true;
-            this.Exif.Size = new System.Drawing.Size(177, 111);
+            this.Exif.Size = new System.Drawing.Size(178, 111);
             this.Exif.TabIndex = 9;
             this.Exif.Text = "EXIF";
             // 
@@ -978,25 +1017,18 @@
             // 
             this.ScalePanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.ScalePanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.ScalePanel.Controls.Add(this.ReciprocalLabel);
-            this.ScalePanel.Controls.Add(this.ScaleEdit);
+            this.ScalePanel.Controls.Add(this.label4);
             this.ScalePanel.Controls.Add(this.ScaleLabel);
+            this.ScalePanel.Controls.Add(this.label3);
+            this.ScalePanel.Controls.Add(this.ScaleEdit);
+            this.ScalePanel.Controls.Add(this.label1);
+            this.ScalePanel.Controls.Add(this.ReciprocalLabel);
             this.ScalePanel.Controls.Add(this.ScaleBar);
             this.ScalePanel.Controls.Add(this.label2);
             this.ScalePanel.Location = new System.Drawing.Point(454, 410);
             this.ScalePanel.Name = "ScalePanel";
             this.ScalePanel.Size = new System.Drawing.Size(173, 53);
             this.ScalePanel.TabIndex = 15;
-            // 
-            // ReciprocalLabel
-            // 
-            this.ReciprocalLabel.AutoSize = true;
-            this.ReciprocalLabel.BackColor = System.Drawing.Color.Transparent;
-            this.ReciprocalLabel.Location = new System.Drawing.Point(117, 6);
-            this.ReciprocalLabel.Name = "ReciprocalLabel";
-            this.ReciprocalLabel.Size = new System.Drawing.Size(36, 15);
-            this.ReciprocalLabel.TabIndex = 14;
-            this.ReciprocalLabel.Text = "(1/1)";
             // 
             // ScaleEdit
             // 
@@ -1009,6 +1041,28 @@
             this.ScaleEdit.Text = "1600.0";
             this.ScaleEdit.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.ScaleEdit.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ScaleEdit_KeyPress);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.BackColor = System.Drawing.Color.Transparent;
+            this.label1.Font = new System.Drawing.Font("Meiryo UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.label1.Location = new System.Drawing.Point(80, 20);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(14, 14);
+            this.label1.TabIndex = 16;
+            this.label1.Text = "o";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // ReciprocalLabel
+            // 
+            this.ReciprocalLabel.AutoSize = true;
+            this.ReciprocalLabel.BackColor = System.Drawing.Color.Transparent;
+            this.ReciprocalLabel.Location = new System.Drawing.Point(117, 6);
+            this.ReciprocalLabel.Name = "ReciprocalLabel";
+            this.ReciprocalLabel.Size = new System.Drawing.Size(36, 15);
+            this.ReciprocalLabel.TabIndex = 14;
+            this.ReciprocalLabel.Text = "(1/1)";
             // 
             // label2
             // 
@@ -1036,10 +1090,46 @@
             this.ViewPort.Size = new System.Drawing.Size(160, 135);
             this.ViewPort.TabIndex = 16;
             // 
-            // toolStripMenuItem8
+            // label3
             // 
-            this.toolStripMenuItem8.Name = "toolStripMenuItem8";
-            this.toolStripMenuItem8.Size = new System.Drawing.Size(177, 6);
+            this.label3.AutoSize = true;
+            this.label3.BackColor = System.Drawing.Color.Transparent;
+            this.label3.Font = new System.Drawing.Font("Meiryo UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.label3.Location = new System.Drawing.Point(17, 22);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(12, 14);
+            this.label3.TabIndex = 17;
+            this.label3.Text = "[";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.BackColor = System.Drawing.Color.Transparent;
+            this.label4.Font = new System.Drawing.Font("Meiryo UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.label4.Location = new System.Drawing.Point(147, 22);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(12, 14);
+            this.label4.TabIndex = 18;
+            this.label4.Text = "]";
+            this.label4.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // FilePrintItem
+            // 
+            this.FilePrintItem.Name = "FilePrintItem";
+            this.FilePrintItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
+            this.FilePrintItem.Size = new System.Drawing.Size(210, 22);
+            this.FilePrintItem.Text = "&Print ...";
+            this.FilePrintItem.Click += new System.EventHandler(this.FilePrintItem_Click);
+            // 
+            // toolStripMenuItem9
+            // 
+            this.toolStripMenuItem9.Name = "toolStripMenuItem9";
+            this.toolStripMenuItem9.Size = new System.Drawing.Size(207, 6);
+            // 
+            // printDialog1
+            // 
+            this.printDialog1.UseEXDialog = true;
             // 
             // ParaParaMain
             // 
@@ -1047,10 +1137,10 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(640, 480);
+            this.Controls.Add(this.ExifBox);
             this.Controls.Add(this.ViewPort);
             this.Controls.Add(this.ScalePanel);
             this.Controls.Add(this.DebugBox);
-            this.Controls.Add(this.ExifBox);
             this.Controls.Add(this.FullScreenLabel);
             this.Controls.Add(this.Photo);
             this.Controls.Add(this.mainMenuStrip);
@@ -1186,6 +1276,15 @@
         private System.Windows.Forms.ToolStripMenuItem ScrollUpItem;
         private System.Windows.Forms.ToolStripMenuItem ScrollDownItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem8;
+        private System.Windows.Forms.TextBox Filename;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ToolStripMenuItem CopyFullPathItem;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem9;
+        private System.Windows.Forms.ToolStripMenuItem FilePrintItem;
+        private System.Windows.Forms.PrintDialog printDialog1;
+        private System.Drawing.Printing.PrintDocument printDocument1;
     }
 }
 

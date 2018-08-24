@@ -40,6 +40,8 @@ EditCopyItem.Text=コピー(&C)
 EditCopyItem.Hint=画像をクリップボードにコピーします。
 EditPasteItem.Text=貼り付け(&P)
 EditPasteItem.Hint=画像をクリップボードから貼り付けます。
+CopyFullPathItem.Text=ファイル名をコピー(&F)
+CopyFullPathItem.Hint=画像ファイル名をクリップボードにコピーします。
 
 ViewMenu.Text=表示(&V)
 ViewMenu.Hint=表示関連メニュー

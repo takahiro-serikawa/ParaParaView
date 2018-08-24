@@ -72,7 +72,8 @@ namespace ParaParaView
             timer2.Enabled = true;
         }
 
-        const float DEF_OPACITY = 0.75f;
+        //const float DEF_OPACITY = 0.75f;
+        const float DEF_OPACITY = 0.67f;
         const int FADE_IN_MSEC = 1000;
         const int FADE_OUT_MSEC = 500;
         int fade_start_tc;

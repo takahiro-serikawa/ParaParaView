@@ -38,6 +38,7 @@ using System.Drawing.Imaging;
 
 using System.Windows.Forms;
 using System.Threading;
+using System.Collections.Concurrent;
 
 namespace ParaParaView
 {
@@ -195,7 +196,8 @@ namespace ParaParaView
             }
         }
 
-        Dictionary<string, CacheEntry> entries = new Dictionary<string, CacheEntry>();
+        //Dictionary<string, CacheEntry> entries = new Dictionary<string, CacheEntry>();
+        ConcurrentDictionary<string, CacheEntry> entries = new ConcurrentDictionary<string, CacheEntry>();
         float disk_usage = 0;
         bool disk_usage_valid = false;
         System.Windows.Forms.Timer timer_min = new System.Windows.Forms.Timer();
@@ -217,6 +219,17 @@ namespace ParaParaView
 
                 drive_info = new DriveInfo(cache_path);
 
+#if xxx
+                var task = Task.Run(() =>
+                {
+                    var sw = Stopwatch.StartNew();
+                    var di = new DirectoryInfo(cache_path);
+                    foreach (var fi in di.GetFiles("*.bmp"))
+                        //lock (entries)
+                            entries[fi.Name] = new CacheEntry(fi.FullName, fi.Length, fi.LastAccessTime);
+                    Console.WriteLine("restore cache: {0}", sw.ElapsedMilliseconds);
+                });
+#endif
                 var di = new DirectoryInfo(cache_path);
                 foreach (var fi in di.GetFiles("*.bmp"))
                     entries[fi.Name] = new CacheEntry(fi.FullName, fi.Length, fi.LastAccessTime);
@@ -311,7 +324,9 @@ namespace ParaParaView
                     MemUsage -= e.size;
                     MemFree += e.size;
                 }
-                entries.Remove(key);
+                //entries.Remove(key);
+                CacheEntry value;
+                entries.TryRemove(key, out value);
             }
 
             string cache_path = MakeFilename(key);

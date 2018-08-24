@@ -2,24 +2,25 @@
 ver0.62
 	キャッシュ先読み
 	キャッシュロジックの改善
+	起動時にAboutBox
 ver0.70
 ver0.80
 ver0.90
 	アプリケーションアイコン	
 
-lisence.html動的更新
-ホイールスケール加速
+CacheEntry と photo_list の統合
 外部ツール
 印刷
 保存の際の rotate/flip, scale反映するべきか？
 二重起動
 
-キャッシュ保存、バックグランドで低い優先度で
+キャッシュ保存、バックグランドでかつ、並列処理
 SUSIEプラグイン
+ORF
+https://cs.olympus-imaging.jp/jp/support/cs/DI/SoftDL/vista/RAW/download.html
 
 ファイル一覧のバックグラウンド読み込み
 マウス中心ズーム
-ORF
 
 ファイル一覧
  複数ファイル削除
@@ -34,14 +35,23 @@ ORF
 メディア挿入イベント？
 INotifyPropertyChanged カルチャー切り替え時に即座に
 
-ver99.99 対応予定なし
+ver99.99 ボツ 対応予定なし
 現像
+ホイールスケール加速
 
 ■バグ
 ○ 初回フルスクリーンのメニューが消えない
 回転とキャッシュのからみ
 24bit以外のBMP対応状況
+thumbスクロールの範囲外れたときの処理が不自然
 
 ■画像サンプル　テスト用
 http://photosku.com/kuchikomi/ds00140057/topicID=1301/
 
+■uninstall
+
+regedit
+HKEY_CURRENT_USER\Software\ParaParaView\
+
+C:\Users\ ユーザー \AppData\Local\ParaParaView\settings.xml
+C:\Users\ ユーザー \AppData\Local\Temp\ParaParaView_cache\*.bmp

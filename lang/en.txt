@@ -40,6 +40,8 @@ EditCopyItem.Text=&Copy
 EditCopyItem.Hint=Copy photo to clipboard.
 EditPasteItem.Text=&Paste
 EditPasteItem.Hint=Paste photo from clipboard.
+CopyFullPathItem.Text=Copy &Full Path
+CopyFullPathItem.Hint=Copy full path to clipboard.
 
 ViewMenu.Text=&View
 ViewMenu.Hint=View menu

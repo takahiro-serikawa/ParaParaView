@@ -158,11 +158,12 @@ namespace ParaParaView
         {
             if (catalog_filename != "") {
                 string name = Path.GetFileName(catalog_filename);
-                if (name == CATALOG_PPPV)
-                    name = Path.GetFileName(Path.GetDirectoryName(catalog_filename));
-                this.Text = name+" - "+app_caption;
+                if (name != CATALOG_PPPV)
+                    this.Text = name+" - "+app_caption;
+                else
+                    this.Text = Path.GetDirectoryName(catalog_filename)+@"\ - "+app_caption;
             } else if (image_filename != null) {
-                this.Text = Path.GetFileName(image_filename)+"\\ - "+app_caption;
+                this.Text = Path.GetFileName(image_filename)+@"\ - "+app_caption;
             } else
                 this.Text = app_caption;
         }
@@ -194,6 +195,8 @@ namespace ParaParaView
 
             if ((FormWindowState)sett.WinState == FormWindowState.Maximized)
                 this.WindowState = (FormWindowState)sett.WinState;
+
+            //HelpAboutItem_Click(null, null);
         }
 
         /* application settings */
@@ -260,9 +263,9 @@ namespace ParaParaView
                 sett.Save();
 
                 using (var reg = Microsoft.Win32.Registry.CurrentUser.CreateSubKey(PERFORMANCE_KEY, true)) {
-                    reg.SetValue(FIRST_DATE, first_date);
+                    //reg.SetValue(FIRST_DATE, first_date);
                     //reg.SetValue(PHOTO_COUNT, photo_count);
-                    reg.GetValue(TOTAL_PHOTO_COUNT, total_photo_count);
+                    reg.SetValue(TOTAL_PHOTO_COUNT, total_photo_count);
                 }
 
             } catch (Exception ex) {
@@ -301,10 +304,12 @@ namespace ParaParaView
             if (sett.slide_show_interval > 0)
                 SlideShowTimer.Interval = sett.slide_show_interval;
 
-            using (var reg = Microsoft.Win32.Registry.CurrentUser.CreateSubKey(PERFORMANCE_KEY)) {
+            using (var reg = Microsoft.Win32.Registry.CurrentUser.CreateSubKey(PERFORMANCE_KEY, true)) {
                 first_date = (string)reg.GetValue(FIRST_DATE, "");
-                if (first_date == "")
+                if (first_date == "") {
                     first_date = DateTime.Now.ToShortDateString();
+                    reg.SetValue(FIRST_DATE, first_date);
+                }
                 //photo_count = (int)reg.GetValue(PHOTO_COUNT, 0);
                 total_photo_count = (int)reg.GetValue(TOTAL_PHOTO_COUNT, 0);
             }
@@ -381,6 +386,11 @@ namespace ParaParaView
             }
         }
 
+        private void FilePrintItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
         private void EjectItem_Click(object sender, EventArgs e)
         {
             if (CurrentPath != null) {
@@ -409,9 +419,8 @@ namespace ParaParaView
             about_box.Params["first_date"] = first_date;
             float[] w = { cache.TotalCacheWrite };
             string u = _media_space_unit(w);
-            about_box.Params["cache_total_write"] = string.Format("{0} {1}", w[0], u);
+            about_box.Params["cache_total_write"] = string.Format("{0:F3} {1}", w[0], u);
             about_box.Params["total_photo_count"] = total_photo_count.ToString();
-            //about_box.Params["photo_count"] = ;
             about_box.FadeIn(this.Bounds);
         }
 
@@ -487,6 +496,15 @@ namespace ParaParaView
             throw new Exception("YET");
             //DebugOut(Color.White, "paste from clipboard");
         }
+
+        private void CopyFullPathItem_Click(object sender, EventArgs e)
+        {
+            if (image_filename != null && image_filename != "") {
+                Clipboard.SetText(image_filename);
+                DebugOut(Color.White, "copy to clipboard");
+            }
+        }
+
 
         // "View" menu handlers
         private void FitToWindowItem_Click(object sender, EventArgs e)
@@ -1462,14 +1480,16 @@ namespace ParaParaView
                 scroll.X += e.Location.X - last_loc.X;
                 scroll.Y += e.Location.Y - last_loc.Y;
                 ScrollImageLimit();
-                last_loc = e.Location;
                 GoHaste(1, HASTE_MSEC);
                 Photo.Invalidate();
                 Thumb.Invalidate();
             }
 
-            //for (; cursor_hide > 0; cursor_hide--)
-            //    Cursor.Show();
+            if (last_loc != e.Location)
+                for (; cursor_hide > 0; cursor_hide--)
+                    Cursor.Show();
+
+            last_loc = e.Location;
         }
 
         private void Photo_MouseUp(object sender, MouseEventArgs e)
@@ -1478,6 +1498,9 @@ namespace ParaParaView
                 mouse_down_flag = false;
                 Cursor.Current = Cursors.Default;
             }
+
+            if (SlideShowItem.Checked)
+                StopSlideShow("slide show stopped by MouseUp");
         }
 
         private void Scroll_Click(object sender, EventArgs e)
@@ -1742,6 +1765,7 @@ namespace ParaParaView
                 Photo.Invalidate();
 
                 image_filename = filename;
+                Filename.Text = Path.GetFileName(filename);
                 image_orientation = RotateFlipType.RotateNoneFlipNone;
 
                 photo_list.SelectName(filename);
