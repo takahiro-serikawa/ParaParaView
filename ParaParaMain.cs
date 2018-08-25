@@ -171,7 +171,10 @@ namespace ParaParaView
         /* massage log */
         static public void DebugOut(Color color, string fmt, params object[] args)
         {
-            log.Out(color, fmt, args);
+            if (log != null)
+                log.Out(color, fmt, args);
+            else
+                MessageBox.Show(string.Format(fmt, args), "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         static public void DebugOut(string fmt, params object[] args)
@@ -185,8 +188,9 @@ namespace ParaParaView
                 SaveCatalogFile(catalog_filename);
 
             SaveAppSettings();
-            log.Dispose();
-            cache.Dispose();
+
+            //cache.Dispose(); cache = null;
+            //log.Dispose(); log = null;
         }
 
         private void ParaParaMain_Shown(object sender, EventArgs e)
@@ -1631,7 +1635,7 @@ namespace ParaParaView
                                 sg.DrawImage(bitmap, 0, 0, shrink_bitmap.Width, shrink_bitmap.Height);
 
                                 if (!InHaste && opt_cache_enabled)
-                                    cache.AddAsync(image_filename, shrink_scale, shrink_bitmap);
+                                    cache.Add2(image_filename, shrink_scale, shrink_bitmap);
                             }
                             shrink_name = image_filename;
 
@@ -1759,7 +1763,7 @@ namespace ParaParaView
                         if (dbg_verbose)
                             DebugOut(Color.Yellow, "add cache FULL");
 
-                        cache.AddAsync(filename, 1f, bitmap);
+                        cache.Add2(filename, 1f, bitmap);
                     }
                 }
                 Photo.Invalidate();
@@ -1797,6 +1801,9 @@ namespace ParaParaView
 
         void MakeThumb(Bitmap bitmap)
         {
+            if (cache == null)  // app. closing
+                return;
+            
             ClearThumb();
 
             if (bitmap != null) {
@@ -1822,7 +1829,7 @@ namespace ParaParaView
                         g.DrawImage(bitmap, 0, 0, tw, th);
                     }
 
-                    cache.AddAsync(image_filename, 0, thumb_bitmap);
+                    cache.Add2(image_filename, 0, thumb_bitmap);
                 }
 
                 FitThumb();
@@ -1988,9 +1995,10 @@ namespace ParaParaView
             ControlNameLabel.Text = "active: " + this.ActiveControl.Name;
 
             // memory information
-            float[] ws = { cache.MemFree, Environment.WorkingSet };
+            float[] ws = { cache.MemUsage, cache.MemFree, Environment.WorkingSet };
             string unit = _media_space_unit(ws);
-            dbgMemoryLabel.Text = string.Format("free {0:N1}, WS {1:N1} {2}", ws[0], ws[1], unit);
+            //dbgMemoryLabel.Text = string.Format("free {0:N1}, WS {1:N1} {2}", ws[0], ws[1], unit);
+            dbgMemoryLabel.Text = string.Format("{0}bitmaps {1:N1} {2}, {3:N1} free, WS {4:N1}", cache.MemoryCount, ws[0], unit, ws[1], ws[2]);
         }
 
         static string _media_space_unit(float[] bytes)
@@ -2006,9 +2014,10 @@ namespace ParaParaView
         private void MediaSpace_Paint(object sender, PaintEventArgs e)
         {
             // cache usage
-            float[] bytes = { cache.DiskSize, cache.DiskUsage, cache.MemUsage };
+            float[] bytes = { cache.DiskSize, cache.DiskUsage };
             string byte_unit = _media_space_unit(bytes);
-            CacheLabel.Text = string.Format("cache {2:F1}, {1:F1}/{0:F1} {3}", bytes[0], bytes[1], bytes[2], byte_unit);
+            //CacheLabel.Text = string.Format("cache {2:F1}, {1:F1}/{0:F1} {3}", bytes[0], bytes[1], bytes[2], byte_unit);
+            CacheLabel.Text = string.Format("cache {2}files {1:F1}/{0:F1} {3}", bytes[0], bytes[1], cache.FileCount, byte_unit);
 
             var g = e.Graphics;
             g.Clear(Color.Gray);

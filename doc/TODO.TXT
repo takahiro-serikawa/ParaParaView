@@ -14,7 +14,7 @@ CacheEntry と photo_list の統合
 保存の際の rotate/flip, scale反映するべきか？
 二重起動
 
-キャッシュ保存、バックグランドでかつ、並列処理
+キャッシュ保存並列化
 SUSIEプラグイン
 ORF
 https://cs.olympus-imaging.jp/jp/support/cs/DI/SoftDL/vista/RAW/download.html

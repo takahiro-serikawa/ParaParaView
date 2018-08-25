@@ -803,11 +803,11 @@
             // dbgMemoryLabel
             // 
             this.dbgMemoryLabel.AutoSize = true;
-            this.dbgMemoryLabel.Location = new System.Drawing.Point(279, 19);
+            this.dbgMemoryLabel.Location = new System.Drawing.Point(117, 37);
             this.dbgMemoryLabel.Name = "dbgMemoryLabel";
-            this.dbgMemoryLabel.Size = new System.Drawing.Size(27, 15);
+            this.dbgMemoryLabel.Size = new System.Drawing.Size(38, 15);
             this.dbgMemoryLabel.TabIndex = 18;
-            this.dbgMemoryLabel.Text = "WS";
+            this.dbgMemoryLabel.Text = "mem";
             // 
             // ControlNameLabel
             // 
@@ -884,11 +884,11 @@
             this.DebugLog.BackColor = System.Drawing.Color.Black;
             this.DebugLog.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.DebugLog.ForeColor = System.Drawing.Color.White;
-            this.DebugLog.Location = new System.Drawing.Point(6, 38);
+            this.DebugLog.Location = new System.Drawing.Point(6, 55);
             this.DebugLog.Name = "DebugLog";
             this.DebugLog.ReadOnly = true;
             this.DebugLog.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.DebugLog.Size = new System.Drawing.Size(488, 114);
+            this.DebugLog.Size = new System.Drawing.Size(488, 97);
             this.DebugLog.TabIndex = 8;
             this.DebugLog.Text = "log";
             this.DebugLog.WordWrap = false;

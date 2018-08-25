@@ -62,18 +62,19 @@ namespace ParaParaView
             _timer_Tick(null, null);
 
             RestorePerformance();
-            t = new BackgroundCacheWriter();
+            t = new BackgroundCacheWriter(this);
         }
 
         BackgroundCacheWriter t;
 
         public void Dispose()
         {
+            Finish();
+
             timer_min.Dispose();
             md5.Dispose();
+            t.StopAndWait(1000);
             t.Dispose();
-
-            Finish();
         }
 
         // performance configuration
@@ -159,6 +160,30 @@ namespace ParaParaView
             disk_usage_valid = false;
         }
 
+        /// <summary>
+        /// キャッシュに画像を追加
+        /// </summary>
+        /// <param name="filename">original full path filename of image</param>
+        /// <param name="scale">image scale, or 0 for thumb</param>
+        /// <param name="bitmap">image to add</param>
+        public void Add2(string filename, float scale, Bitmap bitmap)
+        {
+            string key = MakeKey(filename, scale);
+            CacheEntry e;
+            if (entries.ContainsKey(key)) {
+                e = entries[key];
+            } else {
+                e = new CacheEntry(bitmap.Clone() as Bitmap);
+                entries[key] = e;
+            }
+
+            lock (usage_obj) {
+            }
+
+            e.filename = MakeFilename(key);
+            t.AddReq(e);
+        }
+
         class CacheEntry
         {
             // cache file rule
@@ -198,6 +223,7 @@ namespace ParaParaView
 
         //Dictionary<string, CacheEntry> entries = new Dictionary<string, CacheEntry>();
         ConcurrentDictionary<string, CacheEntry> entries = new ConcurrentDictionary<string, CacheEntry>();
+        object usage_obj = new object();
         float disk_usage = 0;
         bool disk_usage_valid = false;
         System.Windows.Forms.Timer timer_min = new System.Windows.Forms.Timer();
@@ -321,8 +347,10 @@ namespace ParaParaView
                 var e = entries[key];
                 if (e.bitmap != null) {
                     e.bitmap.Dispose();
-                    MemUsage -= e.size;
-                    MemFree += e.size;
+                    lock (usage_obj) {
+                        MemUsage -= e.size;
+                        MemFree += e.size;
+                    }
                 }
                 //entries.Remove(key);
                 CacheEntry value;
@@ -436,8 +464,10 @@ namespace ParaParaView
             foreach (var e in p) {
                 e.bitmap.Dispose();
                 e.bitmap = null;
-                MemUsage -= e.size;
-                MemFree += e.size;
+                lock (usage_obj) {
+                    MemUsage -= e.size;
+                    MemFree += e.size;
+                }
             }
 
             GC.Collect();   //?
@@ -446,7 +476,17 @@ namespace ParaParaView
         /// <summary>
         /// ディスクへの累積総書き込みバイト数(概算) SSD寿命評価用
         /// </summary>
-        public float TotalCacheWrite { get { return total_cache_write + cache_write; } }
+        public float TotalCacheWrite
+        {
+            get
+            {
+                float result;
+                lock (usage_obj) {
+                    result = total_cache_write + cache_write;
+                }
+                return result;
+            }
+        }
 
         const string PERFORMANCE_KEY = @"Software\ParaParaView\Performance";
         const string TOTAL_CACHE_WRITE = @"total_cache_write";
@@ -478,52 +518,67 @@ namespace ParaParaView
 
         class BackgroundCacheWriter: IDisposable
         {
-            public BackgroundCacheWriter()
+            BitmapCache cache;
+
+            public BackgroundCacheWriter(BitmapCache cache)
             {
+                this.cache = cache;
                 thread = new Thread(ThreadProc);
-                thread.Priority = ThreadPriority.BelowNormal;
+                thread.Priority = ThreadPriority.Lowest;
                 thread.IsBackground = true;
                 thread.Start();
             }
 
             public void Dispose()
             {
+                //Stop();
+                //thread.Join();
                 ev.Dispose();
             }
 
             Thread thread;
             volatile bool stop_flag = false;
             AutoResetEvent ev = new AutoResetEvent(false);
-            Queue<string> queue = new Queue<string>(100);
+            ConcurrentQueue<CacheEntry> queue = new ConcurrentQueue<CacheEntry>();
 
             void ThreadProc()
             {
                 for (; !stop_flag;) {
-                    string name = null;
-                    lock (queue)
-                        if (queue.Count > 0)
-                            name = queue.Dequeue();
+                    Thread.Sleep(3000);
 
-                    if (name != null) {
+                    CacheEntry e;
+                    while (queue.TryDequeue(out e))
                         try {
+                            //var sw = Stopwatch.StartNew();
+                            using (var b = e.bitmap.Clone() as Bitmap)
+                                b.Save(e.filename, ImageFormat.Bmp);
+                            //Console.WriteLine("background cache write; {0}msec, left{1}", sw.ElapsedMilliseconds, queue.Count);
 
+                            // update cache usage
+                            lock (cache.usage_obj) {
+                                var fi = new FileInfo(e.filename);
+                                cache.cache_write += fi.Length;
+                                cache.disk_usage_valid = false;
+                                cache.MemUsage += fi.Length;
+                            }
                         } catch (Exception ex) {
                             Console.WriteLine("BackgroundCacheWriter:" + ex.Message);
                         }
-                    } else
-                        ev.WaitOne();
+
+                    ev.WaitOne();
                 }
+
                 Console.WriteLine("BackgroundCacheWriter.thread quit normally");
             }
 
             /// <summary>
             /// 
             /// </summary>
-            /// <param name="filename"></param>
-            public void AddReq(string filename)
+            /// <param name="e"></param>
+            public void AddReq(CacheEntry e)
             {
                 lock (queue)
-                    queue.Enqueue(filename);
+                    queue.Enqueue(e);
                 ev.Set();
             }
 
@@ -536,6 +591,12 @@ namespace ParaParaView
                 ev.Set();
             }
 
+            public bool StopAndWait(int msec)
+            {
+                stop_flag = true;
+                ev.Set();
+                return thread.Join(msec);
+            }
         }
 
     }
