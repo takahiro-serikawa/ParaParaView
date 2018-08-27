@@ -186,7 +186,8 @@ namespace ParaParaView
         public void Dispose()
         {
             if (logfile != null) {
-                logfile.Close();
+                //logfile.Close();
+                logfile.Dispose();
                 logfile = null;
             }
 

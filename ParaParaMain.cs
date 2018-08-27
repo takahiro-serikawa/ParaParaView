@@ -146,11 +146,11 @@ namespace ParaParaView
             var assembly = Assembly.GetExecutingAssembly();
             var ver = assembly.GetName().Version;
             var da = (AssemblyDescriptionAttribute[])assembly.GetCustomAttributes(typeof(AssemblyDescriptionAttribute), false);
-            app_caption = string.Format("{0} ver{1}.{2:D2}: {3}", this.Text, ver.Major, ver.Minor, da[0].Description);
-            app_ver = string.Format("ver{1}.{2:D2}", this.Text, ver.Major, ver.Minor, da[0].Description);
+            app_ver = string.Format("ver{0}.{1:D2}", ver.Major, ver.Minor);
 #if DEBUG
-            app_caption += " DEBUG_BUILD";
+            app_ver += " DEBUG_BUILD";
 #endif
+            app_caption = string.Format("{0} {1}: {2}", this.Text, app_ver, da[0].Description);
             RefreshTitle();
         }
 
@@ -161,9 +161,9 @@ namespace ParaParaView
                 if (name != CATALOG_PPPV)
                     this.Text = name+" - "+app_caption;
                 else
-                    this.Text = Path.GetDirectoryName(catalog_filename)+@"\ - "+app_caption;
+                    this.Text = Path.GetDirectoryName(catalog_filename)+@" - "+app_caption;
             } else if (image_filename != null) {
-                this.Text = Path.GetFileName(image_filename)+@"\ - "+app_caption;
+                this.Text = Path.GetFileName(image_filename)+@" - "+app_caption;
             } else
                 this.Text = app_caption;
         }
@@ -190,7 +190,7 @@ namespace ParaParaView
             SaveAppSettings();
 
             //cache.Dispose(); cache = null;
-            //log.Dispose(); log = null;
+            log.Dispose(); log = null;
         }
 
         private void ParaParaMain_Shown(object sender, EventArgs e)
