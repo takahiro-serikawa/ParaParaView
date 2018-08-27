@@ -936,23 +936,23 @@ namespace ParaParaView
 
             public string Prev()
             {
-                if (0 < index && index < this.Count)
-                    return this[--index];
+                if (0 < Index && Index < this.Count)
+                    return this[--Index];
                 return null;
             }
 
             public string Next()
             {
-                if (0 <= index && index+1 < this.Count)
-                    return this[++index];
+                if (0 <= Index && Index+1 < this.Count)
+                    return this[++Index];
                 return null;
             }
 
             public string First()
             {
                 if (this.Count > 0) {
-                    index = 0;
-                    return this[index];
+                    Index = 0;
+                    return this[Index];
                 }
                 return null;
             }
@@ -960,46 +960,38 @@ namespace ParaParaView
             public string End()
             {
                 if (this.Count > 0) {
-                    index = this.Count-1;
-                    return this[index];
+                    Index = this.Count-1;
+                    return this[Index];
                 }
                 return null;
             }
 
             public string RemoveCurrent()
             {
-                if (0 <= index && index < this.Count) {
-                    this.RemoveAt(index);
-                    if (index < this.Count)
-                        return this[index];
+                if (0 <= Index && Index < this.Count) {
+                    this.RemoveAt(Index);
+                    if (Index < this.Count)
+                        return this[Index];
                 }
                 return null;
             }
 
-            int index = 0;
-
             public string Current
             {
                 get {
-                    if (index < 0 || index >= this.Count)
+                    if (Index < 0 || Index >= this.Count)
                         return null;
-                    return this[index];
+                    return this[Index];
                 }
             }
 
-            public int Index
-            {
-                get
-                {
-                    return index;
-                }
-            }
+            public int Index { get; private set; }
 
             public void SelectName(string filename)
             {
                 int i = this.IndexOf(filename);
                 if (i >= 0)
-                    index = i;
+                    Index = i;
             }
         }
 
@@ -1100,12 +1092,12 @@ namespace ParaParaView
             if (fi.Attributes.HasFlag(FileAttributes.Hidden))
                 return;
 
-            int index = photo_list.IndexOf(path);
-            if (index < 0) {
+            int Index = photo_list.IndexOf(path);
+            if (Index < 0) {
                 photo_list.Add(path);
-                index = photo_list.Count-1;
+                Index = photo_list.Count-1;
                 if (last_add_index < 0)
-                    last_add_index = index;
+                    last_add_index = Index;
 
                 shuffle.Add(path);
             }
