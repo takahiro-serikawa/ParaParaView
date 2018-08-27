@@ -1071,6 +1071,11 @@ namespace ParaParaView
         {
             foreach (var name in names)
                 if (Directory.Exists(name)) {
+                    var di = new DirectoryInfo(name);
+                    if (di.Attributes.HasFlag(FileAttributes.Hidden)
+                     || name.Contains("_cache"))
+                        continue;
+
                     string[] nn = Directory.GetFileSystemEntries(name);
                     if (opt_dir_sort)
                         Array.Sort(nn);
@@ -1092,12 +1097,12 @@ namespace ParaParaView
             if (fi.Attributes.HasFlag(FileAttributes.Hidden))
                 return;
 
-            int Index = photo_list.IndexOf(path);
-            if (Index < 0) {
+            int index = photo_list.IndexOf(path);
+            if (index < 0) {
                 photo_list.Add(path);
-                Index = photo_list.Count-1;
+                index = photo_list.Count-1;
                 if (last_add_index < 0)
-                    last_add_index = Index;
+                    last_add_index = index;
 
                 shuffle.Add(path);
             }
