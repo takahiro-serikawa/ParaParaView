@@ -462,7 +462,7 @@ namespace ParaParaView
                 string filename = image_filename;
                 CloseImage();
                 cache.Remove(filename, 1f);
-                
+
                 File.Delete(filename);
 
                 LoadImage(photo_list.RemoveCurrent());
@@ -479,10 +479,10 @@ namespace ParaParaView
                 cache.Remove(filename, 1f);
 
                 // 参照 Microsoft.VisualBasic.dll
-                Microsoft.VisualBasic.FileIO.FileSystem.DeleteFile(filename, 
+                Microsoft.VisualBasic.FileIO.FileSystem.DeleteFile(filename,
                    Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs,
                    Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin);
-                
+
                 LoadImage(photo_list.RemoveCurrent());
             }
         }
@@ -639,7 +639,7 @@ namespace ParaParaView
                 if (shuffle.Count <= 0)
                     shuffle.AddRange(photo_list);
 
-                for ( ; shuffle.Count > 0; ) {
+                for (; shuffle.Count > 0;) {
                     string filename = shuffle.Get();
                     if (filename == null)
                         break;
@@ -724,7 +724,7 @@ namespace ParaParaView
 
             if (this.ActiveControl != null && this.ActiveControl.CanSelect)
                 return;
-            
+
             switch (e.KeyCode) {
             case Keys.PageUp:
                 PhotoPrevItem_Click(null, null);
@@ -965,7 +965,7 @@ namespace ParaParaView
                 }
                 return null;
             }
-            
+
             public string RemoveCurrent()
             {
                 if (0 <= index && index < this.Count) {
@@ -1180,7 +1180,7 @@ namespace ParaParaView
             DebugOut("close");
 
             CloseImage();
-            
+
             FSWatcher.EnableRaisingEvents = false;
 
             if (catalog_modified) {
@@ -1296,6 +1296,8 @@ namespace ParaParaView
 
                 if (thumb_bitmap == null)
                     MakeThumb(bitmap);
+
+                PreLoad();
             }
         }
 
@@ -1669,8 +1671,10 @@ namespace ParaParaView
                     }
 
                     dbg_time_draw = sw.ElapsedMilliseconds;
-
                     _refresh_benchi();
+                    if (!InHaste)
+                        PreLoad();
+
 #if DEBUG
                     using (var pen = new Pen(Color.Blue, 1)) {
                         pen.DashStyle = DashStyle.Dash;
@@ -1693,6 +1697,23 @@ namespace ParaParaView
             } catch (Exception ex) {
                 Console.Write("Photo_Paint(): {0}", ex.Message);
             }
+        }
+
+        void PreLoad()
+        {
+            List<string> filenames = new List<string>();
+            int o = 1;
+            for (; o <= 5; o++) {
+                if (photo_list.Index+o < photo_list.Count)
+                    filenames.Add(photo_list[photo_list.Index+o]);
+                if (photo_list.Index-o >= 0)
+                    filenames.Add(photo_list[photo_list.Index-o]);
+            }
+            for (; o < 30 && photo_list.Index+o < photo_list.Count; o++)
+                filenames.Add(photo_list[photo_list.Index+o]);
+            //cache.PreLoadCancel();
+            cache.PreLoad(filenames, GetActualScale());
+            // +1, -1, +2, -2, +3, -3, +4, -4, +5, -5, +6, +7, +8, .... +30
         }
 
         void CloseImage()

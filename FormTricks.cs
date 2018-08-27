@@ -190,6 +190,7 @@ namespace ParaParaView
                 logfile = null;
             }
 
+            rich1 = null;
             rich2.Dispose();
 
             timer.Dispose();
@@ -241,7 +242,7 @@ namespace ParaParaView
 
         void _timer_Tick(object sender, EventArgs e)
         {
-            if (!rich1.Focused) {
+            if (rich1 != null && !rich1.Focused) {
                 rich1.Select(log_index, 100);
                 rich1.SelectionColor = Color.White;
                 rich1.SelectedText = DateTime.Now.ToString(log_time_fmt);

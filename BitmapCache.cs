@@ -62,10 +62,12 @@ namespace ParaParaView
             _timer_Tick(null, null);
 
             RestorePerformance();
-            t = new BackgroundCacheWriter(this);
+            writing = new BackgroundCacheWriter("writer", this);
+            reading = new BackgroundCacheReader("reader", this);
         }
 
-        BackgroundCacheWriter t;
+        BackgroundCacheWriter writing;
+        BackgroundCacheReader reading;
 
         public void Dispose()
         {
@@ -73,8 +75,11 @@ namespace ParaParaView
 
             timer_min.Dispose();
             md5.Dispose();
-            t.StopAndWait(1000);
-            t.Dispose();
+            writing.Stop();
+            reading.StopAndWait(5000);
+            writing.StopAndWait(5000);
+            reading.Dispose();
+            writing.Dispose();
         }
 
         // performance configuration
@@ -181,7 +186,28 @@ namespace ParaParaView
             }
 
             e.filename = MakeFilename(key);
-            t.AddReq(e);
+            writing.AddReq(e);
+        }
+
+        public void PreLoad(IEnumerable<string> filenames, float scale)
+        {
+            reading.CancelAll();
+            foreach (string filename in filenames) {
+                string key = MakeKey(filename, scale);
+                //string cache_name = MakeKey(filename, scale);
+                //var e = new CacheEntry(cache_name, 0, DateTime.Now);
+                CacheEntry e;
+                if (entries.ContainsKey(key))
+                    e = entries[key];
+                else
+                    entries[key] = e = new CacheEntry(filename, 0, DateTime.Now);
+                reading.AddReq(e);
+            }
+        }
+
+        public void PreLoadCancel()
+        {
+            reading.CancelAll();
         }
 
         class CacheEntry
@@ -516,12 +542,14 @@ namespace ParaParaView
             }
         }
 
-        class BackgroundCacheWriter: IDisposable
+        class Backgrounder: IDisposable
         {
-            BitmapCache cache;
+            protected BitmapCache cache;
+            public string Name { get; private set; }
 
-            public BackgroundCacheWriter(BitmapCache cache)
+            public Backgrounder(string name, BitmapCache cache)
             {
+                this.Name = name;
                 this.cache = cache;
                 thread = new Thread(ThreadProc);
                 thread.Priority = ThreadPriority.Lowest;
@@ -531,8 +559,6 @@ namespace ParaParaView
 
             public void Dispose()
             {
-                //Stop();
-                //thread.Join();
                 ev.Dispose();
             }
 
@@ -540,35 +566,26 @@ namespace ParaParaView
             volatile bool stop_flag = false;
             AutoResetEvent ev = new AutoResetEvent(false);
             ConcurrentQueue<CacheEntry> queue = new ConcurrentQueue<CacheEntry>();
+            public int ProcDelay { get; set; }
+            protected virtual void Proc(CacheEntry e) { }
 
             void ThreadProc()
             {
                 for (; !stop_flag;) {
-                    Thread.Sleep(3000);
+                    if (ProcDelay > 0)
+                        Thread.Sleep(ProcDelay);
 
                     CacheEntry e;
                     while (queue.TryDequeue(out e))
                         try {
-                            //var sw = Stopwatch.StartNew();
-                            using (var b = e.bitmap.Clone() as Bitmap)
-                                b.Save(e.filename, ImageFormat.Bmp);
-                            //Console.WriteLine("background cache write; {0}msec, left{1}", sw.ElapsedMilliseconds, queue.Count);
-
-                            // update cache usage
-                            lock (cache.usage_obj) {
-                                var fi = new FileInfo(e.filename);
-                                cache.cache_write += fi.Length;
-                                cache.disk_usage_valid = false;
-                                cache.MemUsage += fi.Length;
-                            }
+                            Proc(e);
                         } catch (Exception ex) {
-                            Console.WriteLine("BackgroundCacheWriter:" + ex.Message);
+                            Console.WriteLine(Name + ":" + ex.Message);
                         }
 
                     ev.WaitOne();
                 }
-
-                Console.WriteLine("BackgroundCacheWriter.thread quit normally");
+                Console.WriteLine(Name + " quit normally");
             }
 
             /// <summary>
@@ -577,7 +594,7 @@ namespace ParaParaView
             /// <param name="e"></param>
             public void AddReq(CacheEntry e)
             {
-                lock (queue)
+                //lock (queue)
                     queue.Enqueue(e);
                 ev.Set();
             }
@@ -593,11 +610,64 @@ namespace ParaParaView
 
             public bool StopAndWait(int msec)
             {
+                CancelAll();
                 stop_flag = true;
                 ev.Set();
                 return thread.Join(msec);
             }
+
+            public void CancelAll()
+            {
+                //queue.Clear();
+                CacheEntry e;
+                while (queue.TryDequeue(out e))
+                    ;
+            }
         }
 
+        class BackgroundCacheWriter: Backgrounder
+        {
+            public BackgroundCacheWriter(string name, BitmapCache cache) : base(name, cache)
+            {
+                ProcDelay = 3000;
+            }
+
+            protected override void Proc(CacheEntry e)
+            {
+                using (var b = e.bitmap.Clone() as Bitmap)
+                    b.Save(e.filename, ImageFormat.Bmp);
+
+                lock (cache.usage_obj) {
+                    var fi = new FileInfo(e.filename);
+                    cache.cache_write += fi.Length;
+                    cache.disk_usage_valid = false;
+                    cache.MemUsage += fi.Length;
+                }
+            }
+        }
+
+        class BackgroundCacheReader: Backgrounder
+        {
+            public BackgroundCacheReader(string name, BitmapCache cache) : base(name, cache)
+            {
+                //ProcDelay = 3000;
+            }
+
+            protected override void Proc(CacheEntry e)
+            {
+                if (e.bitmap == null) {
+                    e.bitmap = Bitmap.FromFile(e.filename) as Bitmap;
+
+                    lock (cache.usage_obj) {
+                        var fi = new FileInfo(e.filename);
+                        cache.cache_write += fi.Length;
+                        cache.disk_usage_valid = false;
+                        cache.MemUsage += fi.Length;
+                        //if (cache.MemFree < MIN_MEM_FREE)
+                        //    stop preload;
+                    }
+                }
+            }
+        }
     }
 }

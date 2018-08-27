@@ -8,6 +8,13 @@ ver0.80
 ver0.90
 	アプリケーションアイコン	
 
+画像保存時のEXIF
+EXIFからサムネイル取得できないか
+リムーバルメディアが違うドライブに割り当てられたときに別ハッシュになってしまう
+キャッシュフォルダの画像はスキャンしない。
+不可視フォルダはスキャンしない。
+
+エラー表示 DebugPanel以外
 CacheEntry と photo_list の統合
 外部ツール
 印刷
@@ -17,7 +24,6 @@ CacheEntry と photo_list の統合
 キャッシュ保存並列化
 SUSIEプラグイン
 ORF
-https://cs.olympus-imaging.jp/jp/support/cs/DI/SoftDL/vista/RAW/download.html
 
 ファイル一覧のバックグラウンド読み込み
 マウス中心ズーム
