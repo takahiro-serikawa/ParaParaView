@@ -83,9 +83,9 @@ namespace ParaParaView
         }
 
         // performance configuration
-        float MAX_DISK_USAGE = 10*GB;
-        float MIN_DISK_FREE = 10*GB;
-        float MIN_MEM_FREE = 200*MB;
+        public float MAX_DISK_USAGE = 10*GB;
+        public float MIN_DISK_FREE = 10*GB;
+        public float MIN_MEM_FREE = 200*MB;
 
         const float GB = 1024*1024*1024;
         const float MB = 1024*1024;
@@ -663,8 +663,8 @@ namespace ParaParaView
                         cache.cache_write += fi.Length;
                         cache.disk_usage_valid = false;
                         cache.MemUsage += fi.Length;
-                        //if (cache.MemFree < MIN_MEM_FREE)
-                        //    stop preload;
+                        if (cache.MemFree < cache.MIN_MEM_FREE)
+                            CancelAll();
                     }
                 }
             }
