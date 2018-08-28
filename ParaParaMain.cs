@@ -539,7 +539,19 @@ namespace ParaParaView
             ToolsVisibilityChanged();
         }
 
-        int cursor_hide = 0;
+        static Cursor clear_cursor = MakeClearCursor();
+
+        static Cursor MakeClearCursor()
+        {
+            Bitmap bitmap = new Bitmap(1, 1);
+            using (var g = Graphics.FromImage(bitmap))
+                g.Clear(Color.Black);
+            bitmap.MakeTransparent();
+
+            IntPtr handle = bitmap.GetHicon();
+            var icon = Icon.FromHandle(handle);
+            return new Cursor(icon.Handle);
+        }
 
         void ToolsVisibilityChanged()
         {
@@ -551,11 +563,9 @@ namespace ParaParaView
             _hide_menu();
 
             if (OnlyPhotoItem.Checked)
-                for (; cursor_hide <= 0; cursor_hide++)
-                    Cursor.Hide();
+                Photo.Cursor = clear_cursor;
             else
-                for (; cursor_hide > 0; cursor_hide--)
-                    Cursor.Show();
+                Photo.Cursor = Cursors.Cross;
         }
 
         private void ExifItem_Click(object sender, EventArgs e)
@@ -890,7 +900,8 @@ namespace ParaParaView
 
             // cancel thumb scroll
             if (m != 0) {
-                Cursor.Current = Cursors.Default;
+                //Cursor.Current = Cursors.Default;
+                Photo.Cursor = Cursors.Cross;
                 thumb_scroll_flag = false;
             }
 
@@ -1489,8 +1500,7 @@ namespace ParaParaView
             }
 
             if (last_loc != e.Location)
-                for (; cursor_hide > 0; cursor_hide--)
-                    Cursor.Show();
+                Photo.Cursor = Cursors.Cross;
 
             last_loc = e.Location;
         }
