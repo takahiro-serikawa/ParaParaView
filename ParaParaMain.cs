@@ -461,7 +461,7 @@ namespace ParaParaView
                   app_caption, MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK) {
                 string filename = image_filename;
                 CloseImage();
-                cache.Remove(filename, 1f);
+                cache.Remove0(filename, 1f);
 
                 File.Delete(filename);
 
@@ -476,7 +476,7 @@ namespace ParaParaView
                   app_caption, MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK) {
                 string filename = image_filename;
                 CloseImage();
-                cache.Remove(filename, 1f);
+                cache.Remove0(filename, 1f);
 
                 // 参照 Microsoft.VisualBasic.dll
                 Microsoft.VisualBasic.FileIO.FileSystem.DeleteFile(filename,
@@ -1442,7 +1442,7 @@ namespace ParaParaView
             Photo.Invalidate();
 
             ClearShrink();
-            cache.Remove(image_filename, GetActualScale());
+            cache.Remove0(image_filename, GetActualScale());
             Photo.Invalidate();
             DebugOut(Color.White, "rotate flip{0}; {1}msec", op, sw2.ElapsedMilliseconds);
 
@@ -1700,7 +1700,7 @@ namespace ParaParaView
         {
             List<string> filenames = new List<string>();
             int o = 1;
-            for (; o <= 5; o++) {
+            for (; o <= 2; o++) {
                 if (photo_list.Index+o < photo_list.Count)
                     filenames.Add(photo_list[photo_list.Index+o]);
                 if (photo_list.Index-o >= 0)
@@ -1834,8 +1834,8 @@ namespace ParaParaView
 
                 if (opt_cache_enabled)
                     thumb_bitmap = cache.Get(image_filename, 0);
-
                 if (thumb_bitmap != null) {
+                    thumb_bitmap = new Bitmap(thumb_bitmap);
                     thumb_bitmap.RotateFlip(image_orientation);
                 } else { 
                     int tw = (int)(bitmap.Width*thumb_scale + 0.5);
