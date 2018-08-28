@@ -1815,7 +1815,7 @@ namespace ParaParaView
         // view port
         Bitmap thumb_bitmap = null;
         float thumb_scale = 1f;
-        const float THUMB_SIZE = 200f;
+        const float THUMB_SIZE = 160f;
 
         void MakeThumb(Bitmap bitmap)
         {
@@ -1857,10 +1857,10 @@ namespace ParaParaView
 
         void FitThumb()
         {
-            Thumb.Height = thumb_bitmap.Height;
-            Thumb.Width = thumb_bitmap.Width;
-            ViewPort.Width = thumb_bitmap.Width;
-            ViewPort.Height = thumb_bitmap.Height + 0;
+            Thumb.Width = (int)(bitmap.Width*thumb_scale);
+            Thumb.Height = (int)(bitmap.Height*thumb_scale);
+            ViewPort.Width = Thumb.Width;
+            ViewPort.Height = Thumb.Height;
             Thumb.Invalidate();
         }
 
@@ -1901,7 +1901,7 @@ namespace ParaParaView
 
             var g = e.Graphics;
             if (thumb_bitmap != null) {
-                g.DrawImage(thumb_bitmap, 0, 0);
+                g.DrawImage(thumb_bitmap, 0, 0, Thumb.Width, Thumb.Height);
 
                 thumb_rect = GetViewPortRect();
                 g.DrawRectangle(Pens.White, thumb_rect);
