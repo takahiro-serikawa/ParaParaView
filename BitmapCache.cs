@@ -185,6 +185,8 @@ namespace ParaParaView
 
         public void PreLoad(IEnumerable<string> filenames, float scale)
         {
+            return;
+
             reading.CancelAll();
             foreach (string filename in filenames) {
                 CacheEntry e1 = GetOrNew(filename, 1f);
@@ -645,13 +647,17 @@ namespace ParaParaView
                 var key = MakeKey(e.image_name, e.scale);
                 string cachename = cache.MakeCacheName(key);
                 Bitmap b;
-                lock (e)
+                lock (e) {
                     b = e.bitmap.Clone() as Bitmap;
-                b.Save(cachename, ImageFormat.Bmp);
-                b.Dispose();
-                //using (var b = e.bitmap.Clone() as Bitmap)
-                //    b.Save(cachename, ImageFormat.Bmp);
-                e.cachename = cachename;
+                    b.Save(cachename+".$$$", ImageFormat.Bmp);
+
+                    b.Dispose();
+
+                    File.Move(cachename+".$$$", cachename);
+                    //using (var b = e.bitmap.Clone() as Bitmap)
+                    //    b.Save(cachename, ImageFormat.Bmp);
+                    e.cachename = cachename;
+                }
 
                 lock (cache.usage_obj) {
                     var fi = new FileInfo(e.cachename);

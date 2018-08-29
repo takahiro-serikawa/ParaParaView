@@ -19,9 +19,35 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.ComponentModel;
 using System.Runtime.InteropServices;   // DllImport
+//using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 
 namespace ParaParaView
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    static class BitmapFrom
+    {
+        public static Bitmap Image(Bitmap source)
+        {
+            BitmapData data = source.LockBits(new Rectangle(0, 0, source.Width, source.Height), ImageLockMode.ReadOnly, source.PixelFormat);
+            Bitmap result = new Bitmap(source.Width, source.Height, data.Stride, data.PixelFormat, data.Scan0);
+            source.UnlockBits(data);
+            return result;
+        }
+
+        public static Bitmap File(string filename)
+        {
+            Bitmap source;
+            using (var stream = new FileStream(filename, FileMode.Open, FileAccess.Read))
+                source = (Bitmap)Bitmap.FromStream(stream);
+            //source.Dispose(); ??do not Dispose()
+
+            return BitmapFrom.Image(source);
+        }
+    }
+
     // RecentMenu - 
     // initilaize
     // var recent = new RecentMenu(menu, void callback(string filename))

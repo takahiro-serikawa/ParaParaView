@@ -43,6 +43,8 @@
             this.OpenFileItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RecentMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem8 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripMenuItem9 = new System.Windows.Forms.ToolStripSeparator();
+            this.FilePrintItem = new System.Windows.Forms.ToolStripMenuItem();
             this.FileaSaveItem = new System.Windows.Forms.ToolStripMenuItem();
             this.FileCloseItem = new System.Windows.Forms.ToolStripMenuItem();
             this.EjectItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -127,16 +129,14 @@
             this.Exif = new System.Windows.Forms.TextBox();
             this.ExifLabel = new System.Windows.Forms.Label();
             this.ScalePanel = new System.Windows.Forms.Panel();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             this.ScaleEdit = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.ReciprocalLabel = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.ViewPort = new System.Windows.Forms.Panel();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.FilePrintItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem9 = new System.Windows.Forms.ToolStripSeparator();
             this.printDialog1 = new System.Windows.Forms.PrintDialog();
             this.printDocument1 = new System.Drawing.Printing.PrintDocument();
             this.mainMenuStrip.SuspendLayout();
@@ -233,6 +233,19 @@
             // 
             this.toolStripMenuItem8.Name = "toolStripMenuItem8";
             this.toolStripMenuItem8.Size = new System.Drawing.Size(57, 6);
+            // 
+            // toolStripMenuItem9
+            // 
+            this.toolStripMenuItem9.Name = "toolStripMenuItem9";
+            this.toolStripMenuItem9.Size = new System.Drawing.Size(207, 6);
+            // 
+            // FilePrintItem
+            // 
+            this.FilePrintItem.Name = "FilePrintItem";
+            this.FilePrintItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
+            this.FilePrintItem.Size = new System.Drawing.Size(210, 22);
+            this.FilePrintItem.Text = "&Print ...";
+            this.FilePrintItem.Click += new System.EventHandler(this.FilePrintItem_Click);
             // 
             // FileaSaveItem
             // 
@@ -1030,6 +1043,30 @@
             this.ScalePanel.Size = new System.Drawing.Size(173, 53);
             this.ScalePanel.TabIndex = 15;
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.BackColor = System.Drawing.Color.Transparent;
+            this.label4.Font = new System.Drawing.Font("Meiryo UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.label4.Location = new System.Drawing.Point(147, 22);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(12, 14);
+            this.label4.TabIndex = 18;
+            this.label4.Text = "]";
+            this.label4.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.BackColor = System.Drawing.Color.Transparent;
+            this.label3.Font = new System.Drawing.Font("Meiryo UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.label3.Location = new System.Drawing.Point(17, 22);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(12, 14);
+            this.label3.TabIndex = 17;
+            this.label3.Text = "[";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
             // ScaleEdit
             // 
             this.ScaleEdit.BorderStyle = System.Windows.Forms.BorderStyle.None;
@@ -1038,7 +1075,7 @@
             this.ScaleEdit.Name = "ScaleEdit";
             this.ScaleEdit.Size = new System.Drawing.Size(45, 16);
             this.ScaleEdit.TabIndex = 13;
-            this.ScaleEdit.Text = "1600.0";
+            this.ScaleEdit.Text = "100.0";
             this.ScaleEdit.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.ScaleEdit.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ScaleEdit_KeyPress);
             // 
@@ -1089,43 +1126,6 @@
             this.ViewPort.Name = "ViewPort";
             this.ViewPort.Size = new System.Drawing.Size(160, 135);
             this.ViewPort.TabIndex = 16;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.BackColor = System.Drawing.Color.Transparent;
-            this.label3.Font = new System.Drawing.Font("Meiryo UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label3.Location = new System.Drawing.Point(17, 22);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(12, 14);
-            this.label3.TabIndex = 17;
-            this.label3.Text = "[";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.BackColor = System.Drawing.Color.Transparent;
-            this.label4.Font = new System.Drawing.Font("Meiryo UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label4.Location = new System.Drawing.Point(147, 22);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(12, 14);
-            this.label4.TabIndex = 18;
-            this.label4.Text = "]";
-            this.label4.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // FilePrintItem
-            // 
-            this.FilePrintItem.Name = "FilePrintItem";
-            this.FilePrintItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-            this.FilePrintItem.Size = new System.Drawing.Size(210, 22);
-            this.FilePrintItem.Text = "&Print ...";
-            this.FilePrintItem.Click += new System.EventHandler(this.FilePrintItem_Click);
-            // 
-            // toolStripMenuItem9
-            // 
-            this.toolStripMenuItem9.Name = "toolStripMenuItem9";
-            this.toolStripMenuItem9.Size = new System.Drawing.Size(207, 6);
             // 
             // printDialog1
             // 

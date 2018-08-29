@@ -1610,8 +1610,8 @@ namespace ParaParaView
                         ClearShrink();
 
                     if (opt_shrink > 0 && shrink_bitmap == null && scale < 1.0f) {
-                        if (opt_cache_enabled)
-                            shrink_bitmap = cache.Get(image_filename, scale);
+                        //if (opt_cache_enabled)
+                        //    shrink_bitmap = cache.Get(image_filename, scale);
 
                         if (shrink_bitmap != null) {
                             if (dbg_verbose)
@@ -1643,8 +1643,8 @@ namespace ParaParaView
                                 }
                                 sg.DrawImage(bitmap, 0, 0, shrink_bitmap.Width, shrink_bitmap.Height);
 
-                                if (!InHaste && opt_cache_enabled)
-                                    cache.Add2(image_filename, shrink_scale, shrink_bitmap);
+                                //if (!InHaste && opt_cache_enabled)
+                                //    cache.Add2(image_filename, shrink_scale, shrink_bitmap);
                             }
                             shrink_name = image_filename;
 
@@ -1719,7 +1719,7 @@ namespace ParaParaView
             for (; o < 30 && photo_list.Index+o < photo_list.Count; o++)
                 filenames.Add(photo_list[photo_list.Index+o]);
             //cache.PreLoadCancel();
-            cache.PreLoad(filenames, GetActualScale());
+            //cache.PreLoad(filenames, GetActualScale());
             // +1, -1, +2, -2, +3, -3, +4, -4, +5, -5, +6, +7, +8, .... +30
         }
 
@@ -1753,8 +1753,8 @@ namespace ParaParaView
 
             var swx = Stopwatch.StartNew();
             try {
-                if (opt_cache_enabled)
-                    bitmap = cache.Get(filename, 1f);
+                //if (opt_cache_enabled)
+                //    bitmap = cache.Get(filename, 1f);
 
                 if (bitmap != null) {
                     if (dbg_verbose)
@@ -1768,9 +1768,12 @@ namespace ParaParaView
                     }
                     dbg_time_load = swx.ElapsedMilliseconds;
                 } else {
-                    //var decoder = BitmapDecoder.Create(stream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
-
-                    bitmap = Bitmap.FromFile(filename) as Bitmap;
+                    int orientation;
+                    using(var stream = new FileStream(filename, FileMode.Open, FileAccess.Read)) {
+                        bitmap = Bitmap.FromStream(stream) as Bitmap;
+                        Exif.Text = ExifInfo.MakeExifStr(bitmap);
+                        orientation = ExifInfo.GetOrientation(bitmap);
+                    }
                     dbg_time_load = swx.ElapsedMilliseconds;
 
                     if (dbg_verbose)
@@ -1778,20 +1781,22 @@ namespace ParaParaView
 
                     var fi = new FileInfo(filename);
                     ExifLabel.Text = string.Format("{0}x{1} {2:N0}bytes", bitmap.Width, bitmap.Height, fi.Length);
-                    Exif.Text = ExifInfo.MakeExifStr(bitmap);
 
-                    var orientation = ExifInfo.GetOrientation(bitmap);
-                    if (opt_exif_orientation && orientation > 1) {
+                    //if (opt_exif_orientation && orientation > 1) {
                         image_orientation = image_orientation.FromExif(orientation);
-                        //bitmap.RotateFlip(RotateFlipOperation.FromExif(orientation));
-                        bitmap.RotateFlip(image_orientation);
-                    }
+                    //bitmap.RotateFlip(RotateFlipOperation.FromExif(orientation));
+                    var sw5 = Stopwatch.StartNew();
+                    bitmap.RotateFlip(image_orientation);
+                    Console.WriteLine("RotateFlip; {0}msec", sw5.ElapsedMilliseconds);
+
+                    //}
 
                     if (!bitmap.RawFormat.Equals(ImageFormat.Bmp) && opt_cache_enabled) {
                         if (dbg_verbose)
                             DebugOut(Color.Yellow, "add cache FULL");
 
-                        cache.Add2(filename, 1f, bitmap);
+                        //cache.Add2(filename, 1f, bitmap.Clone() as Bitmap);
+                        //cache.Add2(filename, 1f, bitmap);
                     }
                 }
                 Photo.Invalidate();
@@ -1842,8 +1847,8 @@ namespace ParaParaView
                 else
                     thumb_scale = THUMB_SIZE/bitmap.Height;
 
-                if (opt_cache_enabled)
-                    thumb_bitmap = cache.Get(image_filename, 0);
+                //if (opt_cache_enabled)
+                //    thumb_bitmap = cache.Get(image_filename, 0);
                 if (thumb_bitmap != null) {
                     thumb_bitmap = new Bitmap(thumb_bitmap);
                     thumb_bitmap.RotateFlip(image_orientation);
@@ -1857,7 +1862,7 @@ namespace ParaParaView
                         g.DrawImage(bitmap, 0, 0, tw, th);
                     }
 
-                    cache.Add2(image_filename, 0, thumb_bitmap);
+                    //cache.Add2(image_filename, 0, thumb_bitmap);
                 }
 
                 FitThumb();
