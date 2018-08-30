@@ -36,10 +36,18 @@ namespace ParaParaView
         Dictionary<string, ImageFormat> image_formats = new Dictionary<string, ImageFormat>() {
             { ".jpg", ImageFormat.Jpeg },
             { ".jpeg", ImageFormat.Jpeg },
+            { ".jfif", ImageFormat.Jpeg },
+            { ".jpe", ImageFormat.Jpeg },
             { ".png", ImageFormat.Png },
-            { ".bmp", ImageFormat.Bmp }
+            { ".bmp", ImageFormat.Bmp },
+            { ".dib", ImageFormat.Bmp },
+            { ".rle", ImageFormat.Bmp },
+            { ".tiff", ImageFormat.Tiff },
+            { ".tif", ImageFormat.Tiff }
         };
 
+        
+        
         RecentMenu recent;
         static AppLog log;
         BitmapCache cache;
@@ -349,7 +357,7 @@ namespace ParaParaView
         private void OpenFolderItem_Click(object sender, EventArgs e)
         {
             openFileDialog1.InitialDirectory = CurrentPath;
-            openFileDialog1.FilterIndex = 0;
+            openFileDialog1.FilterIndex = 1;
             openFileDialog1.CheckFileExists = false;
             openFileDialog1.FileName = CATALOG_PPPV;
 
@@ -383,11 +391,14 @@ namespace ParaParaView
                 ImageFormat format = image_formats.ContainsKey(ext) ? image_formats[ext] : ImageFormat.Png;
 
                 var sw = Stopwatch.StartNew();
-                using (var b = bitmap.Clone() as Bitmap) {
-                    b.Save(filename, format);
-                }
+                MemBitmap.Save(bitmap, filename, format);
                 DebugOut(Color.White, "save {0}: {1}msec", saveFileDialog1.FileName, sw.ElapsedMilliseconds);
             }
+        }
+
+        private void saveFileDialog1_FileOk(object sender, CancelEventArgs e)
+        {
+            //
         }
 
         private void FilePrintItem_Click(object sender, EventArgs e)
@@ -1770,7 +1781,7 @@ namespace ParaParaView
                 } else {
                     int orientation;
                     using(var stream = new FileStream(filename, FileMode.Open, FileAccess.Read)) {
-                        bitmap = Bitmap.FromStream(stream) as Bitmap;
+                        bitmap = (Bitmap)Bitmap.FromStream(stream);
                         Exif.Text = ExifInfo.MakeExifStr(bitmap);
                         orientation = ExifInfo.GetOrientation(bitmap);
                     }
@@ -2097,6 +2108,7 @@ namespace ParaParaView
             {"OPEN_TRASH", WinUtils.OpenTrash },
         };
 
+
         private void ClearCacheItem_Click(object sender, EventArgs e)
         {
             cache.Clear();
@@ -2125,8 +2137,34 @@ namespace ParaParaView
                 DebugOut(Color.Fuchsia, "action: unknwon key {0}.Tag={1}", name, tag);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public static class MemBitmap
+        {
+            public static Bitmap FromFile(string filename)
+            {
+                using (var stream = new FileStream(filename, FileMode.Open, FileAccess.Read))
+                    return (Bitmap)Bitmap.FromStream(stream);
+            }
 
+            public static Bitmap FromBitmap(Bitmap source)
+            {
+                Bitmap result;
+                BitmapData data = source.LockBits(new Rectangle(0, 0, source.Width, source.Height), ImageLockMode.ReadOnly, source.PixelFormat);
+                result = new Bitmap(source.Width, source.Height, data.Stride, data.PixelFormat, data.Scan0);
+                source.UnlockBits(data);
+                return result;
+            }
 
+            public static void Save(Bitmap bitmap, string filename, ImageFormat format)
+            {
+                BitmapData data = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, bitmap.PixelFormat);
+                using (var b = new Bitmap(bitmap.Width, bitmap.Height, data.Stride, data.PixelFormat, data.Scan0))
+                    b.Save(filename, format);
+                bitmap.UnlockBits(data);
+            }
+        }
 
     }
 }

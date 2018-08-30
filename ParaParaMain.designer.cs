@@ -232,7 +232,7 @@
             // toolStripMenuItem8
             // 
             this.toolStripMenuItem8.Name = "toolStripMenuItem8";
-            this.toolStripMenuItem8.Size = new System.Drawing.Size(57, 6);
+            this.toolStripMenuItem8.Size = new System.Drawing.Size(177, 6);
             // 
             // toolStripMenuItem9
             // 
@@ -918,9 +918,9 @@
             // 
             // openFileDialog1
             // 
-            this.openFileDialog1.DefaultExt = "jpg";
             this.openFileDialog1.FileName = "*.jpg";
-            this.openFileDialog1.Filter = "catalog (*.ppPv)|*.ppPv|jpeg image(*.jpg)|*.jpg|all files(*.*)|*.*";
+            this.openFileDialog1.Filter = "all files|*.*|JPEG image|*.jpg;*.jpeg;*.jfif|PNG image|*.png|Windows bitmap|*.bmp" +
+    ";*.rle;*.dib|TIFF|*.tiff;*.tif";
             this.openFileDialog1.FilterIndex = 2;
             this.openFileDialog1.Multiselect = true;
             this.openFileDialog1.ShowReadOnly = true;
@@ -1114,8 +1114,10 @@
             // saveFileDialog1
             // 
             this.saveFileDialog1.FileName = "*.jpg";
-            this.saveFileDialog1.Filter = "jpeg image(*.jpg)|*.jpg|Windows bitmap(*.bmp)|*.bmp|PNG(*.png)|*.png";
+            this.saveFileDialog1.Filter = "all files|*.*|JPEG image|*.jpg;*.jpeg;*.jfif|PNG image|*.png|Windows bitmap|*.bmp" +
+    ";*.rle;*.dib|TIFF|*.tiff;*.tif";
             this.saveFileDialog1.Title = "Save Image File";
+            this.saveFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.saveFileDialog1_FileOk);
             // 
             // ViewPort
             // 

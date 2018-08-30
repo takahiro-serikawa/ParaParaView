@@ -27,9 +27,9 @@ namespace ParaParaView
     /// <summary>
     /// 
     /// </summary>
-    static class BitmapFrom
+    static class MemBitmap
     {
-        public static Bitmap Image(Bitmap source)
+        public static Bitmap FromImage(Bitmap source)
         {
             BitmapData data = source.LockBits(new Rectangle(0, 0, source.Width, source.Height), ImageLockMode.ReadOnly, source.PixelFormat);
             Bitmap result = new Bitmap(source.Width, source.Height, data.Stride, data.PixelFormat, data.Scan0);
@@ -37,14 +37,10 @@ namespace ParaParaView
             return result;
         }
 
-        public static Bitmap File(string filename)
+        public static Bitmap FromFile(string filename)
         {
-            Bitmap source;
             using (var stream = new FileStream(filename, FileMode.Open, FileAccess.Read))
-                source = (Bitmap)Bitmap.FromStream(stream);
-            //source.Dispose(); ??do not Dispose()
-
-            return BitmapFrom.Image(source);
+                return (Bitmap)Bitmap.FromStream(stream);
         }
     }
 
