@@ -8,11 +8,9 @@
     cache = new BitmapCache()
     void Dispose()
 
-    void Add(string filename, float scale, Bitmap bitmap)
- 
-    Bitmap Get(string filename, float scale)
+    Bitmap this[string filename, float scale]
 
-    void Remove(string key)
+    void Remove(string filename)
  
     void Compact(float over)
     void CompactMem(float over)
@@ -82,12 +80,6 @@ namespace ParaParaView
             writing.Dispose();
         }
 
-        public static Bitmap BitmapFromFile(string filename)
-        {
-            using (var stream = new FileStream(filename, FileMode.Open, FileAccess.Read))
-                return Bitmap.FromStream(stream) as Bitmap;
-        }
-
         // performance configuration
         public float MAX_DISK_USAGE = 10*GB;
         public float MIN_DISK_FREE = 10*GB;
@@ -95,80 +87,6 @@ namespace ParaParaView
 
         const float GB = 1024*1024*1024;
         const float MB = 1024*1024;
-
-        /// <summary>
-        /// キャッシュから(もしあれば)画像を取得
-        /// </summary>
-        /// <param name="filename">キャッシュに問い合わせる画像ファイル名</param>
-        /// <param name="scale"></param>
-        /// <returns></returns>
-        public Bitmap Get(string filename, float scale)
-        {
-            string key = MakeKey(filename, scale);
-            Bitmap bitmap = null;
-            if (entries.ContainsKey(key)) {
-                var e = entries[key];
-                lock (e) {
-                    if (e.bitmap != null)
-                        bitmap = e.bitmap.Clone() as Bitmap;
-                    else if (e.cachename != null)
-                        try {
-                            //e.bitmap = Bitmap.FromFile(e.cachename) as Bitmap;
-                            e.bitmap = BitmapCache.BitmapFromFile(e.cachename);
-                            bitmap = e.bitmap.Clone() as Bitmap;
-                        } catch (Exception ex) {
-                            Console.WriteLine("bitmap cache {0} broken: {1}", e.cachename, ex.Message);
-                            e.cachename = null;
-                        }
-                    if (bitmap != null) {
-                        e.last_used = DateTime.Now;
-                        e.used_cnt++;
-                    }
-                }
-            }
-            return bitmap;
-        }
-
-        public Bitmap GetM(string filename, float scale)
-        {
-            string key = MakeKey(filename, scale);
-            Bitmap result = null;
-            if (entries.ContainsKey(key)) {
-                var e = entries[key];
-                if (e.bitmap != null) {
-                    result = e.bitmap.Clone() as Bitmap;
-                    e.last_used = DateTime.Now;
-                    e.used_cnt++;
-                }
-            }
-            return result;
-        }
-
-        /// <summary>
-        /// キャッシュに画像を追加
-        /// </summary>
-        /// <param name="filename">original full path filename of image</param>
-        /// <param name="scale">image scale, or 0 for thumb</param>
-        /// <param name="bitmap">image to add</param>
-        public void Add2(string filename, float scale, Bitmap bitmap)
-        {
-            CacheEntry e = GetOrNew(filename, scale);
-            e.bitmap = bitmap.Clone() as Bitmap;
-
-            lock (usage_obj) {
-            }
-
-            writing.AddReq(e);  // ??
-        }
-
-        public void AddM(string filename, float scale, Bitmap bitmap)
-        {
-            CacheEntry e = GetOrNew(filename, scale);
-            e.bitmap = bitmap.Clone() as Bitmap;
-
-            lock (usage_obj) {
-            }
-        }
 
         CacheEntry GetOrNew(string filename, float scale)
         {
@@ -183,10 +101,88 @@ namespace ParaParaView
             return e;
         }
 
+        public Bitmap this[string filename, float scale]
+        {
+            get {
+                CacheEntry e = GetOrNew(filename, scale);
+                if (e.bitmap != null)
+                    return e.bitmap;
+                return null;
+            }
+            set {
+                CacheEntry e = GetOrNew(filename, scale);
+                if (e.bitmap != null)
+                    _free_bitmap(e);
+                e.bitmap = value;
+            }
+        }
+
+        /// <summary>
+        /// キャッシュから(もしあれば)画像を取得
+        /// </summary>
+        /// <param name="filename">キャッシュに問い合わせる画像ファイル名</param>
+        /// <param name="scale"></param>
+        /// <returns></returns>
+        Bitmap Get(string filename, float scale)
+        {
+            string key = MakeKey(filename, scale);
+            Bitmap bitmap = null;
+            if (entries.ContainsKey(key)) {
+                var e = entries[key];
+                lock (e) {
+                    if (e.bitmap != null) {
+                        bitmap = e.bitmap;
+                    } else if (e.cachename != null)
+                        try {
+                            e.bitmap = bitmap = MemBitmap.FromFile(e.cachename);
+                        } catch (Exception ex) {
+                            Console.WriteLine("bitmap cache {0} broken: {1}", e.cachename, ex.Message);
+                            e.cachename = null;
+                        }
+
+                    if (bitmap != null) {
+                        e.last_used = DateTime.Now;
+                        e.used_cnt++;
+                    }
+                }
+            }
+            return bitmap;
+        }
+
+        Bitmap GetM(string filename, float scale)
+        {
+            string key = MakeKey(filename, scale);
+            Bitmap result = null;
+            if (entries.ContainsKey(key)) {
+                var e = entries[key];
+                if (e.bitmap != null) {
+                    result = e.bitmap;
+                    e.last_used = DateTime.Now;
+                    e.used_cnt++;
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// キャッシュに画像を追加
+        /// </summary>
+        /// <param name="filename">original full path filename of image</param>
+        /// <param name="scale">image scale, or 0 for thumb</param>
+        /// <param name="bitmap">image to add</param>
+        void Add(string filename, float scale, Bitmap bitmap)
+        {
+            CacheEntry e = GetOrNew(filename, scale);
+            e.bitmap = bitmap;
+
+            lock (usage_obj) {
+            }
+
+            //writing.AddReq(e);  // ??
+        }
+
         public void PreLoad(IEnumerable<string> filenames, float scale)
         {
-            return;
-
             reading.CancelAll();
             foreach (string filename in filenames) {
                 CacheEntry e1 = GetOrNew(filename, 1f);
@@ -201,6 +197,16 @@ namespace ParaParaView
         public void PreLoadCancel()
         {
             reading.CancelAll();
+        }
+
+        int CheckUsage(long file_inc, long mem_inc)
+        {
+            lock (usage_obj) {
+                cache_write += file_inc;
+                disk_usage_valid = false;
+                MemUsage += mem_inc;
+                return (int)(MemFree - MIN_MEM_FREE);
+            }
         }
 
         class CacheEntry
@@ -337,6 +343,8 @@ namespace ParaParaView
         {
             var hash = MakeHash(filename);
             string s = BitConverter.ToString(hash).Replace("-", "");
+            if (scale < 0)
+                return s;   // wild card
             return string.Format("{0}_{1:D5}.bmp", s, (int)(scale*1000));
         }
 
@@ -352,16 +360,6 @@ namespace ParaParaView
         public string MakeCacheName(string key)
         {
             return cache_path + key;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="filename"></param>
-        /// <param name="scale"></param>
-        public void Remove0(string filename, float scale)
-        {
-            this.Remove0(MakeKey(filename, scale));
         }
 
         void _free_bitmap(CacheEntry e)
@@ -387,23 +385,30 @@ namespace ParaParaView
         }
 
         /// <summary>
-        /// 
+        /// search cache by image filename, and free memory, delete cache file, remove from entries.
         /// </summary>
-        /// <param name="key"></param>
-        public void Remove0(string key)
+        /// <param name="filename"></param>
+        public void RemoveAll(string filename)
         {
-            if (entries.TryRemove(key, out CacheEntry e)) {
-                _free_bitmap(e);
-                if (e.bitmap != null)
-                    Console.WriteLine("Remove({0})", key);
-            }
+            string wildcard = MakeKey(filename, -1);
+            var matched = entries.Where((x) => x.Value.cachename.Contains(wildcard));
+            foreach (var m in matched)
+                if (entries.TryRemove(m.Key, out CacheEntry e))
+                    _free_bitmap(e);
 
-            try {
-                File.Delete(MakeCacheName(key));
-                disk_usage_valid = false;
-            } catch (Exception ex) {
-                Console.WriteLine(ex.Message);
-            }
+            string[] files = Directory.GetFiles(CachePath, wildcard+"*.bmp");
+            foreach (string file in files)
+                try {
+                    File.Delete(file);
+                } catch (Exception ex) {
+                    Console.WriteLine(ex.Message);
+                }
+            disk_usage_valid = false;
+        }
+
+        public void Invalidate(string filename)
+        {
+            RemoveAll(filename);
         }
 
         /// <summary>
@@ -569,7 +574,7 @@ namespace ParaParaView
                 ev.Dispose();
             }
 
-            Thread thread;
+            protected Thread thread;
             volatile bool stop_flag = false;
             AutoResetEvent ev = new AutoResetEvent(false);
             ConcurrentQueue<CacheEntry> queue = new ConcurrentQueue<CacheEntry>();
@@ -582,8 +587,7 @@ namespace ParaParaView
                     if (ProcDelay > 0)
                         Thread.Sleep(ProcDelay);
 
-                    CacheEntry e;
-                    while (queue.TryDequeue(out e))
+                    while (queue.TryDequeue(out CacheEntry e))
                         try {
                             Proc(e);
                         } catch (Exception ex) {
@@ -626,8 +630,7 @@ namespace ParaParaView
             public void CancelAll()
             {
                 //queue.Clear();
-                CacheEntry e;
-                while (queue.TryDequeue(out e))
+                while (queue.TryDequeue(out CacheEntry e))
                     ;
             }
         }
@@ -637,6 +640,7 @@ namespace ParaParaView
             public BackgroundCacheWriter(string name, BitmapCache cache) : base(name, cache)
             {
                 ProcDelay = 3000;
+                thread.Priority = ThreadPriority.Lowest;
             }
 
             protected override void Proc(CacheEntry e)
@@ -659,12 +663,8 @@ namespace ParaParaView
                     e.cachename = cachename;
                 }
 
-                lock (cache.usage_obj) {
-                    var fi = new FileInfo(e.cachename);
-                    cache.cache_write += fi.Length;
-                    cache.disk_usage_valid = false;
-                    cache.MemUsage += fi.Length;
-                }
+                var fi = new FileInfo(e.cachename);
+                cache.CheckUsage(fi.Length, 0);
             }
         }
 
@@ -678,74 +678,62 @@ namespace ParaParaView
             public BackgroundCacheReader(string name, BitmapCache cache) : base(name, cache)
             {
                 //ProcDelay = 3000;
+                ProcDelay = 1000;
+                thread.Priority = ThreadPriority.BelowNormal;
             }
 
             protected override void Proc(CacheEntry e)
             {
-                Console.WriteLine("preload: {0}", e.ToString());
-
-                if (e.bitmap != null) {
-                    Console.WriteLine("already");
+                if (e.bitmap != null)
                     return;
-                }
 
+                Console.WriteLine("preload: {0}", e.ToString());
                 long size = 0;
-                lock (e) {
-                    if (e.cachename != null)
-                        try {
-                            var sw0 = Stopwatch.StartNew();
-                            //e.bitmap = Bitmap.FromFile(e.cachename) as Bitmap;
-                            e.bitmap = BitmapCache.BitmapFromFile(e.cachename);
-                            Console.WriteLine("load from cache {0}; {1}msec", Path.GetFileName(e.cachename), sw0.ElapsedMilliseconds);
-                            return;
-                        } catch (Exception ex) {
-                            e.cachename = null;
-                            Console.WriteLine(ex.Message);
-                        }
 
-                    var full = cache.GetM(e.image_name, 1f);
-                    if (full != null)
-                        Console.WriteLine("full image on mem");
-
-                    if (full == null) {
-                        var sw1 = Stopwatch.StartNew();
-                        //full = Bitmap.FromFile(e.image_name) as Bitmap;
-                        full = BitmapCache.BitmapFromFile(e.image_name);
-                        Console.WriteLine("original image {0}", e.image_name, sw1.ElapsedMilliseconds);
+                // 1. load from cached bitmap file, if exists
+                Bitmap bitmap = null;
+                if (e.cachename != null)
+                    try {
+                        var sw0 = Stopwatch.StartNew();
+                        bitmap = MemBitmap.FromFile(e.cachename);
+                        Console.WriteLine("load from cache {0}; {1}msec", Path.GetFileName(e.cachename), sw0.ElapsedMilliseconds);
+                        return;
+                    } catch (Exception ex) {
+                        e.cachename = null;
+                        Console.WriteLine(ex.Message);
                     }
 
-                    if (e.scale <= 0)
-                        throw new Exception("illegal preload scale");
 
-                    if (e.scale < 1f) {
-                        // make shrinked cache
-                        var sw2 = Stopwatch.StartNew();
-                        int w = (int)(full.Width*e.scale + 0.5);
-                        int h = (int)(full.Height*e.scale + 0.5);
-                        var shrink = new Bitmap(w, h);
-                        using (var sg = Graphics.FromImage(shrink)) {
-                            sg.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.Low;
-                            sg.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighSpeed;
-                            sg.DrawImage(full, 0, 0, w, h);
-                        }
-                        Console.WriteLine("shrink {0:P1}; {1}msec", e.scale, sw2.ElapsedMilliseconds);
+                // 2. load full image
+                if (e.scale == 1f) {
+                    var sw1 = Stopwatch.StartNew();
+                    e.bitmap = MemBitmap.FromFile(e.image_name);
+                    Console.WriteLine("original image {0}", e.image_name, sw1.ElapsedMilliseconds);
+                } else if (e.scale < 1f) {
+                    Bitmap full = cache.GetM(e.image_name, 1f);
+                    if (full == null) {
+                        var sw1 = Stopwatch.StartNew();
+                        full = MemBitmap.FromFile(e.image_name);
+                        Console.WriteLine("original image {0}", e.image_name, sw1.ElapsedMilliseconds);
+                    }
+                    // make shrinked cache
+                    var sw2 = Stopwatch.StartNew();
+                    int w = (int)(full.Width*e.scale + 0.5);
+                    int h = (int)(full.Height*e.scale + 0.5);
+                    var shrink = new Bitmap(w, h);
+                    using (var sg = Graphics.FromImage(shrink)) {
+                        sg.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.Low;
+                        sg.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighSpeed;
+                        sg.DrawImage(full, 0, 0, w, h);
+                    }
+                    Console.WriteLine("shrink {0:P1}; {1}msec", e.scale, sw2.ElapsedMilliseconds);
 
-                        e.bitmap = shrink;
-                        //cache.Add2(e.image_name, 1f, bitmap);
-                    } else
-                        e.bitmap = full;
-
-                    size = EstimateBitmapSize(e.bitmap);
+                    e.bitmap = shrink;
                 }
 
-                lock (cache.usage_obj) {
-                    //var fi = new FileInfo(e.filename);
-                    cache.cache_write += size;
-                    cache.disk_usage_valid = false;
-                    cache.MemUsage += size;
-                    if (cache.MemFree < cache.MIN_MEM_FREE)
-                        CancelAll();
-                }
+                size = EstimateBitmapSize(e.bitmap);
+                if (cache.CheckUsage(0, size) < 0)
+                    CancelAll();
             }
         }
     }

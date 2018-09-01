@@ -45,9 +45,7 @@ namespace ParaParaView
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
-            float v;
-            if (float.TryParse(SlideShowIntervalText.Text, out v)) {
-            //if (float.TryParse(SlideShowIntervalText.Text, out float v)) {
+            if (float.TryParse(SlideShowIntervalText.Text, out float v)) {
                 _interval = (int)(v*1000);
                 SlideShowIntervalText.ForeColor = Color.Black;
             } else {

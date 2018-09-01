@@ -470,11 +470,9 @@ namespace ParaParaView
             if (image_filename != null
              && MessageBox.Show(Localizer.Format("Delete image file", image_filename),
                   app_caption, MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK) {
-                string filename = image_filename;
-                CloseImage();
-                cache.Remove0(filename, 1f);
-
-                File.Delete(filename);
+                File.Delete(image_filename);
+                cache.RemoveAll(image_filename);
+                //CloseImage();
 
                 LoadImage(photo_list.RemoveCurrent());
             }
@@ -485,14 +483,13 @@ namespace ParaParaView
             if (image_filename != null
              && MessageBox.Show(Localizer.Format("Move to Trash this image file", image_filename),
                   app_caption, MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK) {
-                string filename = image_filename;
-                CloseImage();
-                cache.Remove0(filename, 1f);
 
                 // 参照 Microsoft.VisualBasic.dll
-                Microsoft.VisualBasic.FileIO.FileSystem.DeleteFile(filename,
+                Microsoft.VisualBasic.FileIO.FileSystem.DeleteFile(image_filename,
                    Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs,
                    Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin);
+                cache.RemoveAll(image_filename);
+                //CloseImage();
 
                 LoadImage(photo_list.RemoveCurrent());
             }
@@ -1149,8 +1146,8 @@ namespace ParaParaView
 
         void AddFiles4Sub(DirectoryInfo di)
         {
-            try {
-                var ff = di.GetFiles(/*"*.jpg"*/);
+            try {                var ff = di.GetFiles(/*"*.jpg"*/);
+
                 var ss = new List<string>();
                 foreach (var f in ff) {
                     dbg_scan_count++;
@@ -1442,8 +1439,7 @@ namespace ParaParaView
         private void ScaleEdit_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == '\r') {
-                float value;
-                if (float.TryParse(ScaleEdit.Text, out value)) {
+                if (float.TryParse(ScaleEdit.Text, out float value)) {
                     ScaleMode = ImageScaleMode.FixedScale;
                     ImageScale = value/100f;
                     e.Handled = true;
@@ -1464,7 +1460,7 @@ namespace ParaParaView
             Photo.Invalidate();
 
             ClearShrink();
-            cache.Remove0(image_filename, GetActualScale());
+            cache.Invalidate(image_filename);
             Photo.Invalidate();
             DebugOut(Color.White, "rotate flip{0}; {1}msec", op, sw2.ElapsedMilliseconds);
 
@@ -1570,7 +1566,7 @@ namespace ParaParaView
         void ClearShrink()
         {
             if (shrink_bitmap != null) {
-                shrink_bitmap.Dispose();
+                //shrink_bitmap.Dispose();
                 shrink_bitmap = null;
             }
         }
@@ -1595,8 +1591,6 @@ namespace ParaParaView
         long dbg_time_load, dbg_time_thumb;
 
         bool opt_exif_orientation = true;
-        //Stopwatch sw = new Stopwatch();
-        bool opt_cache_enabled = true;
 
         private void Photo_Paint(object sender, PaintEventArgs e)
         {
@@ -1621,8 +1615,7 @@ namespace ParaParaView
                         ClearShrink();
 
                     if (opt_shrink > 0 && shrink_bitmap == null && scale < 1.0f) {
-                        //if (opt_cache_enabled)
-                        //    shrink_bitmap = cache.Get(image_filename, scale);
+                        shrink_bitmap = cache[image_filename, scale];
 
                         if (shrink_bitmap != null) {
                             if (dbg_verbose)
@@ -1654,8 +1647,7 @@ namespace ParaParaView
                                 }
                                 sg.DrawImage(bitmap, 0, 0, shrink_bitmap.Width, shrink_bitmap.Height);
 
-                                //if (!InHaste && opt_cache_enabled)
-                                //    cache.Add2(image_filename, shrink_scale, shrink_bitmap);
+                                cache[image_filename, shrink_scale] = shrink_bitmap;
                             }
                             shrink_name = image_filename;
 
@@ -1729,14 +1721,17 @@ namespace ParaParaView
             }
             for (; o < 30 && photo_list.Index+o < photo_list.Count; o++)
                 filenames.Add(photo_list[photo_list.Index+o]);
-            //cache.PreLoadCancel();
-            //cache.PreLoad(filenames, GetActualScale());
+
+            cache.PreLoad(filenames, GetActualScale());
             // +1, -1, +2, -2, +3, -3, +4, -4, +5, -5, +6, +7, +8, .... +30
         }
 
         void CloseImage()
         {
-            if (bitmap != null) { bitmap.Dispose(); bitmap = null; }
+            if (bitmap != null) {
+                //bitmap.Dispose();
+                bitmap = null;
+            }
             ClearShrink();
             ClearThumb();
 
@@ -1764,8 +1759,7 @@ namespace ParaParaView
 
             var swx = Stopwatch.StartNew();
             try {
-                //if (opt_cache_enabled)
-                //    bitmap = cache.Get(filename, 1f);
+                bitmap = cache[filename, 1f];
 
                 if (bitmap != null) {
                     if (dbg_verbose)
@@ -1802,13 +1796,8 @@ namespace ParaParaView
 
                     //}
 
-                    if (!bitmap.RawFormat.Equals(ImageFormat.Bmp) && opt_cache_enabled) {
-                        if (dbg_verbose)
-                            DebugOut(Color.Yellow, "add cache FULL");
-
-                        //cache.Add2(filename, 1f, bitmap.Clone() as Bitmap);
-                        //cache.Add2(filename, 1f, bitmap);
-                    }
+                    if (!bitmap.RawFormat.Equals(ImageFormat.Bmp))
+                        cache[filename, 1f] = bitmap;
                 }
                 Photo.Invalidate();
 
@@ -1893,7 +1882,7 @@ namespace ParaParaView
         void ClearThumb()
         {
             if (thumb_bitmap != null) {
-                thumb_bitmap.Dispose();
+                //thumb_bitmap.Dispose();
                 thumb_bitmap = null;
             }
         }
