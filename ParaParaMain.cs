@@ -45,8 +45,6 @@ namespace ParaParaView
             { ".tiff", ImageFormat.Tiff },
             { ".tif", ImageFormat.Tiff }
         };
-
-        
         
         RecentMenu recent;
         static AppLog log;
@@ -1460,7 +1458,7 @@ namespace ParaParaView
             Photo.Invalidate();
 
             ClearShrink();
-            cache.Invalidate(image_filename);
+            cache.Discard(image_filename);
             Photo.Invalidate();
             DebugOut(Color.White, "rotate flip{0}; {1}msec", op, sw2.ElapsedMilliseconds);
 

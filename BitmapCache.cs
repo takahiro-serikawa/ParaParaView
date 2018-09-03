@@ -332,6 +332,9 @@ namespace ParaParaView
                     e.bitmap = null;
                     Console.WriteLine("free_bitmap({0})", Path.GetFileName(e.image_name));
                 }
+
+            MemFree += e.size;
+            MemUsage -= e.size;
         }
 
         void _free_file(CacheEntry e)
@@ -369,7 +372,7 @@ namespace ParaParaView
             disk_usage_valid = false;
         }
 
-        public void Invalidate(string filename)
+        public void Discard(string filename)
         {
             RemoveAll(filename);
         }
@@ -445,6 +448,7 @@ namespace ParaParaView
                     mo.Dispose();
                 }
 
+            MemUsage = entries.Sum((x) => (x.Value.bitmap != null) ? x.Value.size : 0);
             if (MemFree < MIN_MEM_FREE)
                 CompactMem(2*MIN_MEM_FREE - MemFree);
             if (DiskUsage > MAX_DISK_USAGE)
@@ -463,18 +467,14 @@ namespace ParaParaView
 
             var list = new List<CacheEntry>(entries.Values);
             var o = list.OrderBy((x) => x.last_used);
-            foreach (var e in o) {
-                 if (e.bitmap != null) {
+            int count = list.Count();
+            foreach (var e in o)
+                if (e.bitmap != null) {
                     Console.WriteLine("{0} {1}", e.image_name, e.last_used);
                     _free_bitmap(e);
-                    MemFree += e.size;
-                    MemUsage -= e.size;
-
-                    over -= e.size;
-                    if (over < 0)
+                    if ((over -= e.size) <= 0 || --count < 3)
                         break;
                 }
-            }
 
             GC.Collect();
         }
