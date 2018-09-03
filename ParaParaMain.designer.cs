@@ -139,6 +139,7 @@
             this.ViewPort = new System.Windows.Forms.Panel();
             this.printDialog1 = new System.Windows.Forms.PrintDialog();
             this.printDocument1 = new System.Drawing.Printing.PrintDocument();
+            this.PageUpDownTimer = new System.Windows.Forms.Timer(this.components);
             this.mainMenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Photo)).BeginInit();
             this.DebugBox.SuspendLayout();
@@ -232,7 +233,7 @@
             // toolStripMenuItem8
             // 
             this.toolStripMenuItem8.Name = "toolStripMenuItem8";
-            this.toolStripMenuItem8.Size = new System.Drawing.Size(177, 6);
+            this.toolStripMenuItem8.Size = new System.Drawing.Size(57, 6);
             // 
             // toolStripMenuItem9
             // 
@@ -1133,6 +1134,10 @@
             // 
             this.printDialog1.UseEXDialog = true;
             // 
+            // PageUpDownTimer
+            // 
+            this.PageUpDownTimer.Tick += new System.EventHandler(this.PageUpDownTimer_Tick);
+            // 
             // ParaParaMain
             // 
             this.AllowDrop = true;
@@ -1287,6 +1292,7 @@
         private System.Windows.Forms.ToolStripMenuItem FilePrintItem;
         private System.Windows.Forms.PrintDialog printDialog1;
         private System.Drawing.Printing.PrintDocument printDocument1;
+        private System.Windows.Forms.Timer PageUpDownTimer;
     }
 }
 

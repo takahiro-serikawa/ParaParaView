@@ -614,7 +614,6 @@ namespace ParaParaView
                 GoHaste(1, HASTE_MSEC);
                 LoadImage(name);
             }
-            slide_mode = SlideMode.Straight;
         }
 
         private void PhotoNextItem_Click(object sender, EventArgs e)
@@ -624,7 +623,35 @@ namespace ParaParaView
                 GoHaste(1, HASTE_MSEC);
                 LoadImage(name);
             }
-            slide_mode = SlideMode.Straight;
+        }
+
+        Keys page_up_down = 0;
+
+        private void PageUpDownTimer_Tick(object sender, EventArgs e)
+        {
+            if (page_up_down == Keys.PageUp) {
+                PhotoPrevItem_Click(null, null);
+            } else if (page_up_down == Keys.PageDown) {
+                PhotoNextItem_Click(null, null);
+            }
+        }
+
+
+        void PageUpDownStart(Keys key)
+        {
+            if (page_up_down != key) {
+                page_up_down = key;
+                PageUpDownTimer_Tick(null, null);
+                PageUpDownTimer.Enabled = true;
+            }
+        }
+
+        void PageUpDownStop(Keys key)
+        {
+            if (page_up_down == key) {
+                page_up_down = 0;
+                PageUpDownTimer.Enabled = false;
+            }
         }
 
         private void PhotoHomeItem_Click(object sender, EventArgs e)
@@ -650,8 +677,6 @@ namespace ParaParaView
         private void ShuffleNextItem_Click(object sender, EventArgs e)
         {
             if (photo_list.Count > 0) {
-                slide_mode = SlideMode.Shuffle;
-
                 GoHaste(1, HASTE_MSEC);
                 if (shuffle.Count <= 0)
                     shuffle.AddRange(photo_list);
@@ -744,11 +769,15 @@ namespace ParaParaView
 
             switch (e.KeyCode) {
             case Keys.PageUp:
-                PhotoPrevItem_Click(null, null);
-                break;
             case Keys.PageDown:
-                PhotoNextItem_Click(null, null);
+                PageUpDownStart(e.KeyCode);
                 break;
+            //case Keys.PageUp:
+            //    PhotoPrevItem_Click(null, null);
+            //    break;
+            //case Keys.PageDown:
+            //    PhotoNextItem_Click(null, null);
+            //    break;
             case Keys.Home:
                 PhotoHomeItem_Click(null, null);
                 break;
@@ -793,6 +822,11 @@ namespace ParaParaView
                 return;
 
             switch (e.KeyCode) {
+            case Keys.PageUp:
+            case Keys.PageDown:
+                PageUpDownStop(e.KeyCode);
+                break;
+
             case Keys.Left:
             case Keys.Right:
             case Keys.Up:
