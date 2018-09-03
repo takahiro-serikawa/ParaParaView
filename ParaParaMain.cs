@@ -1,5 +1,6 @@
 ﻿/* デジカメ用画像ビュアー */
 
+// ver0.63 2018.9.3 一定間隔連続表示
 // ver0.62 2018.8.23 Thumb scroll
 // ver0.60 2018.8.20 github
 // ver0.50 2018.8.2 主要機能実装完了
@@ -1709,6 +1710,9 @@ namespace ParaParaView
 
         void PreLoad()
         {
+            if (photo_list.Count <= 0)
+                return;
+
             List<string> filenames = new List<string>();
             int o = 1;
             for (; o <= 2; o++) {
@@ -1726,6 +1730,8 @@ namespace ParaParaView
 
         void CloseImage()
         {
+            cache.PreLoadCancel();
+
             if (bitmap != null) {
                 //bitmap.Dispose();
                 bitmap = null;
@@ -1738,6 +1744,7 @@ namespace ParaParaView
             image_filename = null;
 
             Photo.Invalidate();
+
         }
 
         // image viewing

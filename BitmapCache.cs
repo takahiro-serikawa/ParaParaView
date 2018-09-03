@@ -357,7 +357,9 @@ namespace ParaParaView
         public void RemoveAll(string filename)
         {
             string wildcard = MakeKey(filename, -1);
-            var matched = entries.Where((x) => x.Value.cachename.Contains(wildcard));
+            var matched = entries.Where((x)
+               => x.Value.image_name != null && x.Value.image_name == filename
+               || x.Value.cachename != null && x.Value.cachename.Contains(wildcard));
             foreach (var m in matched)
                 if (entries.TryRemove(m.Key, out CacheEntry e))
                     _free_bitmap(e);
