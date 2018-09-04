@@ -1658,36 +1658,8 @@ namespace ParaParaView
                                 shrink_bitmap.RotateFlip(image_orientation);
                             dbg_draw_quality = "Hc";
                         } else {
-                            if (opt_shrink == 2 && 0.5f <= scale && scale < 1f) {
-                                shrink_bitmap = new Bitmap(bitmap.Width/2, bitmap.Height/2, bitmap.PixelFormat);
-                                shrink_scale = 0.5f;
-                                dbg_draw_quality = "q";
-                            } else {
-                                shrink_bitmap = new Bitmap(w, h, bitmap.PixelFormat);
-                                shrink_scale = scale;
-                                dbg_draw_quality = "s";
-                            }
-
-                            using (var sg = Graphics.FromImage(shrink_bitmap)) {
-                                if (InHaste) {
-                                    sg.InterpolationMode = fast_draw_mode;
-                                    sg.PixelOffsetMode = PixelOffsetMode.HighSpeed;
-                                    dbg_draw_quality = "L"+dbg_draw_quality;
-                                } else {
-                                    sg.InterpolationMode = high_quality_shrink_mode;
-                                    sg.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                                    dbg_draw_quality = "H"+dbg_draw_quality;
-                                }
-                                sg.DrawImage(bitmap, 0, 0, shrink_bitmap.Width, shrink_bitmap.Height);
-
-                                cache[image_filename, shrink_scale] = shrink_bitmap;
-                            }
-                            shrink_name = image_filename;
-
+                            make_shrink(bitmap, scale, w, h);
                             dbg_time_shrink = sw.ElapsedMilliseconds;
-
-                            if (dbg_verbose)
-                                DebugOut(Color.Yellow, "non cache SHRINK, fmt={0}, {1}x{2}", shrink_bitmap.PixelFormat, shrink_bitmap.Width, shrink_bitmap.Height);
                         }
                     }
 
@@ -1717,7 +1689,6 @@ namespace ParaParaView
                     _refresh_benchi();
                     if (!InHaste)
                         PreLoad();
-
 #if DEBUG
                     using (var pen = new Pen(Color.Blue, 1)) {
                         pen.DashStyle = DashStyle.Dash;
@@ -1739,6 +1710,45 @@ namespace ParaParaView
 #endif
             } catch (Exception ex) {
                 Console.Write("Photo_Paint(): {0}", ex.Message);
+            }
+        }
+
+        void make_shrink(Bitmap bitmap, float scale, int w, int h)
+        {
+            try {
+                if (opt_shrink == 2 && 0.5f <= scale && scale< 1f) {
+                    shrink_bitmap = new Bitmap(bitmap.Width/2, bitmap.Height/2, bitmap.PixelFormat);
+                    shrink_scale = 0.5f;
+                    dbg_draw_quality = "q";
+                } else {
+                    shrink_bitmap = new Bitmap(w, h, bitmap.PixelFormat);
+                    shrink_scale = scale;
+                    dbg_draw_quality = "s";
+                }
+
+                using (var sg = Graphics.FromImage(shrink_bitmap)) {
+                    if (InHaste) {
+                        sg.InterpolationMode = fast_draw_mode;
+                        sg.PixelOffsetMode = PixelOffsetMode.HighSpeed;
+                        dbg_draw_quality = "L"+dbg_draw_quality;
+                    } else {
+                        sg.InterpolationMode = high_quality_shrink_mode;
+                        sg.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                        dbg_draw_quality = "H"+dbg_draw_quality;
+                    }
+                    sg.DrawImage(bitmap, 0, 0, shrink_bitmap.Width, shrink_bitmap.Height);
+
+                    cache[image_filename, shrink_scale] = shrink_bitmap;
+                }
+                shrink_name = image_filename;
+
+                if (dbg_verbose)
+                    DebugOut(Color.Yellow, "non cache SHRINK, fmt={0}, {1}x{2}", shrink_bitmap.PixelFormat, shrink_bitmap.Width, shrink_bitmap.Height);
+            } catch (Exception ex) {
+                // {"インデックス付きのピクセル形式をもつイメージからグラフィックス オブジェクトを作成することはできません。"}
+                shrink_name = "";
+                shrink_bitmap = null;
+                Console.WriteLine(ex.Message);
             }
         }
 

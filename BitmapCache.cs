@@ -469,13 +469,17 @@ namespace ParaParaView
 
             var list = new List<CacheEntry>(entries.Values);
             var o = list.OrderBy((x) => x.last_used);
-            int count = list.Count();
+            int count = list.Count((x) => x.bitmap != null);
             foreach (var e in o)
                 if (e.bitmap != null) {
+                    if (over <= 0 || count < 3)
+                        break;
+
                     Console.WriteLine("{0} {1}", e.image_name, e.last_used);
                     _free_bitmap(e);
-                    if ((over -= e.size) <= 0 || --count < 3)
-                        break;
+
+                    over -= e.size;
+                    count--;
                 }
 
             GC.Collect();
