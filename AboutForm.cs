@@ -15,16 +15,22 @@ namespace ParaParaView
     /// <summary>
     /// display version, lisence and usage.
     /// </summary>
-    public partial class AboutForm: Form
+    public partial class AboutForm: OverlayForm
     {
         /// <summary>
         /// Constructor
         /// </summary>
-        public AboutForm()
+        public AboutForm(Form form) : base(form)
         {
             InitializeComponent();
 
             LoadLicense();
+
+            foreach (var p in Params) {
+                var elem = webBrowser1.Document.GetElementById(p.Key);
+                if (elem != null)
+                    elem.InnerHtml = p.Value;
+            }
         }
 
         public Dictionary<string, string> Params = new Dictionary<string, string>();
@@ -41,93 +47,5 @@ namespace ParaParaView
             }
         }
 
-        /// <summary>
-        /// fade in AboutBox
-        /// </summary>
-        /// <param name="bounds"></param>
-        public void FadeIn(Rectangle bounds)
-        {
-            foreach (var p in Params) {
-                var elem = webBrowser1.Document.GetElementById(p.Key);
-                if (elem != null)
-                    elem.InnerHtml = p.Value;
-            }
-
-            this.Bounds = bounds;
-
-            this.Opacity = 0;
-            fade_start_tc = Environment.TickCount;
-            this.Show();
-            this.Focus();
-            timer1.Enabled = true;
-        }
-
-        /// <summary>
-        /// fade out AboutBox, and hide.
-        /// </summary>
-        public void FadeOut()
-        {
-            this.Opacity = DEF_OPACITY;
-            fade_start_tc = Environment.TickCount;
-            timer2.Enabled = true;
-        }
-
-        //const float DEF_OPACITY = 0.75f;
-        const float DEF_OPACITY = 0.67f;
-        const int FADE_IN_MSEC = 1000;
-        const int FADE_OUT_MSEC = 500;
-        int fade_start_tc;
-
-        private void timer1_Tick(object sender, EventArgs e)
-        {
-            int tc = Environment.TickCount - fade_start_tc;
-            if (tc > FADE_IN_MSEC)
-                timer1.Enabled = false;
-            else
-                this.Opacity = DEF_OPACITY*tc/FADE_IN_MSEC;
-        }
-
-        private void timer2_Tick(object sender, EventArgs e)
-        {
-            int tc = Environment.TickCount - fade_start_tc;
-            if (tc > FADE_OUT_MSEC) {
-                timer2.Enabled = false;
-                this.Hide();
-            } else
-                this.Opacity = DEF_OPACITY - DEF_OPACITY*tc/FADE_OUT_MSEC;
-        }
-
-        private void AboutForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            if (e.CloseReason == CloseReason.UserClosing) {
-                this.Visible = false;
-                e.Cancel = true;
-            }
-        }
-
-        private void AboutForm_KeyUp(object sender, KeyEventArgs e)
-        {
-            //this.Close();
-        }
-
-        private void AboutForm_MouseUp(object sender, MouseEventArgs e)
-        {
-            FadeOut();
-        }
-
-        private void AboutForm_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (!timer1.Enabled)
-                FadeOut();
-        }
-
-        private void AboutForm_Deactivate(object sender, EventArgs e)
-        {
-            this.Hide();
-        }
-
-        private void webBrowser1_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
-        {
-        }
     }
 }

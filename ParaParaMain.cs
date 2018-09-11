@@ -57,9 +57,11 @@ namespace ParaParaView
 
             log = new AppLog(DebugLog);
             CheckAppVer();
+
             var sw0 = Stopwatch.StartNew();
             cache = new BitmapCache();
             DebugOut("cache; {1}entries, {2}msec\r\n{0}", cache.CachePath, cache.FileCount, sw0.ElapsedMilliseconds);
+
             new MovablePanel(ExifBox, ExifLabel);
             new MovablePanel(DebugBox, DebugLabel);
             new MovablePanel(ViewPort, ViewPort);
@@ -136,6 +138,9 @@ namespace ParaParaView
                     LoadImage(image_filename);
                 }
             }
+
+            var o = new OverlayForm(this);
+            o.FadeIn();
         }
 
         static string _next_arg(string[] args, ref int i, string def_value)
@@ -425,17 +430,24 @@ namespace ParaParaView
             this.Close();
         }
 
-        AboutForm about_box = new AboutForm();
+        AboutForm about_box = null;
 
         private void HelpAboutItem_Click(object sender, EventArgs e)
         {
-            about_box.Params["app_ver"] = app_ver;
-            about_box.Params["first_date"] = first_date;
-            float[] w = { cache.TotalCacheWrite };
-            string u = _media_space_unit(w);
-            about_box.Params["cache_total_write"] = string.Format("{0:F3} {1}", w[0], u);
-            about_box.Params["total_photo_count"] = total_photo_count.ToString();
-            about_box.FadeIn(this.Bounds);
+            if (about_box == null)
+                about_box = new AboutForm(this);
+
+            if (about_box.Visible) {
+                about_box.FadeOut();
+            } else {
+                about_box.Params["app_ver"] = app_ver;
+                about_box.Params["first_date"] = first_date;
+                float[] w = { cache.TotalCacheWrite };
+                string u = _media_space_unit(w);
+                about_box.Params["cache_total_write"] = string.Format("{0:F3} {1}", w[0], u);
+                about_box.Params["total_photo_count"] = total_photo_count.ToString();
+                about_box.FadeIn();
+            }
         }
 
         private void ParaParaMain_DragEnter(object sender, DragEventArgs e)
@@ -2145,7 +2157,6 @@ namespace ParaParaView
         ActionTable actions = new ActionTable() {
             {"OPEN_TRASH", WinUtils.OpenTrash },
         };
-
 
         private void ClearCacheItem_Click(object sender, EventArgs e)
         {
