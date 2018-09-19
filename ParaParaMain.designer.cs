@@ -15,8 +15,8 @@
         {
             if (thumb_bitmap != null)
                 thumb_bitmap.Dispose();
-            if (shrink_bitmap != null)
-                shrink_bitmap.Dispose();
+            //if (shrink_bitmap != null)
+            //    shrink_bitmap.Dispose();
             cache.Dispose();
             thumb_pen.Dispose();
 
@@ -79,7 +79,6 @@
             this.ScrollDownItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ScrollCenterItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ViewRefreshItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ViewClearShrinkItem = new System.Windows.Forms.ToolStripMenuItem();
             this.WindowMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.FitToWindowItem = new System.Windows.Forms.ToolStripMenuItem();
             this.FullSizeItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -102,7 +101,6 @@
             this.SlideShowSettItem = new System.Windows.Forms.ToolStripMenuItem();
             this.HelpMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.HelpAboutItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.Photo = new System.Windows.Forms.PictureBox();
             this.FullScreenLabel = new System.Windows.Forms.Label();
             this.DebugBox = new System.Windows.Forms.GroupBox();
             this.CacheLabel = new System.Windows.Forms.Label();
@@ -140,8 +138,8 @@
             this.printDialog1 = new System.Windows.Forms.PrintDialog();
             this.printDocument1 = new System.Drawing.Printing.PrintDocument();
             this.PageUpDownTimer = new System.Windows.Forms.Timer(this.components);
+            this.Photo = new ParaParaView.ParaParaImage();
             this.mainMenuStrip.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.Photo)).BeginInit();
             this.DebugBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.MediaSpace)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.FSWatcher)).BeginInit();
@@ -150,6 +148,7 @@
             this.ExifBox.SuspendLayout();
             this.ScalePanel.SuspendLayout();
             this.ViewPort.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.Photo)).BeginInit();
             this.SuspendLayout();
             // 
             // Timer10
@@ -403,8 +402,7 @@
             this.toolStripMenuItem7,
             this.ScrollMenu,
             this.ScrollCenterItem,
-            this.ViewRefreshItem,
-            this.ViewClearShrinkItem});
+            this.ViewRefreshItem});
             this.ViewMenu.ForeColor = System.Drawing.SystemColors.ControlText;
             this.ViewMenu.Name = "ViewMenu";
             this.ViewMenu.Size = new System.Drawing.Size(48, 22);
@@ -532,14 +530,6 @@
             this.ViewRefreshItem.Text = "dbg:Refresh";
             this.ViewRefreshItem.Visible = false;
             this.ViewRefreshItem.Click += new System.EventHandler(this.ViewRefreshItem_Click);
-            // 
-            // ViewClearShrinkItem
-            // 
-            this.ViewClearShrinkItem.Name = "ViewClearShrinkItem";
-            this.ViewClearShrinkItem.Size = new System.Drawing.Size(233, 22);
-            this.ViewClearShrinkItem.Text = "dbg:ClearShrink";
-            this.ViewClearShrinkItem.Visible = false;
-            this.ViewClearShrinkItem.Click += new System.EventHandler(this.ViewClearShrinkItem_Click);
             // 
             // WindowMenu
             // 
@@ -745,21 +735,6 @@
             this.HelpAboutItem.Text = "&About \'ParaParaView\' ...";
             this.HelpAboutItem.Click += new System.EventHandler(this.HelpAboutItem_Click);
             // 
-            // Photo
-            // 
-            this.Photo.Cursor = System.Windows.Forms.Cursors.Cross;
-            this.Photo.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Photo.Location = new System.Drawing.Point(0, 26);
-            this.Photo.Name = "Photo";
-            this.Photo.Size = new System.Drawing.Size(640, 454);
-            this.Photo.TabIndex = 1;
-            this.Photo.TabStop = false;
-            this.Photo.Paint += new System.Windows.Forms.PaintEventHandler(this.Photo_Paint);
-            this.Photo.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Photo_MouseDown);
-            this.Photo.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Photo_MouseMove);
-            this.Photo.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Photo_MouseUp);
-            this.Photo.Resize += new System.EventHandler(this.Photo_Resize);
-            // 
             // FullScreenLabel
             // 
             this.FullScreenLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -788,7 +763,7 @@
             this.DebugBox.Controls.Add(this.CursorLabel);
             this.DebugBox.Controls.Add(this.DebugLabel);
             this.DebugBox.Controls.Add(this.DebugLog);
-            this.DebugBox.Location = new System.Drawing.Point(100, 221);
+            this.DebugBox.Location = new System.Drawing.Point(100, 247);
             this.DebugBox.Name = "DebugBox";
             this.DebugBox.Size = new System.Drawing.Size(500, 181);
             this.DebugBox.TabIndex = 4;
@@ -983,7 +958,7 @@
             this.ExifBox.Controls.Add(this.Filename);
             this.ExifBox.Controls.Add(this.Exif);
             this.ExifBox.Controls.Add(this.ExifLabel);
-            this.ExifBox.Location = new System.Drawing.Point(12, 305);
+            this.ExifBox.Location = new System.Drawing.Point(12, 331);
             this.ExifBox.Name = "ExifBox";
             this.ExifBox.Size = new System.Drawing.Size(180, 148);
             this.ExifBox.TabIndex = 14;
@@ -1039,7 +1014,7 @@
             this.ScalePanel.Controls.Add(this.ReciprocalLabel);
             this.ScalePanel.Controls.Add(this.ScaleBar);
             this.ScalePanel.Controls.Add(this.label2);
-            this.ScalePanel.Location = new System.Drawing.Point(454, 410);
+            this.ScalePanel.Location = new System.Drawing.Point(454, 436);
             this.ScalePanel.Name = "ScalePanel";
             this.ScalePanel.Size = new System.Drawing.Size(173, 53);
             this.ScalePanel.TabIndex = 15;
@@ -1139,12 +1114,34 @@
             // 
             this.PageUpDownTimer.Tick += new System.EventHandler(this.PageUpDownTimer_Tick);
             // 
+            // Photo
+            // 
+            this.Photo.Cursor = System.Windows.Forms.Cursors.Cross;
+            this.Photo.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.Photo.ImageFixedScale = 1F;
+            this.Photo.ImageScaleByWheelEnabled = true;
+            this.Photo.ImageScaleMode = ParaParaView.ImageScaleMode.FitToWindow;
+            this.Photo.ImageScroll = new System.Drawing.Point(0, 0);
+            this.Photo.ImageScrollByKeyEnabled = true;
+            this.Photo.ImageScrollByMouseEnabled = true;
+            this.Photo.InHaste = 0;
+            this.Photo.Location = new System.Drawing.Point(0, 26);
+            this.Photo.Name = "Photo";
+            this.Photo.NoPhoto = "NO PHOTO";
+            this.Photo.ScaleIndex = 0;
+            this.Photo.Size = new System.Drawing.Size(640, 480);
+            this.Photo.TabIndex = 17;
+            this.Photo.TabStop = false;
+            this.Photo.ImageScaleChanged += new System.EventHandler(this.Photo_ImageScrolled);
+            this.Photo.ImageScrolled += new System.EventHandler(this.Photo_ImageScaleChanged);
+            this.Photo.HasteTimeouted += new System.EventHandler(this.Photo_HasteTimeouted);
+            // 
             // ParaParaMain
             // 
             this.AllowDrop = true;
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.Black;
-            this.ClientSize = new System.Drawing.Size(640, 480);
+            this.ClientSize = new System.Drawing.Size(640, 506);
             this.Controls.Add(this.ExifBox);
             this.Controls.Add(this.ViewPort);
             this.Controls.Add(this.ScalePanel);
@@ -1166,11 +1163,9 @@
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.ParaParaMain_DragEnter);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ParaParaMain_KeyDown);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.ParaParaMain_KeyUp);
-            this.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.ParaParaMain_PreviewKeyDown);
             this.Resize += new System.EventHandler(this.ParaParaMain_Resize);
             this.mainMenuStrip.ResumeLayout(false);
             this.mainMenuStrip.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.Photo)).EndInit();
             this.DebugBox.ResumeLayout(false);
             this.DebugBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.MediaSpace)).EndInit();
@@ -1182,6 +1177,7 @@
             this.ScalePanel.ResumeLayout(false);
             this.ScalePanel.PerformLayout();
             this.ViewPort.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.Photo)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1199,7 +1195,6 @@
         private System.Windows.Forms.ToolStripMenuItem ViewMenu;
         private System.Windows.Forms.ToolStripMenuItem HelpMenu;
         private System.Windows.Forms.ToolStripMenuItem HelpAboutItem;
-        private System.Windows.Forms.PictureBox Photo;
         private System.Windows.Forms.Label FullScreenLabel;
         private System.Windows.Forms.GroupBox DebugBox;
         private System.Windows.Forms.Label DebugLabel;
@@ -1274,7 +1269,6 @@
         private System.Windows.Forms.Label ScanAsyncLabel;
         private System.Windows.Forms.Panel ViewPort;
         private System.Windows.Forms.ToolStripMenuItem ViewRefreshItem;
-        private System.Windows.Forms.ToolStripMenuItem ViewClearShrinkItem;
         private System.Windows.Forms.ToolStripMenuItem ClearCacheItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem7;
         private System.Windows.Forms.ToolStripMenuItem ScrollCenterItem;
@@ -1294,6 +1288,8 @@
         private System.Windows.Forms.PrintDialog printDialog1;
         private System.Drawing.Printing.PrintDocument printDocument1;
         private System.Windows.Forms.Timer PageUpDownTimer;
+        //private ParaParaImage Photo;
+        private ParaParaImage Photo;
     }
 }
 

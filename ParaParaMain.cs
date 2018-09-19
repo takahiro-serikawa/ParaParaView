@@ -67,8 +67,7 @@ namespace ParaParaView
             new MovablePanel(ViewPort, ViewPort);
             new MovablePanel(ScalePanel, ScaleLabel);
             //new MovablePanel(mainMenuStrip, null);
-            this.MouseWheel += Photo_MouseWheel;
-            InitScaleBar();
+            //InitScaleBar();
             ScrollLeftItem.Tag = Keys.Left;
             ScrollUpItem.Tag = Keys.Up;
             ScrollRightItem.Tag = Keys.Right;
@@ -108,6 +107,7 @@ namespace ParaParaView
                     files.Add(aa[i]);
 
             AppLocalize(culture);
+            Photo.NoPhoto = Localizer.Current["NO PHOTO"];
 
             recent = new RecentMenu(RecentMenu, (path) => OpenSome(path), Localizer.Current["RecentClear"]);
             recent.AddRange(sett.recent);
@@ -115,7 +115,6 @@ namespace ParaParaView
             ViewDebugItem.Checked = true;
             Exif.BorderStyle = BorderStyle.FixedSingle;
             ViewRefreshItem.Visible = true;
-            ViewClearShrinkItem.Visible = true;
             ClearCacheItem.Visible = true;
 #endif
             //DebugBox.Visible = ViewDebugItem.Checked;
@@ -207,7 +206,7 @@ namespace ParaParaView
 
         private void ParaParaMain_Shown(object sender, EventArgs e)
         {
-            Photo.Focus();
+            Photo.Focus();  //??
 
             if ((FormWindowState)sett.WinState == FormWindowState.Maximized)
                 this.WindowState = (FormWindowState)sett.WinState;
@@ -271,8 +270,8 @@ namespace ParaParaView
                 for (int i = 0; i < 10 && i < recent.Count; i++)
                     sett.recent.Add(recent[i]);
 
-                sett.scale_mode = (int)ScaleMode;
-                sett.image_scale = ImageScale;
+                sett.image_scale = Photo.ImageFixedScale;
+                sett.scale_mode = (int)Photo.ImageScaleMode;
 
                 sett.slide_show_interval = SlideShowTimer.Interval;
 
@@ -312,10 +311,10 @@ namespace ParaParaView
             catalog_filename = sett.catalog;
             image_filename = sett.filename;
 
-            ScaleMode = (ImageScaleMode)sett.scale_mode;
-            //ImageScale = sett.image_scale;
-            ImageScale = 1.0f;
-            scroll.X = scroll.Y = 0;
+            //Photo.ImageFixedScale = sett.image_scale;
+            Photo.ImageFixedScale = 1.0f;
+            Photo.ImageScaleMode = (ImageScaleMode)sett.scale_mode;
+            Photo.ImageScroll = new Point(0, 0);
 
             if (sett.slide_show_interval > 0)
                 SlideShowTimer.Interval = sett.slide_show_interval;
@@ -384,7 +383,7 @@ namespace ParaParaView
 
         private void FileaSaveItem_Click(object sender, EventArgs e)
         {
-            if (bitmap == null)
+            if (Photo.Image == null)
                 return;
 
             saveFileDialog1.InitialDirectory = Path.GetDirectoryName(image_filename);
@@ -395,7 +394,7 @@ namespace ParaParaView
                 ImageFormat format = image_formats.ContainsKey(ext) ? image_formats[ext] : ImageFormat.Png;
 
                 var sw = Stopwatch.StartNew();
-                MemBitmap.Save(bitmap, filename, format);
+                MemBitmap.Save(Photo.Bitmap, filename, format);
                 DebugOut(Color.White, "save {0}: {1}msec", saveFileDialog1.FileName, sw.ElapsedMilliseconds);
             }
         }
@@ -508,8 +507,8 @@ namespace ParaParaView
 
         private void EditCopyItem_Click(object sender, EventArgs e)
         {
-            if (bitmap != null) {
-                Clipboard.SetImage(bitmap);
+            if (Photo.Image != null) {
+                Clipboard.SetImage(Photo.Image);
                 DebugOut(Color.White, "copy to clipboard");
             }
         }
@@ -533,17 +532,17 @@ namespace ParaParaView
         private void FitToWindowItem_Click(object sender, EventArgs e)
         {
             if (FitToWindowItem.Checked)
-                ScaleMode = ImageScaleMode.FitToWindow;
+                Photo.ImageScaleMode = ImageScaleMode.FitToWindow;
             else
-                ScaleMode = ImageScaleMode.FixedScale;
+                Photo.ImageScaleMode = ImageScaleMode.FixedScale;
         }
 
         private void FullSizeItem_Click(object sender, EventArgs e)
         {
             if (FullSizeItem.Checked)
-                ScaleMode = ImageScaleMode.FullSize;
+                Photo.ImageScaleMode = ImageScaleMode.FullSize;
             else
-                ScaleMode = ImageScaleMode.FixedScale;
+                Photo.ImageScaleMode = ImageScaleMode.FixedScale;
         }
 
         private void FullScreenItem_Click(object sender, EventArgs e)
@@ -618,12 +617,13 @@ namespace ParaParaView
         // "Photo" menu handlers
         enum SlideMode { Straight, Shuffle };
         SlideMode slide_mode = SlideMode.Straight;
+        const int HASTE_MSEC = 0;
 
         private void PhotoPrevItem_Click(object sender, EventArgs e)
         {
             string name = photo_list.Prev();
             if (name != null) {
-                GoHaste(1, HASTE_MSEC);
+                Photo.InHaste = 1;
                 LoadImage(name);
             }
         }
@@ -632,7 +632,7 @@ namespace ParaParaView
         {
             string name = photo_list.Next();
             if (name != null) {
-                GoHaste(1, HASTE_MSEC);
+                Photo.InHaste = 1;
                 LoadImage(name);
             }
         }
@@ -647,8 +647,7 @@ namespace ParaParaView
                 PhotoNextItem_Click(null, null);
             }
         }
-
-
+        
         void PageUpDownStart(Keys key)
         {
             if (page_up_down != key) {
@@ -689,7 +688,7 @@ namespace ParaParaView
         private void ShuffleNextItem_Click(object sender, EventArgs e)
         {
             if (photo_list.Count > 0) {
-                GoHaste(1, HASTE_MSEC);
+                Photo.InHaste = 1;
                 if (shuffle.Count <= 0)
                     shuffle.AddRange(photo_list);
 
@@ -765,18 +764,12 @@ namespace ParaParaView
                 PhotoNextItem_Click(null, null);
         }
 
-        private void ParaParaMain_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
-        {
-
-        }
-
-
         private void ParaParaMain_KeyDown(object sender, KeyEventArgs e)
         {
             if (SlideShowItem.Checked)
                 StopSlideShow("slide show stopped by key");
 
-            if (this.ActiveControl != null && this.ActiveControl.CanSelect)
+            if (this.ActiveControl != null && this.ActiveControl.CanSelect && this.ActiveControl != Photo)
                 return;
 
             switch (e.KeyCode) {
@@ -798,13 +791,6 @@ namespace ParaParaView
                 break;
             case Keys.Back:
                 PhotoBackItem_Click(null, null);
-                break;
-
-            case Keys.Left:
-            case Keys.Right:
-            case Keys.Up:
-            case Keys.Down:
-                KeyScrollAccel(e.KeyCode);
                 break;
 
             case Keys.Space:
@@ -830,20 +816,13 @@ namespace ParaParaView
 
         private void ParaParaMain_KeyUp(object sender, KeyEventArgs e)
         {
-            if (this.ActiveControl != null && this.ActiveControl.CanSelect)
+            if (this.ActiveControl != null && this.ActiveControl.CanSelect && this.ActiveControl != Photo)
                 return;
 
             switch (e.KeyCode) {
             case Keys.PageUp:
             case Keys.PageDown:
                 PageUpDownStop(e.KeyCode);
-                break;
-
-            case Keys.Left:
-            case Keys.Right:
-            case Keys.Up:
-            case Keys.Down:
-                KeyScrollOff(e.KeyCode);
                 break;
 
             case Keys.Escape:
@@ -864,129 +843,6 @@ namespace ParaParaView
                 return;
             }
             e.Handled = true;
-        }
-
-        enum CursorKey
-        {
-            Left = 1, Up = 2, Right = 4, Down = 8
-        }
-
-        CursorKey keys = 0, last_keys = 0;
-        int key_accel = 0;
-
-        void KeyScrollAccel(Keys key)
-        {
-            switch (key) {
-            case Keys.Left:     // 37
-                keys |= CursorKey.Left;
-                break;
-            case Keys.Up:       // 38
-                keys |= CursorKey.Up;
-                break;
-            case Keys.Right:    // 39
-                keys |= CursorKey.Right;
-                break;
-            case Keys.Down:     // 40
-                keys |= CursorKey.Down;
-                break;
-            default:
-                return;
-            }
-
-            if (keys != 0 && keys == last_keys) {
-                key_accel++;
-                if (keys.HasFlag(CursorKey.Left))
-                    scroll.X -= key_accel;
-                if (keys.HasFlag(CursorKey.Right))
-                    scroll.X += key_accel;
-                if (keys.HasFlag(CursorKey.Up))
-                    scroll.Y -= key_accel;
-                if (keys.HasFlag(CursorKey.Down))
-                    scroll.Y += key_accel;
-                ScrollImageLimit();
-            } else
-                key_accel = 0;
-            last_keys = keys;
-        }
-
-        void KeyScrollOff(Keys key)
-        {
-            switch (key) {
-            case Keys.Left:     // 37
-                keys &= ~CursorKey.Left;
-                break;
-            case Keys.Up:       // 38
-                keys &= ~CursorKey.Up;
-                break;
-            case Keys.Right:    // 39
-                keys &= ~CursorKey.Right;
-                break;
-            case Keys.Down:     // 40
-                keys &= ~CursorKey.Down;
-                break;
-            }
-        }
-
-        void ScrollImageLimit()
-        {
-            if (bitmap == null)
-                return;
-
-            float scale = GetActualScale();
-            int w = (int)(bitmap.Width*scale + 0.5);
-            int h = (int)(bitmap.Height*scale + 0.5);
-
-            int m = 3;
-            if (scroll.X > w/2)
-                scroll.X = w/2;
-            else if (scroll.X < -w/2)
-                scroll.X = -w/2;
-            else
-                m ^= 1;
-
-            if (scroll.Y > h/2)
-                scroll.Y = h/2;
-            else if (scroll.Y < -h/2)
-                scroll.Y = -h/2;
-            else
-                m ^= 2;
-
-            // cancel thumb scroll
-            if (m != 0) {
-                //Cursor.Current = Cursors.Default;
-                Photo.Cursor = Cursors.Cross;
-                thumb_scroll_flag = false;
-            }
-
-            Photo.Invalidate();
-            Thumb.Invalidate();
-        }
-
-        Size ViewSize
-        {
-            get
-            {
-                float scale = GetActualScale();
-                int w = (int)(bitmap.Width*scale + 0.5);
-                int h = (int)(bitmap.Height*scale + 0.5);
-                return new Size(w, h);
-            }
-        }
-
-        void Photo_MouseWheel(object sender, MouseEventArgs e)
-        {
-            //DebugOut("MouseWheel(button:{0}, clickes:{1}, delta:{2})", e.Button, e.Clicks, e.Delta);
-            //? e.Button, e.Clicks 多分データはいってない
-
-            if (this.ActiveControl != null && this.ActiveControl.CanSelect)
-                return;
-
-            int delta = e.Delta / SystemInformation.MouseWheelScrollDelta;
-            if ((Control.ModifierKeys & Keys.Control) == Keys.Control) {
-                GoHaste(2, HASTE_MSEC);
-                ScaleIndex += delta;
-            }// else
-            //    ;   // not assigned
         }
 
         // catalog file
@@ -1340,88 +1196,13 @@ namespace ParaParaView
 
             Thumb.Invalidate(); // dash pattern animation
 
-            if (in_haste && tc-haste_tc >= 0)
-                OnHasteOff();
-        }
-
-        bool opt_redraw_later = true;
-
-        void OnHasteOff()
-        {
-            if (in_haste) {
-                in_haste = false;
-
-                // redraw Photo high quality
-                if (opt_redraw_later && !dbg_draw_quality.Contains('H'))
-                    Redraw();
-
-                if (thumb_bitmap == null)
-                    MakeThumb(bitmap);
-
-                PreLoad();
-            }
-        }
-
-        // image scaling
-        enum ImageScaleMode { FitToWindow, _ShrinkToFit, _ExtendToFit, FixedScale, FullSize };
-
-        ImageScaleMode _scale_mode = ImageScaleMode.FitToWindow;
-
-        ImageScaleMode ScaleMode
-        {
-            get { return _scale_mode; }
-            set
-            {
-                if (_scale_mode != value) {
-                    _scale_mode = value;
-
-                    FitToWindowItem.CheckState = (_scale_mode == ImageScaleMode.FitToWindow) ? CheckState.Indeterminate : CheckState.Unchecked;
-                    FullSizeItem.CheckState = (_scale_mode == ImageScaleMode.FullSize) ? CheckState.Indeterminate : CheckState.Unchecked;
-                    //if (_scale_mode == ImageScaleMode.FullSize)
-                    //    ScaleBar.Value = 0;
-                    if (_scale_mode == ImageScaleMode.FitToWindow)
-                        scroll.X = scroll.Y = 0;
-
-                    Redraw();
-                }
-            }
-        }
-
-        float _image_scale = 1f;
-
-        float ImageScale
-        {
-            get { return _image_scale; }
-            set
-            {
-                if (_image_scale != value) {
-                    _image_scale = value;
-                    Photo.Invalidate();
-                }
-            }
-        }
-
-        float GetActualScale()
-        {
-            switch (_scale_mode) {
-            case ImageScaleMode.FullSize:
-                return 1.0f;
-            case ImageScaleMode.FixedScale:
-                return _image_scale;
-            case ImageScaleMode.FitToWindow:
-            default:
-                if (bitmap != null) {
-                    float sx = (float)Photo.Width / bitmap.Width;
-                    float sy = (float)Photo.Height / bitmap.Height;
-                    return (float)Math.Min(sx, sy);
-                } else
-                    return 1f;
-            }
+            //if (in_haste && tc-haste_tc >= 0)
+            //    OnHasteOff();
         }
 
         void RefreshActualScale()
         {
-            float scale = GetActualScale();
+            float scale = Photo.ActualScale;
             if (scale < 1f)
                 ReciprocalLabel.Text = Localizer.Format("(1/{0:F})", 1f/scale);
             else
@@ -1433,7 +1214,7 @@ namespace ParaParaView
             else
                 ScaleEdit.BackColor = Color.White;
 
-            int v = (int)Math.Round(60*Math.Log(scale)/Math.Log(2.0));
+            int v = Photo.ScaleIndex;
             if (v > ScaleBar.Maximum)
                 ScaleBar.Value = ScaleBar.Maximum;
             else if (v < ScaleBar.Minimum)
@@ -1442,51 +1223,32 @@ namespace ParaParaView
                 ScaleBar.Value = v;
         }
 
-        int ScaleIndex
-        {
-            get { return ScaleBar.Value; }
-            set {
-                if (value > ScaleBar.Maximum)
-                    ScaleBar.Value = ScaleBar.Maximum;
-                else if (value < ScaleBar.Minimum)
-                    ScaleBar.Value = ScaleBar.Minimum;
-                else
-                    ScaleBar.Value = value;
-                ScaleMode = ImageScaleMode.FixedScale;
-                ImageScale = (float)Math.Pow(2.0, ScaleBar.Value/60.0);
-            }
-        }
-
-        void InitScaleBar()
-        {
-            ScaleBar.TickFrequency = 60;
-            ScaleBar.Maximum = +4*60;
-            ScaleBar.Minimum = -4*60;
-        }
-
         private void ScaleBar_Scroll(object sender, EventArgs e)
         {
-            ScaleIndex = ScaleBar.Value;
+            Photo.InHaste = 2;
+            Photo.ScaleIndex = ScaleBar.Value;
         }
 
         private void ScaleUpItem_Click(object sender, EventArgs e)
         {
-            GoHaste(2, HASTE_MSEC);
-            ScaleIndex += 5;
+            Photo.InHaste = 2;
+            Photo.ScaleIndex += 5;
+            ScaleBar.Value = Photo.ScaleIndex;
         }
 
         private void ScaleDownItem_Click(object sender, EventArgs e)
         {
-            GoHaste(2, HASTE_MSEC);
-            ScaleIndex -= 5;
+            Photo.InHaste = 2;
+            Photo.ScaleIndex -= 5;
+            ScaleBar.Value = Photo.ScaleIndex;
         }
 
         private void ScaleEdit_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == '\r') {
                 if (float.TryParse(ScaleEdit.Text, out float value)) {
-                    ScaleMode = ImageScaleMode.FixedScale;
-                    ImageScale = value/100f;
+                    //Photo.ImageScaleMode = ImageScaleMode.FixedScale;
+                    Photo.ImageFixedScale = value/100f;
                     e.Handled = true;
                     ScaleEdit.ForeColor = Color.Black;
                 } else
@@ -1500,13 +1262,11 @@ namespace ParaParaView
             var menu = sender as ToolStripItem;
             var op = (RotateFlipType)int.Parse((string)menu.Tag);
             var sw2 = Stopwatch.StartNew();
-            bitmap.RotateFlip(op);
+            Photo.Bitmap.RotateFlip(op);
             image_orientation = RotateFlipOperation.Op(image_orientation, op);
-            Photo.Invalidate();
 
-            ClearShrink();
             cache.Discard(image_filename);
-            Photo.Invalidate();
+            Photo.Refresh();
             DebugOut(Color.White, "rotate flip{0}; {1}msec", op, sw2.ElapsedMilliseconds);
 
             //MakeThumb(bitmap);
@@ -1514,23 +1274,15 @@ namespace ParaParaView
             FitThumb();
         }
 
-        // image scrolling
-        Point scroll = new Point(0, 0);
-        bool mouse_down_flag = false;
-        Point last_loc;
-
         private void Photo_MouseDown(object sender, MouseEventArgs e)
         {
-            Photo.Focus();
+            Photo.Focus();  //??
+
+            if (SlideShowItem.Checked)
+                StopSlideShow("slide show stopped by Mouse");
 
             if (e.Button == MouseButtons.Left) {
-                if (Control.ModifierKeys == 0) {
-                    last_loc = e.Location;
-                    mouse_down_flag = true;
-                    Cursor.Current = Cursors.SizeAll;
-                }
-
-                // 暫定 Shift でエクスプローラへのドロップ
+                // 暫定 Shift Drag でエクスプローラへのドロップ
                 if ((Control.ModifierKeys & Keys.Shift) != 0) {
                     string[] files = { image_filename };
                     var obj = new DataObject(DataFormats.FileDrop, files);
@@ -1539,87 +1291,28 @@ namespace ParaParaView
             }
         }
 
-        private void Photo_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (mouse_down_flag) {
-                //DebugOut("button={0}, dragsize={1}", e.Button, SystemInformation.DragSize);
-                scroll.X += e.Location.X - last_loc.X;
-                scroll.Y += e.Location.Y - last_loc.Y;
-                ScrollImageLimit();
-                GoHaste(1, HASTE_MSEC);
-                Photo.Invalidate();
-                Thumb.Invalidate();
-            }
-
-            if (last_loc != e.Location)
-                Photo.Cursor = Cursors.Cross;
-
-            last_loc = e.Location;
-        }
-
-        private void Photo_MouseUp(object sender, MouseEventArgs e)
-        {
-            if (mouse_down_flag) {
-                mouse_down_flag = false;
-                Cursor.Current = Cursors.Default;
-            }
-
-            if (SlideShowItem.Checked)
-                StopSlideShow("slide show stopped by MouseUp");
-        }
-
         private void Scroll_Click(object sender, EventArgs e)
         {
             var menu = sender as ToolStripItem;
             switch ((Keys)menu.Tag) {
             case Keys.Right:
-                scroll.X += 1;
+                Photo.ScrollRelative(+1, 0);
                 break;
             case Keys.Up:
-                scroll.Y -= 1;
+                Photo.ScrollRelative(0, -1);
                 break;
             case Keys.Left:
-                scroll.X -= 1;
+                Photo.ScrollRelative(-1, 0);
                 break;
             case Keys.Down:
-                scroll.Y += 1;
+                Photo.ScrollRelative(0, +1);
                 break;
             }
-            ScrollImageLimit();
         }
 
         private void ScrollCenterItem_Click(object sender, EventArgs e)
         {
-            scroll.X = scroll.Y = 0;
-            Photo.Invalidate();
-        }
-
-        private void DumyFocus_Enter(object sender, EventArgs e)
-        {
-            Photo.Focus();
-        }
-
-        InterpolationMode fast_draw_mode = InterpolationMode.NearestNeighbor;   // Lowよりかなり早いが、拡大したときはモザイク
-        //InterpolationMode fast_draw_mode = InterpolationMode.Low;
-        InterpolationMode high_quality_shrink_mode = InterpolationMode.HighQualityBicubic;
-        InterpolationMode high_quality_expand_mode = InterpolationMode.HighQualityBicubic;
-        int opt_shrink = 2; // 0: none, 1: < 1.0, 2: 0.5x0.5 quatro
-        float shrink_scale = -1f;
-        string shrink_name = "";
-        Bitmap shrink_bitmap = null;
-
-        void ClearShrink()
-        {
-            if (shrink_bitmap != null) {
-                //shrink_bitmap.Dispose();
-                shrink_bitmap = null;
-            }
-        }
-
-        void Redraw()
-        {
-            ClearShrink();
-            Photo.Invalidate();
+            Photo.ImageScroll = new Point(0, 0);
         }
 
         private void ViewRefreshItem_Click(object sender, EventArgs e)
@@ -1627,142 +1320,9 @@ namespace ParaParaView
             Photo.Refresh();
         }
 
-        private void ViewClearShrinkItem_Click(object sender, EventArgs e)
-        {
-            ClearShrink();
-        }
-
-        long dbg_time_shrink, dbg_time_draw;
         long dbg_time_load, dbg_time_thumb;
 
         bool opt_exif_orientation = true;
-
-        private void Photo_Paint(object sender, PaintEventArgs e)
-        {
-            try {
-                dbg_time_shrink = -1;
-
-                var g = e.Graphics;
-                var sw = Stopwatch.StartNew();
-                g.Clear(Color.Black);
-
-                if (bitmap != null) {
-                    float scale = GetActualScale();
-                    RefreshActualScale();
-
-                    int w = (int)(bitmap.Width*scale + 0.5);
-                    int h = (int)(bitmap.Height*scale + 0.5);
-                    int x = (Photo.Width-w)/2 + scroll.X;
-                    int y = (Photo.Height-h)/2 + scroll.Y;
-
-                    if (InHaste && scale < shrink_scale
-                     || shrink_name != image_filename)
-                        ClearShrink();
-
-                    if (opt_shrink > 0 && shrink_bitmap == null && scale < 1.0f) {
-                        shrink_bitmap = cache[image_filename, scale];
-
-                        if (shrink_bitmap != null) {
-                            if (dbg_verbose)
-                                DebugOut(Color.Yellow, "cache hit SHRINK, fmt={0}, {1}x{2}", shrink_bitmap.PixelFormat, shrink_bitmap.Width, shrink_bitmap.Height);
-
-                            if (image_orientation != RotateFlipType.RotateNoneFlipNone)
-                                shrink_bitmap.RotateFlip(image_orientation);
-                            dbg_draw_quality = "Hc";
-                        } else {
-                            make_shrink(bitmap, scale, w, h);
-                            dbg_time_shrink = sw.ElapsedMilliseconds;
-                        }
-                    }
-
-                    if (shrink_bitmap != null) {
-                        g.DrawImage(shrink_bitmap, x, y, w, h);
-                    } else {
-                        if (InHaste) {
-                            g.InterpolationMode = fast_draw_mode;
-                            g.PixelOffsetMode = PixelOffsetMode.HighSpeed;
-                            dbg_draw_quality = "L";
-                        } else {
-                            g.InterpolationMode = (scale < 1.0f) ? high_quality_shrink_mode : high_quality_expand_mode;
-                            g.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                            dbg_draw_quality = "H";
-                        }
-
-                        if (scale == 1.0f) {
-                            g.DrawImage(bitmap, x, y, bitmap.Width, bitmap.Height);
-                            dbg_draw_quality = "Ho";
-                        } else {
-                            g.DrawImage(bitmap, x, y, w, h);    // stretch
-                            //dbg_draw_quality = "HO";
-                        }
-                    }
-
-                    dbg_time_draw = sw.ElapsedMilliseconds;
-                    _refresh_benchi();
-                    if (!InHaste)
-                        PreLoad();
-#if DEBUG
-                    using (var pen = new Pen(Color.Blue, 1)) {
-                        pen.DashStyle = DashStyle.Dash;
-                        g.DrawRectangle(pen, x, y, w-1, h-1);
-                    }
-#endif
-                } else {
-                    g.DrawString(Localizer.Current["NO PHOTO"],
-                       FullScreenLabel.Font, Brushes.Blue, Photo.Bounds,
-                       new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
-                }
-
-                DebugOut(Color.Lime, "Photo_Paint(); {0}msec", sw.ElapsedMilliseconds);
-#if DEBUG
-                using (var pen = new Pen(Color.Red, 1)) {
-                    pen.DashStyle = DashStyle.Dash;
-                    g.DrawRectangle(pen, 0, 0, Photo.Width-1, Photo.Height-1);
-                }
-#endif
-            } catch (Exception ex) {
-                Console.Write("Photo_Paint(): {0}", ex.Message);
-            }
-        }
-
-        void make_shrink(Bitmap bitmap, float scale, int w, int h)
-        {
-            try {
-                if (opt_shrink == 2 && 0.5f <= scale && scale< 1f) {
-                    shrink_bitmap = new Bitmap(bitmap.Width/2, bitmap.Height/2, bitmap.PixelFormat);
-                    shrink_scale = 0.5f;
-                    dbg_draw_quality = "q";
-                } else {
-                    shrink_bitmap = new Bitmap(w, h, bitmap.PixelFormat);
-                    shrink_scale = scale;
-                    dbg_draw_quality = "s";
-                }
-
-                using (var sg = Graphics.FromImage(shrink_bitmap)) {
-                    if (InHaste) {
-                        sg.InterpolationMode = fast_draw_mode;
-                        sg.PixelOffsetMode = PixelOffsetMode.HighSpeed;
-                        dbg_draw_quality = "L"+dbg_draw_quality;
-                    } else {
-                        sg.InterpolationMode = high_quality_shrink_mode;
-                        sg.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                        dbg_draw_quality = "H"+dbg_draw_quality;
-                    }
-                    sg.DrawImage(bitmap, 0, 0, shrink_bitmap.Width, shrink_bitmap.Height);
-
-                    cache[image_filename, shrink_scale] = shrink_bitmap;
-                }
-                shrink_name = image_filename;
-
-                if (dbg_verbose)
-                    DebugOut(Color.Yellow, "non cache SHRINK, fmt={0}, {1}x{2}", shrink_bitmap.PixelFormat, shrink_bitmap.Width, shrink_bitmap.Height);
-            } catch (Exception ex) {
-                // {"インデックス付きのピクセル形式をもつイメージからグラフィックス オブジェクトを作成することはできません。"}
-                shrink_name = "";
-                shrink_bitmap = null;
-                Console.WriteLine(ex.Message);
-            }
-        }
 
         void PreLoad()
         {
@@ -1780,7 +1340,7 @@ namespace ParaParaView
             for (; o < 30 && photo_list.Index+o < photo_list.Count; o++)
                 filenames.Add(photo_list[photo_list.Index+o]);
 
-            cache.PreLoad(filenames, GetActualScale());
+            cache.PreLoad(filenames, Photo.ActualScale);
             // +1, -1, +2, -2, +3, -3, +4, -4, +5, -5, +6, +7, +8, .... +30
         }
 
@@ -1788,29 +1348,22 @@ namespace ParaParaView
         {
             cache.PreLoadCancel();
 
-            if (bitmap != null) {
+            if (Photo.Image != null) {
                 //bitmap.Dispose();
-                bitmap = null;
+                Photo.Image = null;
             }
-            ClearShrink();
+            Photo.Refresh();
             ClearThumb();
 
             Exif.Text = "";
             //orientation = 0;
             image_filename = null;
-
-            Photo.Invalidate();
-
         }
 
         // image viewing
-        Bitmap bitmap = null;
+        //Bitmap bitmap = null;
         string image_filename = null;
         RotateFlipType image_orientation;
-
-        //const int MAX_IMAGE_HISTORY = 100;
-
-        bool dbg_verbose = false;
 
         bool LoadImage(string filename)
         {
@@ -1818,49 +1371,44 @@ namespace ParaParaView
             if (filename == null || !File.Exists(filename))
                 return false;
 
-            var swx = Stopwatch.StartNew();
+            var sw = Stopwatch.StartNew();
             try {
-                bitmap = cache[filename, 1f];
+                Photo.Image = cache[filename, 1f];
 
-                if (bitmap != null) {
-                    if (dbg_verbose)
-                        DebugOut(Color.Yellow, "cache hit FULL, fmt={0}, {1}x{2}", bitmap.PixelFormat, bitmap.Width, bitmap.Height);
-
+                if (Photo.Image != null) {
                     // cached bitmap has no EXIF, get EXIF from original photo.
                     using (var stream = new FileStream(filename, FileMode.Open, FileAccess.Read))
                     using (var b = Bitmap.FromStream(stream, false, false)) {
-                        ExifLabel.Text = string.Format("{0}x{1} {2:N0}bytes", bitmap.Width, bitmap.Height, stream.Length);
+                        ExifLabel.Text = string.Format("{0}x{1} {2:N0}bytes", Photo.Image.Width, Photo.Image.Height, stream.Length);
                         Exif.Text = ExifInfo.MakeExifStr(b);
                     }
-                    dbg_time_load = swx.ElapsedMilliseconds;
+                    dbg_time_load = sw.ElapsedMilliseconds;
                 } else {
                     int orientation;
                     using(var stream = new FileStream(filename, FileMode.Open, FileAccess.Read)) {
-                        bitmap = (Bitmap)Bitmap.FromStream(stream);
-                        Exif.Text = ExifInfo.MakeExifStr(bitmap);
-                        orientation = ExifInfo.GetOrientation(bitmap);
+                        Photo.Image = Bitmap.FromStream(stream);
+                        Exif.Text = ExifInfo.MakeExifStr(Photo.Image);
+                        orientation = ExifInfo.GetOrientation(Photo.Image);
                     }
-                    dbg_time_load = swx.ElapsedMilliseconds;
-
-                    if (dbg_verbose)
-                        DebugOut(Color.Yellow, "non-cache FULL, fmt={0}, {1}x{2}", bitmap.PixelFormat, bitmap.Width, bitmap.Height);
+                    dbg_time_load = sw.ElapsedMilliseconds;
 
                     var fi = new FileInfo(filename);
-                    ExifLabel.Text = string.Format("{0}x{1} {2:N0}bytes", bitmap.Width, bitmap.Height, fi.Length);
+                    ExifLabel.Text = string.Format("{0}x{1} {2:N0}bytes", Photo.Image.Width, Photo.Image.Height, fi.Length);
 
                     //if (opt_exif_orientation && orientation > 1) {
                         image_orientation = image_orientation.FromExif(orientation);
                     //bitmap.RotateFlip(RotateFlipOperation.FromExif(orientation));
                     var sw5 = Stopwatch.StartNew();
-                    bitmap.RotateFlip(image_orientation);
+                    Photo.Bitmap.RotateFlip(image_orientation);
                     Console.WriteLine("RotateFlip; {0}msec", sw5.ElapsedMilliseconds);
 
                     //}
 
-                    if (!bitmap.RawFormat.Equals(ImageFormat.Bmp))
-                        cache[filename, 1f] = bitmap;
+                    if (!Photo.Bitmap.RawFormat.Equals(ImageFormat.Bmp))
+                        cache[filename, 1f] = Photo.Bitmap;
                 }
-                Photo.Invalidate();
+                //Photo.Invalidate();
+                Photo.Refresh();
 
                 image_filename = filename;
                 Filename.Text = Path.GetFileName(filename);
@@ -1869,23 +1417,22 @@ namespace ParaParaView
                 photo_list.SelectName(filename);
                 IndexLabel.Text = string.Format("index {0}/{1}", photo_list.Index, photo_list.Count);
 
-                DebugOut(Color.Aqua, "LoadImage({0}); {1}msec", Path.GetFileName(filename), swx.ElapsedMilliseconds);
+                DebugOut(Color.Aqua, "LoadImage({0}); {1}msec", Path.GetFileName(filename), sw.ElapsedMilliseconds);
                 total_photo_count++;
 
-                if (!InHaste)
-                    MakeThumb(bitmap);
+                RefreshActualScale();
+
+                if (Photo.InHaste == 0)
+                    MakeThumb(Photo.Bitmap);
+                if (Photo.InHaste == 0)
+                    PreLoad();
+
                 return true;
             } catch (Exception ex) {
                 DebugOut(Color.Fuchsia, "LoadImage: "+ex.Message);
             }
 
             return false;
-        }
-
-        private void Photo_Resize(object sender, EventArgs e)
-        {
-            GoHaste(1, HASTE_MSEC);
-            Photo.Invalidate();
         }
 
         // view port
@@ -1895,9 +1442,6 @@ namespace ParaParaView
 
         void MakeThumb(Bitmap bitmap)
         {
-            if (cache == null)  // app. closing
-                return;
-            
             ClearThumb();
 
             if (bitmap != null) {
@@ -1908,8 +1452,9 @@ namespace ParaParaView
                 else
                     thumb_scale = THUMB_SIZE/bitmap.Height;
 
-                //if (opt_cache_enabled)
-                //    thumb_bitmap = cache.Get(image_filename, 0);
+                if (cache == null)
+                    thumb_bitmap = cache.GetBitmap(image_filename, 0);
+
                 if (thumb_bitmap != null) {
                     thumb_bitmap = new Bitmap(thumb_bitmap);
                     thumb_bitmap.RotateFlip(image_orientation);
@@ -1933,8 +1478,8 @@ namespace ParaParaView
 
         void FitThumb()
         {
-            Thumb.Width = (int)(bitmap.Width*thumb_scale);
-            Thumb.Height = (int)(bitmap.Height*thumb_scale);
+            Thumb.Width = (int)(Photo.Image.Width*thumb_scale);
+            Thumb.Height = (int)(Photo.Image.Height*thumb_scale);
             ViewPort.Width = Thumb.Width;
             ViewPort.Height = Thumb.Height;
             Thumb.Invalidate();
@@ -1950,13 +1495,13 @@ namespace ParaParaView
 
         Pen thumb_pen = new Pen(Color.Black);
 
-        Rectangle GetViewPortRect()
+        Rectangle GetViewPortRectX()
         {
-            float scale = GetActualScale();
-            float tx = -scroll.X * thumb_scale / scale; // THUMB_SIZE / Photo.Width
-            float ty = -scroll.Y * thumb_scale / scale;
-            float tw = Photo.Width * Thumb.Width / (bitmap.Width*scale);
-            float th = Photo.Height * Thumb.Height / (bitmap.Height*scale);
+            float scale = Photo.ActualScale;
+            float tx = -Photo.ImageScroll.X * thumb_scale / scale; // THUMB_SIZE / Photo.Width
+            float ty = -Photo.ImageScroll.Y * thumb_scale / scale;
+            float tw = Photo.Width * Thumb.Width / (Photo.Image.Width*scale);
+            float th = Photo.Height * Thumb.Height / (Photo.Image.Height*scale);
             float x = (Thumb.Width-tw)/2 + tx;
             float y = (Thumb.Height-th)/2 + ty;
             if (tw < 5)
@@ -1979,19 +1524,21 @@ namespace ParaParaView
             if (thumb_bitmap != null) {
                 g.DrawImage(thumb_bitmap, 0, 0, Thumb.Width, Thumb.Height);
 
-                thumb_rect = GetViewPortRect();
+                //thumb_rect = GetViewPortRect();
+                thumb_rect = Rectangle.Round(Photo.GetVisibleRect(thumb_scale));
                 g.DrawRectangle(Pens.White, thumb_rect);
                 g.DrawRectangle(thumb_pen, thumb_rect);
             }
         }
 
         bool thumb_scroll_flag = false;
+        Point last_loc;
 
         private void Thumb_MouseDown(object sender, MouseEventArgs e)
         {
             Thumb.Focus();
 
-            if (e.Button == MouseButtons.Left && bitmap != null && thumb_rect.Contains(e.Location)) {
+            if (e.Button == MouseButtons.Left && Photo.Image != null && thumb_rect.Contains(e.Location)) {
                 thumb_scroll_flag = true;
                 last_loc = e.Location;
             }
@@ -2006,11 +1553,9 @@ namespace ParaParaView
             }
 
             if (thumb_scroll_flag) {
-                float scale = GetActualScale();
-                scroll.X -= (int)((e.Location.X - last_loc.X) * scale / thumb_scale);
-                scroll.Y -= (int)((e.Location.Y - last_loc.Y) * scale / thumb_scale);
+                float scale = Photo.ActualScale;
+                Photo.ScrollRelative(-(int)((e.Location.X - last_loc.X) * scale / thumb_scale), -(int)((e.Location.Y - last_loc.Y) * scale / thumb_scale));
                 last_loc = e.Location;
-                ScrollImageLimit();
             }
         }
 
@@ -2121,29 +1666,11 @@ namespace ParaParaView
             g.FillRectangle(Brushes.Aqua, 1, 11, 100*(media_bytes[0]-media_bytes[1])/media_bytes[0], 8);
         }
 
-        string dbg_draw_quality = "?";  // H: high, L: fast, s: shrinked
-
         void _refresh_benchi()
         {
-            DrawBenchLabel.Text = string.Format("{0} load{1}+th{2} sh{3}/dr{4}",
-               dbg_draw_quality, dbg_time_load, dbg_time_thumb,
-               dbg_time_shrink, dbg_time_draw);
+            DrawBenchLabel.Text = string.Format("{0} load{1}+th{2}",
+               Photo.BentiStr, Photo.dbg_draw_quality, dbg_time_load, dbg_time_thumb);
         }
-
-        const int HASTE_MSEC = 1000;
-        int haste_tc;
-        bool in_haste = false;
-
-        void GoHaste(int level, int msec)
-        {
-            if (msec > 0) {
-                in_haste = true;
-                haste_tc = Environment.TickCount + msec;
-            } else
-                OnHasteOff();
-        }
-
-        bool InHaste { get { return in_haste; } }
 
         //
 
@@ -2161,6 +1688,16 @@ namespace ParaParaView
         private void ClearCacheItem_Click(object sender, EventArgs e)
         {
             cache.Clear();
+        }
+
+        private void Photo_ImageScrolled(object sender, EventArgs e)
+        {
+            Thumb.Invalidate();
+        }
+
+        private void Photo_ImageScaleChanged(object sender, EventArgs e)
+        {
+            RefreshActualScale();
         }
 
         public void ActionHandler(object sender, EventArgs e)
@@ -2184,6 +1721,13 @@ namespace ParaParaView
                 proc(/*sender, e*/);
             } else
                 DebugOut(Color.Fuchsia, "action: unknwon key {0}.Tag={1}", name, tag);
+        }
+
+        private void Photo_HasteTimeouted(object sender, EventArgs e)
+        {
+            if (thumb_bitmap == null)
+                MakeThumb(Photo.Bitmap);
+            PreLoad();
         }
 
         /// <summary>

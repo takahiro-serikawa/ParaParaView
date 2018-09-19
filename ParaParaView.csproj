@@ -81,6 +81,12 @@
     <Compile Include="OverlayForm.Designer.cs">
       <DependentUpon>OverlayForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ParaParaImage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ParaParaImage.Designer.cs">
+      <DependentUpon>ParaParaImage.cs</DependentUpon>
+    </Compile>
     <Compile Include="ParaParaMain.cs">
       <SubType>Form</SubType>
     </Compile>
