@@ -1,0 +1,222 @@
+<html>
+
+<head>
+	<title>ParaParaView HELP</title>
+	<style>
+		body {
+			font-family: Arial, 'Meiryo UI';
+			font-size: 16px;
+			color: white;
+			background-color: black;
+		}
+
+		.key-rect {
+			width: 70px;
+			height: 15px;
+			border: solid 1px white;
+			border-radius: 2px;
+			display: inline-block;
+			text-align: center;
+		}
+
+		.al-right {
+			text-align: right;
+		}
+		.ctrl-color {
+			color: aqua;
+		}
+
+		.shift-color {
+			color: yellow;
+		}
+		.shift-ctrl-color {
+			color: lime;
+		}
+
+	</style>
+</head>
+
+<body>
+	<svg id="help-svg" width="960" height="540" overflow="hidden" viewBoxXXX="0 0 800 600"
+	 font-family="arial" font-size="12">
+		<defs>
+			<g id="chr-up"> <path d="M6,0 v12 M4,2 l2,-2 2,2"></path> </g>
+			<g id="chr-down"> <path d="M6,0 v12 M4,10 l2,2 2,-2"></path> </g>
+			<g id="chr-left"> <path d="M0,6 h12 M2,4 l-2,2 2,2"></path> </g>
+			<g id="chr-right"> <path d="M0,6 h12 M10,4 l2,2 -2,2"></path> </g>
+			<g id="icon-slide-show" stroke="white" fill="none">
+				<rect x="3" y="4" width="6" height="4" fill="white"></rect>
+				<rect x="3" y="1" width="6" height="1" fill="white"></rect>
+				<rect x="3" y="10" width="6" height="1" fill="white"></rect>
+				<path stroke="white" stroke-dasharray="1" d="M1,0 v12 M11,0 v12"></path>
+			</g>
+			<g id="icon-slide-showX" stroke="white" fill="none">
+				<rect width="10" height="8" fill="none"></rect>
+				<rect x="3" y="3" width="10" height="8" fill="none"></rect>
+			</g>
+			<g id="icon-up-down">
+					<path fill="white" d="M6,0 l4,4 h-3 v4 h3 l-4,4 -4,-4 h3 v-4 h-3 z"></path>
+			</g>
+			<g id="icon-left-right">
+				<path fill="white" d="M0,6 l4,4 v-3 h4 v3 l4,-4 -4,-4 v3 h-4 v-3 z"></path>
+			</g>
+			<g id="icon-help">
+				<text stroke="white" fill="red" stroke-width="1">?</text>
+			</g>
+		</defs>
+
+		<!-- function keys F1..12 -->
+		<g transform="translate(60,40)">
+			<path d="M70,0 v20 M140,0 v20 M210,0 v20" stroke="white"></path>
+			<rect width="280" height="20" rx="2" ry="2" stroke="white" fill="none"></rect>
+			<g fill="white" text-anchor="middle" transform="translate(0,15)">
+			 <text x="35">F1</text>
+			 <text x="105">F2</text>
+			 <text x="175">F3</text>
+			 <text x="245">F4</text></g>
+			<g fill="white" transform="translate(0,35)">
+			 <use x="-10" y="-5" xlink:href="#icon-help"></use>
+			 <text x="5" id="help">HELP</text>
+			 <text x="75">rotate left</text>
+			 <text x="145"></text>
+			 <text x="215"></text></g>
+			<g fill="yellow" transform="translate(0,50)">
+			 <text x="5"></text>
+			 <text x="75">rotate right</text>
+			 <text x="145"></text>
+			 <text x="215"></text>
+			 <text x="-30">Shift+</text></g>
+			<g fill="aqua" transform="translate(0,-8)">
+			 <text x="5"></text>
+			 <use x="60" y="-10" xlink:href="#icon-up-down"></use>
+			 <text x="75">flip up/down</text>
+			 <text x="145"></text>
+			 <text x="215"></text>
+			 <text x="-25">Ctrl+</text></g>
+			<g fill="lime" transform="translate(0,-25)">
+			 <text x="5"></text>
+			 <use x="60" y="-10" xlink:href="#icon-left-right"></use>
+			 <text x="75">flip left/right</text>
+			 <text x="145"></text>
+			 <text x="215"></text>
+			 <text x="-50">Shift + Ctrl</text></g>
+		</g>
+		<g transform="translate(350,40)">
+			<path d="M70,0 v20 M140,0 v20 M210,0 v20"  stroke="white"></path>
+			<rect x="0" y="0" width="280" height="20" rx="2" ry="2" stroke="white" fill="none"></rect>
+			<g fill="white" text-anchor="middle" transform="translate(0,15)">
+			 <text x="35">F5</text>
+			 <text x="105">F6</text>
+			 <text x="175">F7</text>
+			 <text x="245">F8</text></g>
+			<g fill="white" transform="translate(0,35)">
+			 <use x="-10" xlink:href="#icon-slide-show"></use>
+			 <text x="5">slide show</text>
+			 <text x="75"></text>
+			 <text x="145"></text>
+			 <text x="215"></text></g>
+			<g fill="yellow" transform="translate(0,50)">
+			 <text x="10">settings ...</text>
+			 <text x="75"></text>
+			 <text x="145"></text>
+			 <text x="215"></text></g>
+			<g fill="aqua" transform="translate(0,-8)">
+			 <text x="5"></text>
+			 <text x="75"></text>
+			 <text x="145"></text>
+			 <text x="215"></text></g>
+			<g fill="lime" transform="translate(0,-25)">
+			 <text x="5"></text>
+			 <text x="75"></text>
+			 <text x="145"></text>
+			 <text x="215"></text></g>
+		</g>
+		<g transform="translate(640,40)">
+			<path d="M70,0 v20 M140,0 v20 M210,0 v20"  stroke="white"></path>
+			<rect x="0" y="0" width="280" height="20" rx="2" ry="2" stroke="white" fill="none"></rect>
+			<g fill="white" text-anchor="middle" transform="translate(0,15)">
+			 <text x="35">F9</text>
+			 <text x="105">F10</text>
+			 <text x="175">F11</text>
+			 <text x="245">F12</text></g>
+			<g fill="white" transform="translate(0,35)">
+			 <text x="5">auto scale</text>
+			 <text x="75">full scale</text>
+			 <text x="145">full screen</text>
+			 <text x="215">only photo</text></g>
+			<g fill="yellow" transform="translate(0,50)">
+			 <text x="5">zoom up</text>
+			 <text x="75"></text>
+			 <text x="145"></text>
+			 <text x="215"></text></g>
+			<g fill="aqua" transform="translate(0,-8)">
+			 <text x="5">zoom down</text>
+			 <text x="75"></text>
+			 <text x="145"></text>
+			 <text x="215"></text></g>
+			<g fill="lime" transform="translate(0,-25)">
+			 <text x="5"></text>
+			 <text x="75"></text>
+			 <text x="145"></text>
+			 <text x="215"></text></g>
+		</g>
+
+		<!-- browsing -->
+		<g transform="translate(710,200)">
+			<rect x="-80" y="0" width="70" height="20" rx="4" ry="4" stroke="white" fill="none"></rect>
+			
+					<text x="-45" y="15" fill="white" text-anchor="middle" >Back Space</text>
+				
+	   
+			<path d="M70,0 v40 M140,0 v40 M0,20 h210" stroke="white"></path>
+			<rect x="0" y="0" width="210" height="40" rx="4" ry="4" stroke="white" fill="none"></rect>
+			<g fill="white" text-anchor="middle" transform="translate(0,15)">
+			 <text x="35">Insert</text>
+			 <text x="105">Home</text>
+			 <text x="175">Page Up</text></g>
+			<g fill="white" text-anchor="middle" transform="translate(0,35)">
+			 <text x="35">Delete</text>
+			 <text x="105">End</text>
+			 <text x="175">Page Down</text></g>
+			<g fill="white" transform="translate(0,55)">
+			 <text x="5"></text>
+			 <text x="75">shuffle</text>
+			 <text x="145">next photo</text></g>
+			<g fill="yellow" transform="translate(0,70)">
+			 <text x="5">delete photo</text>
+			 <text x="75"></text>
+			 <text x="145"></text>
+			 <text x="-30">Shift+</text></g>
+			<g fill="white" transform="translate(0,-8)">
+			 <text x="5"></text>
+			 <text x="75">first photo</text>
+			 <text x="145">previous photo</text></g>
+		</g>
+	
+		<!-- cursor keys -->
+		<g transform="translate(710,350)">
+			<rect x="70" y="0" width="70" height="42" rx="4" ry="4" stroke="white" fill="none"></rect>
+			<rect x="0" y="20" width="210" height="20" rx="4" ry="4" stroke="white" fill="none"></rect>
+			<g fill="white" transform="translate(0,0)">
+			 <use x="98" y="5" stroke="white" xlink:href="#chr-up"></use>
+			 <!--text x="105">Home</text--></g>
+			 <use x="28" y="25" stroke="white" xlink:href="#chr-left"></use>
+			 <use x="98" y="25" stroke="white" xlink:href="#chr-down"></use>
+			 <use x="168" y="25" stroke="white" xlink:href="#chr-right"></use>
+			<g fill="white" transform="translate(0,55)">
+			 <text x="5">scroll right</text>
+			 <text x="75">scroll down</text>
+			 <text x="145">scroll right</text></g>
+			<g fill="yellow" transform="translate(0,70)">
+			 <text x="5"></text>
+			 <text x="75"></text>
+			 <text x="145"></text>
+			 <!--text x="-30">Shift+</text--></g>
+			<g fill="white" transform="translate(0,-8)">
+			 <text x="5"></text>
+			 <text x="75">scroll up</text></g>
+		</g>
+	</svg>
+
+</body>
+</html>

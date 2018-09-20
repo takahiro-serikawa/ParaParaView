@@ -1132,8 +1132,8 @@
             this.Photo.Size = new System.Drawing.Size(640, 480);
             this.Photo.TabIndex = 17;
             this.Photo.TabStop = false;
-            this.Photo.ImageScaleChanged += new System.EventHandler(this.Photo_ImageScrolled);
-            this.Photo.ImageScrolled += new System.EventHandler(this.Photo_ImageScaleChanged);
+            this.Photo.ImageScaleChanged += new System.EventHandler(this.Photo_ImageScaleChanged);
+            this.Photo.ImageScrolled += new System.EventHandler(this.Photo_ImageScrolled);
             this.Photo.HasteTimeouted += new System.EventHandler(this.Photo_HasteTimeouted);
             // 
             // ParaParaMain
@@ -1288,8 +1288,7 @@
         private System.Windows.Forms.PrintDialog printDialog1;
         private System.Drawing.Printing.PrintDocument printDocument1;
         private System.Windows.Forms.Timer PageUpDownTimer;
-        //private ParaParaImage Photo;
-        private ParaParaImage Photo;
+        private ParaParaView.ParaParaImage Photo;
     }
 }
 
