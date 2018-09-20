@@ -130,7 +130,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.ScaleEdit = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.NeutralLabel = new System.Windows.Forms.Label();
             this.ReciprocalLabel = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
@@ -555,7 +555,7 @@
             this.FitToWindowItem.CheckState = System.Windows.Forms.CheckState.Indeterminate;
             this.FitToWindowItem.Name = "FitToWindowItem";
             this.FitToWindowItem.ShortcutKeys = System.Windows.Forms.Keys.F9;
-            this.FitToWindowItem.Size = new System.Drawing.Size(179, 22);
+            this.FitToWindowItem.Size = new System.Drawing.Size(180, 22);
             this.FitToWindowItem.Tag = "";
             this.FitToWindowItem.Text = "Fit to &Window";
             this.FitToWindowItem.Click += new System.EventHandler(this.FitToWindowItem_Click);
@@ -565,7 +565,7 @@
             this.FullSizeItem.CheckOnClick = true;
             this.FullSizeItem.Name = "FullSizeItem";
             this.FullSizeItem.ShortcutKeys = System.Windows.Forms.Keys.F10;
-            this.FullSizeItem.Size = new System.Drawing.Size(179, 22);
+            this.FullSizeItem.Size = new System.Drawing.Size(180, 22);
             this.FullSizeItem.Text = "Full &Size";
             this.FullSizeItem.Click += new System.EventHandler(this.FullSizeItem_Click);
             // 
@@ -573,21 +573,21 @@
             // 
             this.FullScreenItem.Name = "FullScreenItem";
             this.FullScreenItem.ShortcutKeys = System.Windows.Forms.Keys.F11;
-            this.FullScreenItem.Size = new System.Drawing.Size(179, 22);
+            this.FullScreenItem.Size = new System.Drawing.Size(180, 22);
             this.FullScreenItem.Text = "&FullScreen";
             this.FullScreenItem.Click += new System.EventHandler(this.FullScreenItem_Click);
             // 
             // toolStripMenuItem6
             // 
             this.toolStripMenuItem6.Name = "toolStripMenuItem6";
-            this.toolStripMenuItem6.Size = new System.Drawing.Size(176, 6);
+            this.toolStripMenuItem6.Size = new System.Drawing.Size(177, 6);
             // 
             // OnlyPhotoItem
             // 
             this.OnlyPhotoItem.CheckOnClick = true;
             this.OnlyPhotoItem.Name = "OnlyPhotoItem";
             this.OnlyPhotoItem.ShortcutKeys = System.Windows.Forms.Keys.F12;
-            this.OnlyPhotoItem.Size = new System.Drawing.Size(179, 22);
+            this.OnlyPhotoItem.Size = new System.Drawing.Size(180, 22);
             this.OnlyPhotoItem.Tag = "TOOLS_VISIBILITY";
             this.OnlyPhotoItem.Text = "&Only Photo";
             this.OnlyPhotoItem.Click += new System.EventHandler(this.OnlyPhotoItem_Click);
@@ -598,7 +598,7 @@
             this.ViewExifItem.CheckOnClick = true;
             this.ViewExifItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.ViewExifItem.Name = "ViewExifItem";
-            this.ViewExifItem.Size = new System.Drawing.Size(179, 22);
+            this.ViewExifItem.Size = new System.Drawing.Size(180, 22);
             this.ViewExifItem.Text = "EXIF";
             this.ViewExifItem.Click += new System.EventHandler(this.ExifItem_Click);
             // 
@@ -608,7 +608,7 @@
             this.ViewPortItem.CheckOnClick = true;
             this.ViewPortItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.ViewPortItem.Name = "ViewPortItem";
-            this.ViewPortItem.Size = new System.Drawing.Size(179, 22);
+            this.ViewPortItem.Size = new System.Drawing.Size(180, 22);
             this.ViewPortItem.Text = "ViewPort";
             this.ViewPortItem.Click += new System.EventHandler(this.ViewPortItem_Click);
             // 
@@ -618,7 +618,7 @@
             this.ScaleBarItem.CheckOnClick = true;
             this.ScaleBarItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.ScaleBarItem.Name = "ScaleBarItem";
-            this.ScaleBarItem.Size = new System.Drawing.Size(179, 22);
+            this.ScaleBarItem.Size = new System.Drawing.Size(180, 22);
             this.ScaleBarItem.Text = "ScaleBar";
             this.ScaleBarItem.Click += new System.EventHandler(this.ScaleBarItem_Click);
             // 
@@ -626,7 +626,7 @@
             // 
             this.ViewDebugItem.CheckOnClick = true;
             this.ViewDebugItem.Name = "ViewDebugItem";
-            this.ViewDebugItem.Size = new System.Drawing.Size(179, 22);
+            this.ViewDebugItem.Size = new System.Drawing.Size(180, 22);
             this.ViewDebugItem.Text = "debug";
             this.ViewDebugItem.Click += new System.EventHandler(this.DebugItem_Click);
             // 
@@ -1010,7 +1010,7 @@
             this.ScalePanel.Controls.Add(this.ScaleLabel);
             this.ScalePanel.Controls.Add(this.label3);
             this.ScalePanel.Controls.Add(this.ScaleEdit);
-            this.ScalePanel.Controls.Add(this.label1);
+            this.ScalePanel.Controls.Add(this.NeutralLabel);
             this.ScalePanel.Controls.Add(this.ReciprocalLabel);
             this.ScalePanel.Controls.Add(this.ScaleBar);
             this.ScalePanel.Controls.Add(this.label2);
@@ -1055,18 +1055,18 @@
             this.ScaleEdit.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.ScaleEdit.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ScaleEdit_KeyPress);
             // 
-            // label1
+            // NeutralLabel
             // 
-            this.label1.AutoSize = true;
-            this.label1.BackColor = System.Drawing.Color.Transparent;
-            this.label1.Font = new System.Drawing.Font("Meiryo UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label1.ForeColor = System.Drawing.Color.Orange;
-            this.label1.Location = new System.Drawing.Point(80, 20);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(14, 14);
-            this.label1.TabIndex = 16;
-            this.label1.Text = "o";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.NeutralLabel.AutoSize = true;
+            this.NeutralLabel.BackColor = System.Drawing.Color.Transparent;
+            this.NeutralLabel.Font = new System.Drawing.Font("Meiryo UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.NeutralLabel.ForeColor = System.Drawing.Color.Orange;
+            this.NeutralLabel.Location = new System.Drawing.Point(80, 20);
+            this.NeutralLabel.Name = "NeutralLabel";
+            this.NeutralLabel.Size = new System.Drawing.Size(14, 14);
+            this.NeutralLabel.TabIndex = 16;
+            this.NeutralLabel.Text = "o";
+            this.NeutralLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // ReciprocalLabel
             // 
@@ -1135,6 +1135,7 @@
             this.Photo.ImageScaleChanged += new System.EventHandler(this.Photo_ImageScaleChanged);
             this.Photo.ImageScrolled += new System.EventHandler(this.Photo_ImageScrolled);
             this.Photo.HasteTimeouted += new System.EventHandler(this.Photo_HasteTimeouted);
+            this.Photo.Paint += new System.Windows.Forms.PaintEventHandler(this.Photo_Paint);
             // 
             // ParaParaMain
             // 
@@ -1279,7 +1280,7 @@
         private System.Windows.Forms.ToolStripMenuItem ScrollDownItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem8;
         private System.Windows.Forms.TextBox Filename;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label NeutralLabel;
         private System.Windows.Forms.ToolStripMenuItem CopyFullPathItem;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label3;

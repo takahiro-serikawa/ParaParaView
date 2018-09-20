@@ -1202,6 +1202,10 @@ namespace ParaParaView
 
         void RefreshActualScale()
         {
+            FitToWindowItem.Checked = Photo.ImageScaleMode == ImageScaleMode.FitToWindow;
+
+            NeutralLabel.ForeColor = (Photo.ImageScaleMode == ImageScaleMode.FullSize) ? Color.Red : Color.Orange;
+
             float scale = Photo.ActualScale;
             if (scale < 1f)
                 ReciprocalLabel.Text = Localizer.Format("(1/{0:F})", 1f/scale);
@@ -1728,6 +1732,11 @@ namespace ParaParaView
             if (thumb_bitmap == null)
                 MakeThumb(Photo.Bitmap);
             PreLoad();
+        }
+
+        private void Photo_Paint(object sender, PaintEventArgs e)
+        {
+            _refresh_benchi();
         }
 
         /// <summary>
