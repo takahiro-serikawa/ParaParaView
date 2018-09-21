@@ -449,6 +449,26 @@ namespace ParaParaView
             }
         }
 
+        HelpForm help_box = null;
+
+        private void HelpHelpItem_Click(object sender, EventArgs e)
+        {
+            if (help_box == null)
+                help_box = new HelpForm(this);
+
+            if (help_box.Visible) {
+                help_box.FadeOut();
+            } else {
+                //help_box.Params["app_ver"] = app_ver;
+                //help_box.Params["first_date"] = first_date;
+                //float[] w = { cache.TotalCacheWrite };
+                //string u = _media_space_unit(w);
+                //help_box.Params["cache_total_write"] = string.Format("{0:F3} {1}", w[0], u);
+                //help_box.Params["total_photo_count"] = total_photo_count.ToString();
+                help_box.FadeIn();
+            }
+        }
+
         private void ParaParaMain_DragEnter(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop)) {

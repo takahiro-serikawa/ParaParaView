@@ -111,6 +111,8 @@ HelpMenu.Text=&Help
 HelpMenu.Hint=Help menu
 HelpAboutItem.Text=&About 'ParaParaView' ...
 HelpAboutItem.Hint=Show version and lisences.
+HelpHelpItem.Text=&Help ...
+HelpHelpItem.Hint=Show operation manual.
 
 ScaleBar.Hint=Change image scale.
 ScaleLabel.Text=scale x

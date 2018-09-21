@@ -27,15 +27,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.webBrowser1 = new System.Windows.Forms.WebBrowser();
-            this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
-            // 
-            // timer1
-            // 
-            this.timer1.Interval = 10;
             // 
             // webBrowser1
             // 
@@ -50,17 +43,12 @@
             this.webBrowser1.TabIndex = 3;
             this.webBrowser1.WebBrowserShortcutsEnabled = false;
             // 
-            // timer2
-            // 
-            this.timer2.Interval = 10;
-            // 
             // AboutForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(640, 240);
             this.Controls.Add(this.webBrowser1);
-            this.Enabled = false;
             this.Font = new System.Drawing.Font("Arial", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.KeyPreview = true;
             this.Margin = new System.Windows.Forms.Padding(7);
@@ -74,9 +62,6 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.WebBrowser webBrowser1;
-        private System.Windows.Forms.Timer timer2;
     }
 }

@@ -139,6 +139,7 @@
             this.printDocument1 = new System.Drawing.Printing.PrintDocument();
             this.PageUpDownTimer = new System.Windows.Forms.Timer(this.components);
             this.Photo = new ParaParaView.ParaParaImage();
+            this.HelpHelpItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mainMenuStrip.SuspendLayout();
             this.DebugBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.MediaSpace)).BeginInit();
@@ -555,7 +556,7 @@
             this.FitToWindowItem.CheckState = System.Windows.Forms.CheckState.Indeterminate;
             this.FitToWindowItem.Name = "FitToWindowItem";
             this.FitToWindowItem.ShortcutKeys = System.Windows.Forms.Keys.F9;
-            this.FitToWindowItem.Size = new System.Drawing.Size(180, 22);
+            this.FitToWindowItem.Size = new System.Drawing.Size(179, 22);
             this.FitToWindowItem.Tag = "";
             this.FitToWindowItem.Text = "Fit to &Window";
             this.FitToWindowItem.Click += new System.EventHandler(this.FitToWindowItem_Click);
@@ -565,7 +566,7 @@
             this.FullSizeItem.CheckOnClick = true;
             this.FullSizeItem.Name = "FullSizeItem";
             this.FullSizeItem.ShortcutKeys = System.Windows.Forms.Keys.F10;
-            this.FullSizeItem.Size = new System.Drawing.Size(180, 22);
+            this.FullSizeItem.Size = new System.Drawing.Size(179, 22);
             this.FullSizeItem.Text = "Full &Size";
             this.FullSizeItem.Click += new System.EventHandler(this.FullSizeItem_Click);
             // 
@@ -573,21 +574,21 @@
             // 
             this.FullScreenItem.Name = "FullScreenItem";
             this.FullScreenItem.ShortcutKeys = System.Windows.Forms.Keys.F11;
-            this.FullScreenItem.Size = new System.Drawing.Size(180, 22);
+            this.FullScreenItem.Size = new System.Drawing.Size(179, 22);
             this.FullScreenItem.Text = "&FullScreen";
             this.FullScreenItem.Click += new System.EventHandler(this.FullScreenItem_Click);
             // 
             // toolStripMenuItem6
             // 
             this.toolStripMenuItem6.Name = "toolStripMenuItem6";
-            this.toolStripMenuItem6.Size = new System.Drawing.Size(177, 6);
+            this.toolStripMenuItem6.Size = new System.Drawing.Size(176, 6);
             // 
             // OnlyPhotoItem
             // 
             this.OnlyPhotoItem.CheckOnClick = true;
             this.OnlyPhotoItem.Name = "OnlyPhotoItem";
             this.OnlyPhotoItem.ShortcutKeys = System.Windows.Forms.Keys.F12;
-            this.OnlyPhotoItem.Size = new System.Drawing.Size(180, 22);
+            this.OnlyPhotoItem.Size = new System.Drawing.Size(179, 22);
             this.OnlyPhotoItem.Tag = "TOOLS_VISIBILITY";
             this.OnlyPhotoItem.Text = "&Only Photo";
             this.OnlyPhotoItem.Click += new System.EventHandler(this.OnlyPhotoItem_Click);
@@ -598,7 +599,7 @@
             this.ViewExifItem.CheckOnClick = true;
             this.ViewExifItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.ViewExifItem.Name = "ViewExifItem";
-            this.ViewExifItem.Size = new System.Drawing.Size(180, 22);
+            this.ViewExifItem.Size = new System.Drawing.Size(179, 22);
             this.ViewExifItem.Text = "EXIF";
             this.ViewExifItem.Click += new System.EventHandler(this.ExifItem_Click);
             // 
@@ -608,7 +609,7 @@
             this.ViewPortItem.CheckOnClick = true;
             this.ViewPortItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.ViewPortItem.Name = "ViewPortItem";
-            this.ViewPortItem.Size = new System.Drawing.Size(180, 22);
+            this.ViewPortItem.Size = new System.Drawing.Size(179, 22);
             this.ViewPortItem.Text = "ViewPort";
             this.ViewPortItem.Click += new System.EventHandler(this.ViewPortItem_Click);
             // 
@@ -618,7 +619,7 @@
             this.ScaleBarItem.CheckOnClick = true;
             this.ScaleBarItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.ScaleBarItem.Name = "ScaleBarItem";
-            this.ScaleBarItem.Size = new System.Drawing.Size(180, 22);
+            this.ScaleBarItem.Size = new System.Drawing.Size(179, 22);
             this.ScaleBarItem.Text = "ScaleBar";
             this.ScaleBarItem.Click += new System.EventHandler(this.ScaleBarItem_Click);
             // 
@@ -626,7 +627,7 @@
             // 
             this.ViewDebugItem.CheckOnClick = true;
             this.ViewDebugItem.Name = "ViewDebugItem";
-            this.ViewDebugItem.Size = new System.Drawing.Size(180, 22);
+            this.ViewDebugItem.Size = new System.Drawing.Size(179, 22);
             this.ViewDebugItem.Text = "debug";
             this.ViewDebugItem.Click += new System.EventHandler(this.DebugItem_Click);
             // 
@@ -721,7 +722,8 @@
             // HelpMenu
             // 
             this.HelpMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.HelpAboutItem});
+            this.HelpAboutItem,
+            this.HelpHelpItem});
             this.HelpMenu.ForeColor = System.Drawing.SystemColors.ControlText;
             this.HelpMenu.Name = "HelpMenu";
             this.HelpMenu.Size = new System.Drawing.Size(46, 22);
@@ -730,8 +732,7 @@
             // HelpAboutItem
             // 
             this.HelpAboutItem.Name = "HelpAboutItem";
-            this.HelpAboutItem.ShortcutKeys = System.Windows.Forms.Keys.F1;
-            this.HelpAboutItem.Size = new System.Drawing.Size(238, 22);
+            this.HelpAboutItem.Size = new System.Drawing.Size(216, 22);
             this.HelpAboutItem.Text = "&About \'ParaParaView\' ...";
             this.HelpAboutItem.Click += new System.EventHandler(this.HelpAboutItem_Click);
             // 
@@ -1137,6 +1138,14 @@
             this.Photo.HasteTimeouted += new System.EventHandler(this.Photo_HasteTimeouted);
             this.Photo.Paint += new System.Windows.Forms.PaintEventHandler(this.Photo_Paint);
             // 
+            // HelpHelpItem
+            // 
+            this.HelpHelpItem.Name = "HelpHelpItem";
+            this.HelpHelpItem.ShortcutKeys = System.Windows.Forms.Keys.F1;
+            this.HelpHelpItem.Size = new System.Drawing.Size(216, 22);
+            this.HelpHelpItem.Text = "&Help ...";
+            this.HelpHelpItem.Click += new System.EventHandler(this.HelpHelpItem_Click);
+            // 
             // ParaParaMain
             // 
             this.AllowDrop = true;
@@ -1290,6 +1299,7 @@
         private System.Drawing.Printing.PrintDocument printDocument1;
         private System.Windows.Forms.Timer PageUpDownTimer;
         private ParaParaView.ParaParaImage Photo;
+        private System.Windows.Forms.ToolStripMenuItem HelpHelpItem;
     }
 }
 

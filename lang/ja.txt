@@ -111,6 +111,8 @@ HelpMenu.Text=ヘルプ(&H)
 HelpMenu.Hint=ヘルプ関連メニュー
 HelpAboutItem.Text=ParaParaView について(&A) ...
 HelpAboutItem.Hint=ParaParaView のバージョン情報を表示します。
+HelpHelpItem.Text=ヘルプ(&H) ...
+HelpHelpItem.Hint=操作説明を表示します。
 
 ScaleBar.Hint=画像の表示倍率を変更できます。
 ScaleLabel.Text=倍率×

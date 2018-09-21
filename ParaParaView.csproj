@@ -75,6 +75,12 @@
     <Compile Include="Ejector.cs" />
     <Compile Include="ExifInfo.cs" />
     <Compile Include="FormTricks.cs" />
+    <Compile Include="HelpForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HelpForm.Designer.cs">
+      <DependentUpon>HelpForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="OverlayForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -112,6 +118,9 @@
     <EmbeddedResource Include="AboutForm.resx">
       <DependentUpon>AboutForm.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HelpForm.resx">
+      <DependentUpon>HelpForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="OverlayForm.resx">
       <DependentUpon>OverlayForm.cs</DependentUpon>
@@ -157,6 +166,7 @@
   <ItemGroup>
     <Content Include="doc\IMPLEMENTATION.TXT" />
     <Content Include="doc\TODO.TXT" />
+    <EmbeddedResource Include="help.html" />
     <EmbeddedResource Include="license.html" />
   </ItemGroup>
   <ItemGroup>
