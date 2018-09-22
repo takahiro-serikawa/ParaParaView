@@ -1,4 +1,6 @@
-﻿using System;
+﻿// - overlay untouchable form
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -41,11 +43,19 @@ namespace ParaParaView
 
         private void Form_Resize(object sender, EventArgs e)
         {
+            this.Location = real.PointToScreen(new Point(0, 0));
             this.Size = real.ClientSize;
         }
 
-        protected override CreateParams CreateParams
+        private void OverlayForm_Shown(object sender, EventArgs e)
         {
+            if (real != null) {
+                this.Location = real.PointToScreen(new Point(0, 0));
+                this.Size = real.ClientSize;
+            }
+        }
+
+        protected override CreateParams CreateParams {
             get
             {
                 CreateParams cp = base.CreateParams;
@@ -84,7 +94,8 @@ namespace ParaParaView
         }
 
         //const float DEF_OPACITY = 0.75f;
-        const float DEF_OPACITY = 0.67f;
+        //const float DEF_OPACITY = 0.67f;
+        const float DEF_OPACITY = 0.50f;
         const int FADE_IN_MSEC = 2000;
         const int FADE_OUT_MSEC = 500;
         int fade_start_tc;

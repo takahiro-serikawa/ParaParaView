@@ -2,296 +2,343 @@
 <html>
 
 <head>
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-	<title>ParaParaView HELP</title>
-	<style>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>ParaParaView HELP</title>
+<style>
+body {
+	font-family: Arial;
+	font-size: 12x;
+	color: white;
+	padding: 0;
+	margin: 0;
 
-		body {
-			font-family: Arial;
-			font-size: 12x;
-			color: white;
-			background-color: black;
-		}
+	/*background-color: black;*/
+}
 
-		.key-rect {
-			width: 70px;
-			height: 15px;
-			border: solid 1px white;
-			border-radius: 2px;
-			display: inline-block;
-			text-align: center;
-		}
+.key-rect {
+	width: 70px;
+	height: 15px;
+	border: solid 1px white;
+	border-radius: 2px;
+	display: inline-block;
+	text-align: center;
+}
 
-		.al-right {
-			text-align: right;
-		}
+.al-right {
+	text-align: right;
+}
 
-		.ctrl-color {
-			color: aqua;
-		}
+svg {
+	font-family: arial;
+	font-size: 9pt;
+	/*max-width: 100%;
+    height: auto;*/
+	background-color: black;
+}
 
-		.shift-color {
-			color: yellow;
-		}
+svg .ctrl-color {
+	fill: aqua;
+}
 
-		.shift-ctrl-color {
-			color: lime;
-		}
+svg .shift-color {
+	fill: yellow;
+}
 
-		svg {
-			font-family: arial;
-			font-size: 9pt;
-		}
+svg .shift-ctrl-color {
+	fill: lime;
+}
 
-			svg text {
-				/*fill: white;*/
-			}
+svg text {
+	/*fill: white;*/
+}
 
-			svg .key-shape {
-				stroke: white;
-				stroke-width: 1px;
-				fill: none;
-			}
-	</style>
+svg .key-shape {
+	stroke: gray;
+	stroke-width: 1px;
+	fill: none;
+}
+</style>
 </head>
 
 <body>
-	<svg id="help-svg" width="960" height="540" overflow="hidden" viewBoxXXX="0 0 800 600">
-		<defs>
-			<g id="chr-up" transform="translate(0,-12)"> <path d="M6,0 v12 M4,2 l2,-2 2,2"></path> </g>
-			<g id="chr-down" transform="translate(0,-12)"> <path d="M6,0 v12 M4,10 l2,2 2,-2"></path> </g>
-			<g id="chr-left" transform="translate(0,-12)"> <path d="M0,6 h12 M2,4 l-2,2 2,2"></path> </g>
-			<g id="chr-right" transform="translate(0,-12)"> <path d="M0,6 h12 M10,4 l2,2 -2,2"></path> </g>
-			<g id="icon-slide-show" transform="translate(0,-12)" stroke="white" fill="none">
-				<rect x="3" y="4" width="6" height="4" fill="white"></rect>
-				<rect x="3" y="1" width="6" height="1" fill="white"></rect>
-				<rect x="3" y="10" width="6" height="1" fill="white"></rect>
-				<path stroke="white" stroke-dasharray="1" d="M1,0 v12 M11,0 v12"></path>
-			</g>
-			<g id="icon-up-down" transform="translate(0,-12)">
-				<path fill="white" d="M6,0 l4,4 h-3 v4 h3 l-4,4 -4,-4 h3 v-4 h-3 z"></path>
-			</g>
-			<g id="icon-left-right"  transform="translate(0,-12)">
-				<path fill="white" d="M0,6 l4,4 v-3 h4 v3 l4,-4 -4,-4 v3 h-4 v-3 z"></path>
-			</g>
-			<g id="icon-help"  transform="translate(0,0)">
-				<text stroke="white" stroke-width="1">?</text>
-			</g>
-			<g id="icon-rotate-left" transform="translate(0,-12)">
-				<path stroke="white" stroke-width="2" fill="none" 
-				 d="M2,10 a10,10 180 0 1 10,-10 M-1,8 l3,3 3,-3"></path>
-			</g>
-			<g id="icon-rotate-right" transform="translate(0,-12)">
-				<path stroke="white" stroke-width="2" fill="none"
-				 d="M0,0 a10,10 270 0 1 10,10 M7,8 l3,3 3,-3"></path>
-			</g>
-			<g id="icon-zoom-in" transform="translate(0,-12)" stroke="white" fill="none">
-				<rect stroke-width="2" x="0" y="2" width="12" height="8"></rect>
-				<rect x="3" y="4" width="6" height="4"></rect>
-			</g>
-			<g id="icon-zoom-out" transform="translate(0,-12)" stroke="white" fill="none">
-				<rect x="0" y="2" width="12" height="8"></rect>
-				<rect stroke-width="2" x="3" y="4" width="6" height="4"></rect>
-			</g>
+<svg id="help_svg" width="960" height="540" overflow="hidden" viewBoxXXX="0 0 800 600">
+	<defs>
+		<g id="chr-up" transform="translate(0,-12)"> <path d="M6,0 v12 M4,2 l2,-2 2,2"></path> </g>
+		<g id="chr-down" transform="translate(0,-12)"> <path d="M6,0 v12 M4,10 l2,2 2,-2"></path> </g>
+		<g id="chr-left" transform="translate(0,-12)"> <path d="M0,6 h12 M2,4 l-2,2 2,2"></path> </g>
+		<g id="chr-right" transform="translate(0,-12)"> <path d="M0,6 h12 M10,4 l2,2 -2,2"></path> </g>
+		<g id="icon-slide-show" transform="translate(0,-12)" stroke="white" fill="none">
+			<rect x="3" y="4" width="6" height="4" fill="white"></rect>
+			<rect x="3" y="1" width="6" height="1" fill="white"></rect>
+			<rect x="3" y="10" width="6" height="1" fill="white"></rect>
+			<path stroke="white" stroke-dasharray="1" d="M1,0 v12 M11,0 v12"></path>
+		</g>
+		<g id="icon-up-down" transform="translate(0,-12)">
+			<path fill="white" d="M6,0 l4,4 h-3 v4 h3 l-4,4 -4,-4 h3 v-4 h-3 z"></path>
+		</g>
+		<g id="icon-left-right"  transform="translate(0,-12)">
+			<path fill="white" d="M0,6 l4,4 v-3 h4 v3 l4,-4 -4,-4 v3 h-4 v-3 z"></path>
+		</g>
+		<g id="icon-help"  transform="translate(0,0)">
+			<text stroke="white" stroke-width="1">?</text>
+		</g>
+		<g id="icon-rotate-left" transform="translate(0,-12)">
+			<path stroke="white" stroke-width="2" fill="none" 
+			 d="M2,10 a10,10 180 0 1 10,-10 M-1,8 l3,3 3,-3"></path>
+		</g>
+		<g id="icon-rotate-right" transform="translate(0,-12)">
+			<path stroke="white" stroke-width="2" fill="none"
+			 d="M0,0 a10,10 270 0 1 10,10 M7,8 l3,3 3,-3"></path>
+		</g>
+		<g id="icon-zoom-in" transform="translate(0,-12)" stroke="white" fill="none">
+			<rect stroke-width="2" x="0" y="2" width="12" height="8"></rect>
+			<rect x="3" y="4" width="6" height="4"></rect>
+		</g>
+		<g id="icon-zoom-out" transform="translate(0,-12)" stroke="white" fill="none">
+			<rect x="0" y="2" width="12" height="8"></rect>
+			<rect stroke-width="2" x="3" y="4" width="6" height="4"></rect>
+		</g>
+		<g id="icon-back" transform="translate(0,-12)">
+			<path fill="white" stroke-width="2" d="M0,6 l6,-4 v8 z"></path>
+		</g>
+		<g id="icon-prev" transform="translate(0,-12)">
+			<path fill="white" stroke-width="2" d="M0,6 l6,-4 v8 z"></path>
+			<path fill="white" stroke-width="2" d="M6,6 l6,-4 v8 z"></path>
+		</g>
+		<g id="icon-next" transform="translate(0,-12)">
+			<path fill="white" stroke-width="2" d="M6,6 l-6,-4 v8 z"></path>
+			<path fill="white" stroke-width="2" d="M12,6 l-6,-4 v8 z"></path>
+		</g>
+		<g id="icon-first" transform="translate(0,-12)">
+			<path fill="white" stroke-width="2" d="M0,6 l6,-4 v8 z"></path>
+			<path fill="white" stroke-width="2" d="M6,6 l6,-4 v8 z"></path>
+			<path stroke="white" stroke-width="2" d="M0,2 v8"></path>
+		</g>
+		<g id="icon-shuffle" transform="translate(0,-12)">
+			<path fill="none" stroke="white" stroke-width="2" d="M0,4 h3 l5,4 h3 l-2,3 M0,8 h3 l5,-4 h3 l-2,-3"></path>
+		</g>
+		<g id="icon-shuffle-back" transform="translate(0,-12)">
+			<path fill="none" stroke="white" stroke-width="2" d="M0,4 h3 l5,4 h3 l-2,3 M0,8 h3 l5,-4 h3 l-2,-3"></path>
+		</g>
+		<g id="icon-screen" transform="translate(0,-12)">
+			<rect x="0" y="2" width="12" height="8" fill="white"></rect>
+			<circle cx="6" cy="6" r="2" fill="red"></circle>
+			<rect x="1" y="3" width="10" height="6" stroke="black" fill="none"></rect>
+			<rect x="0" y="2" width="12" height="8" stroke="white" fill="none"></rect>
+			<path stroke="white" fill="none" d="M2,12 h8 M5,12 v-2 M7,12 v-2"></path>
+		</g>
+		<g id="icon-only" transform="translate(0,-12)">
+			<rect x="0" y="2" width="12" height="8" fill="white"></rect>
+			<circle cx="6" cy="6" r="3" fill="red"></circle>
+		</g>
+	</defs>
 
-			<g id="icon-back" transform="translate(0,-12)">
-				<path fill="white" stroke-width="2" d="M0,6 l6,-4 v8 z"></path>
-			</g>
-			<g id="icon-prev" transform="translate(0,-12)">
-				<path fill="white" stroke-width="2" d="M0,6 l6,-4 v8 z"></path>
-				<path fill="white" stroke-width="2" d="M6,6 l6,-4 v8 z"></path>
-			</g>
-			<g id="icon-next" transform="translate(0,-12)">
-				<path fill="white" stroke-width="2" d="M6,6 l-6,-4 v8 z"></path>
-				<path fill="white" stroke-width="2" d="M12,6 l-6,-4 v8 z"></path>
-			</g>
-			<g id="icon-first" transform="translate(0,-12)">
-				<path fill="white" stroke-width="2" d="M0,6 l6,-4 v8 z"></path>
-				<path fill="white" stroke-width="2" d="M6,6 l6,-4 v8 z"></path>
-				<path stroke="white" stroke-width="2" d="M0,2 v8"></path>
-			</g>
-			<g id="icon-shuffle" transform="translate(0,-12)">
-				<path fill="none" stroke="white" stroke-width="2" d="M0,4 h3 l5,4 h3 l-1,1 M0,8 h3 l5,-4 h3 l-1,-1"></path>
-			</g>
+	<!-- function keys F1..12 -->
+	<g transform="translate(60,70)">
+		<rect class="key-shape" width="40" x="-50" height="20" rx="2" ry="2"></rect>
+			
+		<path class="key-shape" d="M70,0 v20 M140,0 v20 M210,0 v20"></path>
+		<rect class="key-shape" width="280" height="20" rx="2" ry="2"></rect>
+		<g fill="white" text-anchor="middle" transform="translate(0,15)">
+		 <text x="35" id="F1">F1</text>
+		 <text x="105">F2</text>
+		 <text x="175">F3</text>
+		 <text x="245">F4</text>
+		 <text x="-30">ESC</text>
+		</g>
+		 
+		<g fill="white" transform="translate(0,35)">
+		 <use x="-10" xlink:href="#icon-help"></use>
+		 <text x="12" y="6" font-size="14" id="help">HELP</text>
+		 <use x="60" xlink:href="#icon-rotate-right"></use>
+		 <text x="75">rotate right</text>
+		 <text x="145"></text>
+		 <text x="215"></text></g>
+		<g class="shift-color" transform="translate(0,50)">
+		 <text x="5"></text>
+		 <use x="60" xlink:href="#icon-rotate-left"></use>
+		 <!--use x="60" xlink:href="#icon-left-right"></use-->
+		 <text x="75">rotate left</text>
+		 <text x="145"></text>
+		 <text x="215"></text>
+		 <text x="-35">Shift+</text></g>
+		<g class="ctrl-color" transform="translate(0,-8)">
+		 <text x="5"></text>
+		 <use x="60" xlink:href="#icon-up-down"></use>
+		 <text x="75">flip up/down</text>
+		 <text x="145"></text>
+		 <text x="215"></text>
+		 <text x="-30">Ctrl+</text></g>
+		<g class="shift-ctrl-color" transform="translate(0,-25)">
+		 <text x="5"></text>
+		 <use x="60" xlink:href="#icon-left-right"></use>
+		 <text x="75">flip left/right</text>
+		 <text x="145"></text>
+		 <text x="215"></text>
+		 <text x="-55">Shift + Ctrl</text></g>
+	</g>
+	<g transform="translate(350,70)">
+		<path  class="key-shape" d="M70,0 v20 M140,0 v20 M210,0 v20"></path>
+		<rect class="key-shape" x="0" y="0" width="280" height="20" rx="2" ry="2"></rect>
+		<g fill="white" text-anchor="middle" transform="translate(0,15)">
+		 <text x="35">F5</text>
+		 <text x="105">F6</text>
+		 <text x="175">F7</text>
+		 <text x="245">F8</text></g>
+		<g fill="white" transform="translate(0,35)">
+		 <use x="-10" y="10" xlink:href="#icon-slide-show"></use>
+		 <text x="5">slide show</text>
+		 <text x="75"></text>
+		 <text x="145"></text>
+		 <text x="215"></text></g>
+		<g class="shift-color" transform="translate(0,50)">
+		 <text x="10">settings ...</text>
+		 <text x="75"></text>
+		 <text x="145"></text>
+		 <text x="215"></text></g>
+		<g class="ctrl-color" transform="translate(0,-8)">
+		 <text x="5"></text>
+		 <text x="75"></text>
+		 <text x="145"></text>
+		 <text x="215"></text></g>
+		<g class="shift-ctrl-color" transform="translate(0,-25)">
+		 <text x="5"></text>
+		 <text x="75"></text>
+		 <text x="145"></text>
+		 <text x="215"></text></g>
+	</g>
+	<g transform="translate(640,70)">
+		<path class="key-shape" d="M70,0 v20 M140,0 v20 M210,0 v20"></path>
+		<rect class="key-shape" x="0" y="0" width="280" height="20" rx="2" ry="2"></rect>
+		<g fill="white" text-anchor="middle" transform="translate(0,15)">
+		 <text x="35">F9</text>
+		 <text x="105">F10</text>
+		 <text x="175">F11</text>
+		 <text x="245">F12</text></g>
+		<g fill="white" transform="translate(0,35)">
+		 <text x="5">auto scale</text>
+		 <text x="75">actual pxl</text>
+		 <text x="75" y="15">x1 1:1</text>
+		 <use x="130" xlink:href="#icon-screen"></use>
+		 <text x="145">full screen</text>
+		 <use x="200" xlink:href="#icon-only"></use>
+		 <text x="215">only photo</text></g>
+		<g class="shift-color" transform="translate(0,50)">
+		 <use x="-10" xlink:href="#icon-zoom-in"></use>
+		 <text x="5">zoom in</text>
+		 <text x="75"></text>
+		 <text x="145"></text>
+		 <text x="215"></text></g>
+		<g class="ctrl-color" transform="translate(0,-8)">
+		 <use x="-10" xlink:href="#icon-zoom-out"></use>
+		 <text x="5">zoom out</text>
+		 <text x="75"></text>
+		 <text x="145"></text>
+		 <text x="215"></text></g>
+		<g class="shift-ctrl-color" transform="translate(0,-25)">
+		 <text x="5"></text>
+		 <text x="75"></text>
+		 <text x="145"></text>
+		 <text x="215"></text></g>
+	</g>
+
+	<!-- browse photo -->
+	<g transform="translate(710,250)">
+		<rect class="key-shape" x="-80" y="0" width="70" height="20" rx="4" ry="4"></rect>
+		<text x="-45" y="15" fill="white" text-anchor="middle" >Back Space</text>
+		<path class="key-shape" d="M70,0 v40 M140,0 v40 M0,20 h210"></path>
+		<rect class="key-shape" x="0" y="0" width="210" height="40" rx="4" ry="4"></rect>
+		<g fill="white" text-anchor="middle" transform="translate(0,15)">
+		 <text x="35">Insert</text>
+		 <text x="105">Home</text>
+		 <text x="175">Page Up</text></g>
+		<g fill="white" text-anchor="middle" transform="translate(0,35)">
+		 <text x="35">Delete</text>
+		 <text x="105">End</text>
+		 <text x="175">Page Down</text></g>
+		<g fill="white" transform="translate(0,55)">
+		 <text x="5"></text>
+		 <use x="60" xlink:href="#icon-shuffle"></use>
+		 <text x="75">shuffle</text>
+		 <use x="130" xlink:href="#icon-next"></use>
+		 <text x="145">next</text></g>
+		<g class="shift-color" transform="translate(0,70)">
+		 <text x="5">delete photo</text>
+		 <text x="75"></text>
+		 <text x="145"></text>
+		 <text x="-40">Shift+</text></g>
+		<g fill="white" transform="translate(0,-8)">
+		 <text x="5" y="-30">BROWSE PHOTO</text>
+		 <text x="5"></text>
+		 <use x="60" xlink:href="#icon-first"></use>
+		 <text x="75">first</text>
+		 <use x="130" xlink:href="#icon-prev"></use>
+		 <text x="145">previous</text>
+		 <use x="-95" xlink:href="#icon-shuffle-back"></use>
+		 <text x="-80">shuffle back</text></g>
+	</g>
 	
-		</defs>
+	<!-- cursor keys -->
+	<g transform="translate(710,390)">
+		<rect class="key-shape" x="70" y="0" width="70" height="40" rx="4" ry="4"></rect>
+		<rect class="key-shape" x="0" y="20" width="210" height="20" rx="4" ry="4"></rect>
+		<g fill="white" transform="translate(0,0)">
+		 <use x="98" y="15" stroke="white" xlink:href="#chr-up"></use>
+		 <!--text x="105">Home</text--></g>
+		 <use x="28" y="35" stroke="white" xlink:href="#chr-left"></use>
+		 <use x="98" y="35" stroke="white" xlink:href="#chr-down"></use>
+		 <use x="168" y="35" stroke="white" xlink:href="#chr-right"></use>
+		<g fill="white" transform="translate(0,55)">
+		 <text x="5">scroll right</text>
+		 <text x="75">scroll down</text>
+		 <text x="145">scroll right</text></g>
+		<g class="ctrl-color" transform="translate(0,70)">
+		 <text x="-40">Ctrl +</text>
+		 <text x="5"></text>
+		 <text x="75">zoom out</text>
+		 <text x="145"></text>
+		 <!--text x="-30">Shift+</text--></g>
+		<g fill="white" transform="translate(0,-8)">
+		 <text x="75">scroll up</text></g>
+		<g class="ctrl-color" transform="translate(0,-25)">
+		 <text x="75">zoom in</text></g>
+	</g>
 
-		<!-- function keys F1..12 -->
-		<g transform="translate(60,40)">
-			<path class="key-shape" d="M70,0 v20 M140,0 v20 M210,0 v20"></path>
-			<rect class="key-shape" width="280" height="20" rx="2" ry="2"></rect>
-			<g fill="white" text-anchor="middle" transform="translate(0,15)">
-			 <text x="35">F1</text>
-			 <text x="105">F2</text>
-			 <text x="175">F3</text>
-			 <text x="245">F4</text></g>
-			<g fill="white" transform="translate(0,35)">
-			 <use x="-10" xlink:href="#icon-help"></use>
-			 <text x="5" id="help">HELP</text>
-			 <use x="60" xlink:href="#icon-rotate-right"></use>
-			 <text x="75">rotate right</text>
-			 <text x="145"></text>
-			 <text x="215"></text></g>
-			<g fill="yellow" transform="translate(0,50)">
-			 <text x="5"></text>
-			 <use x="60" xlink:href="#icon-rotate-left"></use>
-			 <!--use x="60" xlink:href="#icon-left-right"></use-->
-			 <text x="75">rotate left</text>
-			 <text x="145"></text>
-			 <text x="215"></text>
-			 <text x="-30">Shift+</text></g>
-			<g fill="aqua" transform="translate(0,-8)">
-			 <text x="5"></text>
-			 <use x="60" xlink:href="#icon-up-down"></use>
-			 <text x="75">flip up/down</text>
-			 <text x="145"></text>
-			 <text x="215"></text>
-			 <text x="-25">Ctrl+</text></g>
-			<g fill="lime" transform="translate(0,-25)">
-			 <text x="5"></text>
-			 <use x="60" xlink:href="#icon-left-right"></use>
-			 <text x="75">flip left/right</text>
-			 <text x="145"></text>
-			 <text x="215"></text>
-			 <text x="-50">Shift + Ctrl</text></g>
-		</g>
-		<g transform="translate(350,40)">
-			<path  class="key-shape" d="M70,0 v20 M140,0 v20 M210,0 v20"></path>
-			<rect class="key-shape" x="0" y="0" width="280" height="20" rx="2" ry="2"></rect>
-			<g fill="white" text-anchor="middle" transform="translate(0,15)">
-			 <text x="35">F5</text>
-			 <text x="105">F6</text>
-			 <text x="175">F7</text>
-			 <text x="245">F8</text></g>
-			<g fill="white" transform="translate(0,35)">
-			 <use x="-10" y="10" xlink:href="#icon-slide-show"></use>
-			 <text x="5">slide show</text>
-			 <text x="75"></text>
-			 <text x="145"></text>
-			 <text x="215"></text></g>
-			<g fill="yellow" transform="translate(0,50)">
-			 <text x="10">settings ...</text>
-			 <text x="75"></text>
-			 <text x="145"></text>
-			 <text x="215"></text></g>
-			<g fill="aqua" transform="translate(0,-8)">
-			 <text x="5"></text>
-			 <text x="75"></text>
-			 <text x="145"></text>
-			 <text x="215"></text></g>
-			<g fill="lime" transform="translate(0,-25)">
-			 <text x="5"></text>
-			 <text x="75"></text>
-			 <text x="145"></text>
-			 <text x="215"></text></g>
-		</g>
-		<g transform="translate(640,40)">
-			<path class="key-shape" d="M70,0 v20 M140,0 v20 M210,0 v20"></path>
-			<rect class="key-shape" x="0" y="0" width="280" height="20" rx="2" ry="2"></rect>
-			<g fill="white" text-anchor="middle" transform="translate(0,15)">
-			 <text x="35">F9</text>
-			 <text x="105">F10</text>
-			 <text x="175">F11</text>
-			 <text x="245">F12</text></g>
-			<g fill="white" transform="translate(0,35)">
-			 <text x="5">auto scale</text>
-			 <text x="75">full scale</text>
-			 <text x="145">full screen</text>
-			 <text x="215">only photo</text></g>
-			<g fill="yellow" transform="translate(0,50)">
-			 <use x="-10" xlink:href="#icon-zoom-in"></use>
-			 <text x="5">zoom in</text>
-			 <text x="75"></text>
-			 <text x="145"></text>
-			 <text x="215"></text></g>
-			<g fill="aqua" transform="translate(0,-8)">
-			 <use x="-10" xlink:href="#icon-zoom-out"></use>
-			 <text x="5">zoom out</text>
-			 <text x="75"></text>
-			 <text x="145"></text>
-			 <text x="215"></text></g>
-			<g fill="lime" transform="translate(0,-25)">
-			 <text x="5"></text>
-			 <text x="75"></text>
-			 <text x="145"></text>
-			 <text x="215"></text></g>
-		</g>
+	<!-- mouse scroll -->
+	<g transform="translate(200,300)">
+		<path stroke="white" stroke-width="2" fill="none"
+		 d="M0,0 C50,20 50,100 50,180 0,200 -50,180 -50,100 -50,20 0,0 0,0"></path>
+		<circle fill="red" cx="0" cy="0" r="2"></circle>
+		<circle fill="red" cx="50" cy="20" r="2"></circle>
+		<circle fill="red" cx="50" cy="180" r="2"></circle>
+		<circle fill="red" cx="0" cy="200" r="2"></circle>
+		<circle fill="red" cx="-50" cy="180" r="2"></circle>
+		<circle fill="red" cx="-50" cy="20" r="2"></circle>
+		<circle fill="red" cx="0" cy="0" r="2"></circle>
+	</g>
+</svg>
 
-		<!-- browsing -->
-		<g transform="translate(710,200)">
-			<rect class="key-shape" x="-80" y="0" width="70" height="20" rx="4" ry="4"></rect>
-			<text x="-45" y="15" fill="white" text-anchor="middle" >Back Space</text>
-			<path class="key-shape" d="M70,0 v40 M140,0 v40 M0,20 h210"></path>
-			<rect class="key-shape" x="0" y="0" width="210" height="40" rx="4" ry="4"></rect>
-			<g fill="white" text-anchor="middle" transform="translate(0,15)">
-			 <text x="35">Insert</text>
-			 <text x="105">Home</text>
-			 <text x="175">Page Up</text></g>
-			<g fill="white" text-anchor="middle" transform="translate(0,35)">
-			 <text x="35">Delete</text>
-			 <text x="105">End</text>
-			 <text x="175">Page Down</text></g>
-			<g fill="white" transform="translate(0,55)">
-			 <text x="5"></text>
-			 <use x="60" xlink:href="#icon-shuffle"></use>
-			 <text x="75">shuffle</text>
-			 <use x="125" xlink:href="#icon-next"></use>
-			 <text x="145">next photo</text></g>
-			<g fill="yellow" transform="translate(0,70)">
-			 <text x="5">delete photo</text>
-			 <text x="75"></text>
-			 <text x="145"></text>
-			 <text x="-30">Shift+</text></g>
-			<g fill="white" transform="translate(0,-8)">
-			 <text x="5"></text>
-			 <use x="55" xlink:href="#icon-first"></use>
-			 <text x="75">first photo</text>
-			 <use x="125" xlink:href="#icon-prev"></use>
-			 <text x="145">previous photo</text>
-			 <use x="-95" xlink:href="#icon-back"></use>
-			 <text x="-80">go backward</text></g>
-			 
-		</g>
-	
-		<!-- cursor keys -->
-		<g transform="translate(710,350)">
-			<rect class="key-shape" x="70" y="0" width="70" height="40" rx="4" ry="4"></rect>
-			<rect class="key-shape" x="0" y="20" width="210" height="20" rx="4" ry="4"></rect>
-			<g fill="white" transform="translate(0,0)">
-			 <use x="98" y="15" stroke="white" xlink:href="#chr-up"></use>
-			 <!--text x="105">Home</text--></g>
-			 <use x="28" y="35" stroke="white" xlink:href="#chr-left"></use>
-			 <use x="98" y="35" stroke="white" xlink:href="#chr-down"></use>
-			 <use x="168" y="35" stroke="white" xlink:href="#chr-right"></use>
-			<g fill="white" transform="translate(0,55)">
-			 <text x="5">scroll right</text>
-			 <text x="75">scroll down</text>
-			 <text x="145">scroll right</text></g>
-			<g fill="yellow" transform="translate(0,70)">
-			 <text x="5"></text>
-			 <text x="75"></text>
-			 <text x="145"></text>
-			 <!--text x="-30">Shift+</text--></g>
-			<g fill="white" transform="translate(0,-8)">
-			 <text x="5"></text>
-			 <text x="75">scroll up</text></g>
-		</g>
+<script>
+'use strict';
 
-		<!-- mouse scroll -->
-		<g transform="translate(200,300)">
-			<path stroke="white" stroke-width="2"
-			 d="M0,0
-			  C50,20 50,100 50,180 0,200 -50,180 -50,100 -50,20 0,0"></path>
-			M0,0 C50,20 50,180 0,200 -50,180 -50,20 0,0
-			<circle fill="red" cx="0" cy="0" r="2"></circle>
-			<circle fill="red" cx="50" cy="20" r="2"></circle>
-			<circle fill="red" cx="50" cy="180" r="2"></circle>
-			<circle fill="red" cx="0" cy="200" r="2"></circle>
-			<circle fill="red" cx="-50" cy="180" r="2"></circle>
-			<circle fill="red" cx="-50" cy="20" r="2"></circle>
-			<circle fill="red" cx="0" cy="0" r="2"></circle>
-		</g>
-	</svg>
+function resized() {
+	var sx = window.innerWidth / help_svg.clientWidth;
+	var sy = window.innerHeight / help_svg.clientHeight;
+	document.body.style.zoom =  (sx<sy) ? sx : sy;
+}
 
+resized();
+window.onresize = resized;
+
+var phase=0;
+setInterval(function(){
+	phase = (phase+1)%8;
+	switch (phase) {
+	case 0:
+	case 2: F1.style.fill = help.style.fill = 'gray'; break;
+	default: F1.style.fill = help.style.fill = 'white'; break;
+	}
+}, 150);
+</script>
 </body>
 </html>

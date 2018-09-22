@@ -54,6 +54,7 @@
             this.ShowInTaskbar = false;
             this.Text = "OverlayForm";
             this.TransparencyKey = System.Drawing.Color.Lime;
+            this.Shown += new System.EventHandler(this.OverlayForm_Shown);
             this.ResumeLayout(false);
 
         }

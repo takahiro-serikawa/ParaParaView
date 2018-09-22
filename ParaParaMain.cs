@@ -1283,19 +1283,21 @@ namespace ParaParaView
         // image rotation and flip
         private void ViewOrientItem_Click(object sender, EventArgs e)
         {
-            var menu = sender as ToolStripItem;
-            var op = (RotateFlipType)int.Parse((string)menu.Tag);
-            var sw2 = Stopwatch.StartNew();
-            Photo.Bitmap.RotateFlip(op);
-            image_orientation = RotateFlipOperation.Op(image_orientation, op);
+            if (Photo.Bitmap != null) {
+                var menu = sender as ToolStripItem;
+                var op = (RotateFlipType)int.Parse((string)menu.Tag);
+                var sw2 = Stopwatch.StartNew();
+                Photo.Bitmap.RotateFlip(op);
+                image_orientation = RotateFlipOperation.Op(image_orientation, op);
 
-            cache.Discard(image_filename);
-            Photo.Refresh();
-            DebugOut(Color.White, "rotate flip{0}; {1}msec", op, sw2.ElapsedMilliseconds);
+                cache.Discard(image_filename);
+                Photo.Refresh();
+                DebugOut(Color.White, "rotate flip{0}; {1}msec", op, sw2.ElapsedMilliseconds);
 
-            //MakeThumb(bitmap);
-            thumb_bitmap.RotateFlip(op);
-            FitThumb();
+                //MakeThumb(bitmap);
+                thumb_bitmap.RotateFlip(op);
+                FitThumb();
+            }
         }
 
         private void Photo_MouseDown(object sender, MouseEventArgs e)
