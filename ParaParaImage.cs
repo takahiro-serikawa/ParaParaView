@@ -244,6 +244,9 @@ namespace ParaParaView
             }
         }
 
+        public float ImageScaleMaximum { get; set; } = 16f;
+        public float ImageScaleMinimum { get; set; } = 1/16f;
+
         float scale = 1f;
 
         /// <summary>
@@ -252,6 +255,11 @@ namespace ParaParaView
         public float ImageFixedScale {
             get { return scale; }
             set {
+                if (value < ImageScaleMinimum)
+                    value = ImageScaleMinimum;
+                else if (value > ImageScaleMaximum)
+                    value = ImageScaleMaximum;
+
                 if (scale != value) {
                     scale = value;
                     ImageScaleMode = ImageScaleMode.FixedScale;
