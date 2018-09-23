@@ -118,7 +118,7 @@ svg .key-shape {
 			<path fill="none" stroke="white" stroke-width="2" d="M0,4 h3 l5,4 h3 l-2,3 M0,8 h3 l5,-4 h3 l-2,-3"></path>
 		</g>
 		<g id="icon-shuffle-back" transform="translate(0,-12)">
-			<path fill="none" stroke="white" stroke-width="2" d="M0,4 h3 l5,4 h3 l-2,3 M0,8 h3 l5,-4 h3 l-2,-3"></path>
+			<path fill="none" stroke="white" stroke-width="2" d="M12,4 h-3 l-5,4 h-3 l2,3 M12,8 h-3 l-5,-4 h-3 l2,-3"></path>
 		</g>
 		<g id="icon-screen" transform="translate(0,-12)">
 			<rect x="0" y="2" width="12" height="8" fill="white"></rect>
@@ -161,14 +161,14 @@ svg .key-shape {
 		 <text x="75">rotate left</text>
 		 <text x="145"></text>
 		 <text x="215"></text>
-		 <text x="-35">Shift+</text></g>
+		 <text x="-35">Shift +</text></g>
 		<g class="ctrl-color" transform="translate(0,-8)">
 		 <text x="5"></text>
 		 <use x="60" xlink:href="#icon-up-down"></use>
 		 <text x="75">flip up/down</text>
 		 <text x="145"></text>
 		 <text x="215"></text>
-		 <text x="-30">Ctrl+</text></g>
+		 <text x="-30">Ctrl +</text></g>
 		<g class="shift-ctrl-color" transform="translate(0,-25)">
 		 <text x="5"></text>
 		 <use x="60" xlink:href="#icon-left-right"></use>
@@ -266,7 +266,7 @@ svg .key-shape {
 		 <text x="5">delete photo</text>
 		 <text x="75"></text>
 		 <text x="145"></text>
-		 <text x="-40">Shift+</text></g>
+		 <text x="-40">Shift +</text></g>
 		<g fill="white" transform="translate(0,-8)">
 		 <text x="5" y="-30">BROWSE PHOTO</text>
 		 <text x="5"></text>
@@ -297,7 +297,7 @@ svg .key-shape {
 		 <text x="5"></text>
 		 <text x="75">zoom out</text>
 		 <text x="145"></text>
-		 <!--text x="-30">Shift+</text--></g>
+		 <!--text x="-30">Shift +</text--></g>
 		<g fill="white" transform="translate(0,-8)">
 		 <text x="75">scroll up</text></g>
 		<g class="ctrl-color" transform="translate(0,-25)">
@@ -306,16 +306,26 @@ svg .key-shape {
 
 	<!-- mouse scroll -->
 	<g transform="translate(200,300)">
-		<path stroke="white" stroke-width="2" fill="none"
-		 d="M0,0 C50,20 50,100 50,180 0,200 -50,180 -50,100 -50,20 0,0 0,0"></path>
-		<circle fill="red" cx="0" cy="0" r="2"></circle>
-		<circle fill="red" cx="50" cy="20" r="2"></circle>
-		<circle fill="red" cx="50" cy="180" r="2"></circle>
-		<circle fill="red" cx="0" cy="200" r="2"></circle>
-		<circle fill="red" cx="-50" cy="180" r="2"></circle>
-		<circle fill="red" cx="-50" cy="20" r="2"></circle>
-		<circle fill="red" cx="0" cy="0" r="2"></circle>
+		<g id="mouse-outline" stroke="white">
+		 <!--rect x="-40" y="-50" width="80" height="150" rx="15" ry="15" stroke-width="2"></rect-->
+		 <ellipse cx="0" cy="20" rx="50" ry="70"stroke-width="2"></ellipse>
+		 <rect id="left-button" x="-35" y="-45" width="25" height="50" rx="7" ry="7" fill="black"></rect>
+		 <rect id="right-button" x="10" y="-45" width="25" height="50" rx="7" ry="7" fill="black"></rect>
+		 <rect x="-7" y="-35" width="14" height="35" rx="2" ry="2"></rect>
+		 <line id="WHEEL" stroke-width="10" y1="-33" y2="-2" stroke-dasharray="1 1 2 2 3 3 4 4 3 3 2 2 1 1"></line>
+		</g>
 	</g>
+
+	<!-- drag and drop to open -->
+	<g text-anchor="middle" font-size="18" transform="translate(480,480)">
+		<rect x="-20" y="-70" width="40" height="40" stroke="gray"></rect>
+		<path stroke="white" fill="black" d="M20,-30 l5,10 -3,0 0,5 -4,0 0,-5 -3,0z"
+		 transform="rotate(-30)"></path>
+		<rect x="-15" y="-60" width="30" height="20" stroke="white" fill="gray"></rect>
+		<text y="-10" fill="blue">drop HERE</text>
+		<text y="10" fill="blue">image files to open.</text>
+	</g>
+	
 </svg>
 
 <script>
@@ -338,6 +348,9 @@ setInterval(function(){
 	case 2: F1.style.fill = help.style.fill = 'gray'; break;
 	default: F1.style.fill = help.style.fill = 'white'; break;
 	}
+
+	//console.log(WHEEL.getAttribute("stroke-dashoffset"));
+	//WHEEL.setAttribute("stroke-dashoffset", phase);
 }, 150);
 </script>
 </body>
