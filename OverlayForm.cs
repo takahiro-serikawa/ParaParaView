@@ -14,7 +14,7 @@ namespace ParaParaView
 {
     public partial class OverlayForm: Form
     {
-        Form real { get; set; }
+        protected Form real { get; set; }
 
         public OverlayForm()
         {

@@ -7,12 +7,36 @@
 <style>
 body {
 	font-family: Arial;
-	font-size: 12x;
+	font-size: 9pt;
 	color: white;
 	padding: 0;
 	margin: 0;
 
 	/*background-color: black;*/
+}
+
+#license-box {
+	position: absolute;
+	top: 420px;
+	left: 600px;
+}
+
+#performance-box {
+	position: absolute;
+	top: 420px;
+	left: 350px;
+}
+
+h1 {
+	color: #edf;
+	text-align: center;
+	margin: 0;
+}
+.right-align {
+	text-align: right;
+}
+.center-align {
+	text-align: center;
 }
 
 .key-rect {
@@ -46,6 +70,10 @@ svg .shift-color {
 
 svg .shift-ctrl-color {
 	fill: lime;
+}
+
+svg .mod-key-active {
+	font-weight: bold;
 }
 
 svg text {
@@ -134,7 +162,7 @@ svg .key-shape {
 	</defs>
 
 	<!-- function keys F1..12 -->
-	<g transform="translate(60,70)">
+	<g transform="translate(60,50)">
 		<rect class="key-shape" width="40" x="-50" height="20" rx="2" ry="2"></rect>
 			
 		<path class="key-shape" d="M70,0 v20 M140,0 v20 M210,0 v20"></path>
@@ -177,7 +205,7 @@ svg .key-shape {
 		 <text x="215"></text>
 		 <text x="-55">Shift + Ctrl</text></g>
 	</g>
-	<g transform="translate(350,70)">
+	<g transform="translate(350,50)">
 		<path  class="key-shape" d="M70,0 v20 M140,0 v20 M210,0 v20"></path>
 		<rect class="key-shape" x="0" y="0" width="280" height="20" rx="2" ry="2"></rect>
 		<g fill="white" text-anchor="middle" transform="translate(0,15)">
@@ -207,7 +235,7 @@ svg .key-shape {
 		 <text x="145"></text>
 		 <text x="215"></text></g>
 	</g>
-	<g transform="translate(640,70)">
+	<g transform="translate(640,50)">
 		<path class="key-shape" d="M70,0 v20 M140,0 v20 M210,0 v20"></path>
 		<rect class="key-shape" x="0" y="0" width="280" height="20" rx="2" ry="2"></rect>
 		<g fill="white" text-anchor="middle" transform="translate(0,15)">
@@ -243,7 +271,7 @@ svg .key-shape {
 	</g>
 
 	<!-- browse photo -->
-	<g transform="translate(710,250)">
+	<g transform="translate(710,180)">
 		<rect class="key-shape" x="-80" y="0" width="70" height="20" rx="4" ry="4"></rect>
 		<text x="-45" y="15" fill="white" text-anchor="middle" >Back Space</text>
 		<path class="key-shape" d="M70,0 v40 M140,0 v40 M0,20 h210"></path>
@@ -268,7 +296,7 @@ svg .key-shape {
 		 <text x="145"></text>
 		 <text x="-40">Shift +</text></g>
 		<g fill="white" transform="translate(0,-8)">
-		 <text x="5" y="-30">BROWSE PHOTO</text>
+		 <text x="5" y="-25">BROWSING</text>
 		 <text x="5"></text>
 		 <use x="60" xlink:href="#icon-first"></use>
 		 <text x="75">first</text>
@@ -277,9 +305,9 @@ svg .key-shape {
 		 <use x="-95" xlink:href="#icon-shuffle-back"></use>
 		 <text x="-80">shuffle back</text></g>
 	</g>
-	
+
 	<!-- cursor keys -->
-	<g transform="translate(710,390)">
+	<g transform="translate(710,300)">
 		<rect class="key-shape" x="70" y="0" width="70" height="40" rx="4" ry="4"></rect>
 		<rect class="key-shape" x="0" y="20" width="210" height="20" rx="4" ry="4"></rect>
 		<g fill="white" transform="translate(0,0)">
@@ -317,15 +345,32 @@ svg .key-shape {
 	</g>
 
 	<!-- drag and drop to open -->
-	<g text-anchor="middle" font-size="18" transform="translate(480,480)">
+	<g text-anchor="middle" font-size="18" transform="translate(480,400)">
 		<rect x="-20" y="-70" width="40" height="40" stroke="gray"></rect>
 		<path stroke="white" fill="black" d="M20,-30 l5,10 -3,0 0,5 -4,0 0,-5 -3,0z"
 		 transform="rotate(-30)"></path>
 		<rect x="-15" y="-60" width="30" height="20" stroke="white" fill="gray"></rect>
-		<text y="-10" fill="blue">drop HERE</text>
-		<text y="10" fill="blue">image files to open.</text>
+		<text y="-10" fill="white">drop HERE</text>
+		<text y="10" fill="white">image files to open.</text>
 	</g>
 	
+	<!-- license -->
+	<g fill="white" transform="translate(770,440)">
+		<text text-anchor="middle" fill="#edf" font-size="24">para para Photo viewer</text>
+		<text text-anchor="middle" y="15"> version <tspan id="app_ver">0.62</tspan></text>
+		<text text-anchor="middle" y="30"> --- browse for DegiCame photos --- </text>
+		
+		<text x="-140" y="55"> © 2018 芹川敬洋 (SERIKAWA, Takahiro)</text>
+		<text x="-50" y="70">released under
+		 <tspan xlink:href="https://opensource.org/licenses/mit-license.php">MIT license.</tspan></text>
+	</g>
+
+	<!-- performance -->
+	<g fill="white" transform="translate(400,460)">
+		<text y="0"><tspan id="first_date">2018.8.23</tspan>から、今までに、</text>
+		<text y="15">画像キャッシュに <tspan id="cache_total_write">0</tspan> 書き込みました。</text>
+		<text y="30">画像を<tspan id="total_photo_count">0</tspan>枚表示しました。</text>
+	</g>
 </svg>
 
 <script>
@@ -352,6 +397,29 @@ setInterval(function(){
 	//console.log(WHEEL.getAttribute("stroke-dashoffset"));
 	//WHEEL.setAttribute("stroke-dashoffset", phase);
 }, 150);
+
+// called from WebBrowser
+function prekey(action, key){
+	switch (key) {
+	case 'ControlKey': key = 'ctrl-color'; break;
+	case 'ShiftKey': key = 'shift-color'; break;
+	default: return
+	}
+	var ee = document.getElementsByClassName(key);
+	[].forEach.call(ee, function(e){
+		var values = e.getAttribute('class');
+		if (action === 'down') {
+			if (values.indexOf('mod-key-active') < 0)
+				values += ' mod-key-active'
+		} else {
+			while (values.indexOf('mod-key-active') >= 0)
+				values = values.replace(' mod-key-active', '')
+		}
+		e.setAttribute('class', values)
+	});
+}
+
 </script>
+
 </body>
 </html>

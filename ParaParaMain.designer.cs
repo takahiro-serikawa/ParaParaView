@@ -139,7 +139,6 @@
             this.printDocument1 = new System.Drawing.Printing.PrintDocument();
             this.PageUpDownTimer = new System.Windows.Forms.Timer(this.components);
             this.Photo = new ParaParaView.ParaParaImage();
-            this.HelpHelpItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mainMenuStrip.SuspendLayout();
             this.DebugBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.MediaSpace)).BeginInit();
@@ -722,8 +721,7 @@
             // HelpMenu
             // 
             this.HelpMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.HelpAboutItem,
-            this.HelpHelpItem});
+            this.HelpAboutItem});
             this.HelpMenu.ForeColor = System.Drawing.SystemColors.ControlText;
             this.HelpMenu.Name = "HelpMenu";
             this.HelpMenu.Size = new System.Drawing.Size(46, 22);
@@ -732,7 +730,8 @@
             // HelpAboutItem
             // 
             this.HelpAboutItem.Name = "HelpAboutItem";
-            this.HelpAboutItem.Size = new System.Drawing.Size(216, 22);
+            this.HelpAboutItem.ShortcutKeys = System.Windows.Forms.Keys.F1;
+            this.HelpAboutItem.Size = new System.Drawing.Size(238, 22);
             this.HelpAboutItem.Text = "&About \'ParaParaView\' ...";
             this.HelpAboutItem.Click += new System.EventHandler(this.HelpAboutItem_Click);
             // 
@@ -921,7 +920,7 @@
             // 
             // Thumb
             // 
-            this.Thumb.Location = new System.Drawing.Point(0, 2);
+            this.Thumb.Location = new System.Drawing.Point(0, 0);
             this.Thumb.Name = "Thumb";
             this.Thumb.Size = new System.Drawing.Size(160, 120);
             this.Thumb.TabIndex = 8;
@@ -1121,6 +1120,8 @@
             this.Photo.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Photo.ImageFixedScale = 1F;
             this.Photo.ImageScaleByWheelEnabled = true;
+            this.Photo.ImageScaleMaximum = 16F;
+            this.Photo.ImageScaleMinimum = 0.0625F;
             this.Photo.ImageScaleMode = ParaParaView.ImageScaleMode.FitToWindow;
             this.Photo.ImageScroll = new System.Drawing.Point(0, 0);
             this.Photo.ImageScrollByKeyEnabled = true;
@@ -1137,14 +1138,6 @@
             this.Photo.ImageScrolled += new System.EventHandler(this.Photo_ImageScrolled);
             this.Photo.HasteTimeouted += new System.EventHandler(this.Photo_HasteTimeouted);
             this.Photo.Paint += new System.Windows.Forms.PaintEventHandler(this.Photo_Paint);
-            // 
-            // HelpHelpItem
-            // 
-            this.HelpHelpItem.Name = "HelpHelpItem";
-            this.HelpHelpItem.ShortcutKeys = System.Windows.Forms.Keys.F1;
-            this.HelpHelpItem.Size = new System.Drawing.Size(216, 22);
-            this.HelpHelpItem.Text = "&Help ...";
-            this.HelpHelpItem.Click += new System.EventHandler(this.HelpHelpItem_Click);
             // 
             // ParaParaMain
             // 
@@ -1173,6 +1166,7 @@
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.ParaParaMain_DragEnter);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ParaParaMain_KeyDown);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.ParaParaMain_KeyUp);
+            this.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.ParaParaMain_PreviewKeyDown);
             this.Resize += new System.EventHandler(this.ParaParaMain_Resize);
             this.mainMenuStrip.ResumeLayout(false);
             this.mainMenuStrip.PerformLayout();
@@ -1204,7 +1198,6 @@
         private System.Windows.Forms.ToolStripMenuItem EditMenu;
         private System.Windows.Forms.ToolStripMenuItem ViewMenu;
         private System.Windows.Forms.ToolStripMenuItem HelpMenu;
-        private System.Windows.Forms.ToolStripMenuItem HelpAboutItem;
         private System.Windows.Forms.Label FullScreenLabel;
         private System.Windows.Forms.GroupBox DebugBox;
         private System.Windows.Forms.Label DebugLabel;
@@ -1299,7 +1292,7 @@
         private System.Drawing.Printing.PrintDocument printDocument1;
         private System.Windows.Forms.Timer PageUpDownTimer;
         private ParaParaView.ParaParaImage Photo;
-        private System.Windows.Forms.ToolStripMenuItem HelpHelpItem;
+        private System.Windows.Forms.ToolStripMenuItem HelpAboutItem;
     }
 }
 

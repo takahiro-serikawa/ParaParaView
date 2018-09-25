@@ -3,14 +3,14 @@
     partial class AboutForm
     {
         /// <summary>
-        /// Required designer variable.
+        /// 必要なデザイナー変数です。
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
         /// <summary>
-        /// Clean up any resources being used.
+        /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        /// <param name="disposing">マネージド リソースを破棄する場合は true を指定し、その他の場合は false を指定します。</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null)) {
@@ -19,11 +19,11 @@
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
+        #region Windows フォーム デザイナーで生成されたコード
 
         /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
+        /// デザイナー サポートに必要なメソッドです。このメソッドの内容を
+        /// コード エディターで変更しないでください。
         /// </summary>
         private void InitializeComponent()
         {
@@ -32,36 +32,31 @@
             // 
             // webBrowser1
             // 
-            this.webBrowser1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.webBrowser1.Location = new System.Drawing.Point(-1, 2);
+            this.webBrowser1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.webBrowser1.IsWebBrowserContextMenuEnabled = false;
+            this.webBrowser1.Location = new System.Drawing.Point(0, 0);
             this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
             this.webBrowser1.Name = "webBrowser1";
-            this.webBrowser1.ScriptErrorsSuppressed = true;
             this.webBrowser1.ScrollBarsEnabled = false;
-            this.webBrowser1.Size = new System.Drawing.Size(639, 240);
-            this.webBrowser1.TabIndex = 3;
-            this.webBrowser1.WebBrowserShortcutsEnabled = false;
+            this.webBrowser1.Size = new System.Drawing.Size(640, 480);
+            this.webBrowser1.TabIndex = 0;
             // 
-            // AboutForm
+            // HelpForm
             // 
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.BackColor = System.Drawing.Color.Black;
-            this.ClientSize = new System.Drawing.Size(640, 240);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.ClientSize = new System.Drawing.Size(640, 480);
             this.Controls.Add(this.webBrowser1);
-            this.Font = new System.Drawing.Font("Arial", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.KeyPreview = true;
-            this.Margin = new System.Windows.Forms.Padding(7);
-            this.Name = "AboutForm";
-            this.Opacity = 0.5D;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-            this.Text = "AboutForm";
-            this.TransparencyKey = System.Drawing.Color.Aqua;
+            this.Name = "HelpForm";
+            this.TransparencyKey = System.Drawing.Color.Purple;
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HelpForm_KeyDown);
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.HelpForm_KeyUp);
             this.ResumeLayout(false);
 
         }
 
         #endregion
+
         private System.Windows.Forms.WebBrowser webBrowser1;
     }
 }

@@ -138,8 +138,8 @@ namespace ParaParaView
                 }
             }
 
-            var o = new OverlayForm(this);
-            o.FadeIn();
+            if (image_filename == "")
+                HelpAboutItem_Click(null, null);
         }
 
         static string _next_arg(string[] args, ref int i, string def_value)
@@ -422,6 +422,8 @@ namespace ParaParaView
         private void FileCloseItem_Click(object sender, EventArgs e)
         {
             CloseCatalog();
+
+            HelpAboutItem_Click(null, null);
         }
 
         private void AppExitItem_Click(object sender, EventArgs e)
@@ -429,7 +431,8 @@ namespace ParaParaView
             this.Close();
         }
 
-        AboutForm about_box = null;
+#if xxx
+        //AboutForm about_box = null;
 
         private void HelpAboutItem_Click(object sender, EventArgs e)
         {
@@ -448,24 +451,24 @@ namespace ParaParaView
                 about_box.FadeIn();
             }
         }
+#endif
+        AboutForm about_box = null;
 
-        HelpForm help_box = null;
-
-        private void HelpHelpItem_Click(object sender, EventArgs e)
+        private void HelpAboutItem_Click(object sender, EventArgs e)
         {
-            if (help_box == null)
-                help_box = new HelpForm(this);
+            if (about_box == null)
+                about_box = new AboutForm(this);
 
-            if (help_box.Visible) {
-                help_box.FadeOut();
+            if (about_box.Visible) {
+                about_box.FadeOut();
             } else {
-                //help_box.Params["app_ver"] = app_ver;
-                //help_box.Params["first_date"] = first_date;
-                //float[] w = { cache.TotalCacheWrite };
-                //string u = _media_space_unit(w);
-                //help_box.Params["cache_total_write"] = string.Format("{0:F3} {1}", w[0], u);
-                //help_box.Params["total_photo_count"] = total_photo_count.ToString();
-                help_box.FadeIn();
+                about_box.Params["app_ver"] = app_ver;
+                about_box.Params["first_date"] = first_date;
+                float[] w = { cache.TotalCacheWrite };
+                string u = _media_space_unit(w);
+                about_box.Params["cache_total_write"] = string.Format("{0:F3} {1}", w[0], u);
+                about_box.Params["total_photo_count"] = total_photo_count.ToString();
+                about_box.FadeIn();
             }
         }
 
@@ -1393,6 +1396,9 @@ namespace ParaParaView
 
         bool LoadImage(string filename)
         {
+            if (image_filename == "")
+                HelpAboutItem_Click(null, null);
+
             CloseImage();
             if (filename == null || !File.Exists(filename))
                 return false;
@@ -1759,6 +1765,11 @@ namespace ParaParaView
         private void Photo_Paint(object sender, PaintEventArgs e)
         {
             _refresh_benchi();
+        }
+
+        private void ParaParaMain_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+            Console.WriteLine("PreviewKeyDown({0})", e.KeyCode.ToString());
         }
 
         /// <summary>
