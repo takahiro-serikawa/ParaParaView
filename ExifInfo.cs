@@ -99,6 +99,7 @@ namespace ParaParaView
                             svalue = ivalue.ToString();
                             break;
                         case ExifType.RATIONAL:
+                        case ExifType.SRATIONAL:
                             a = (item.Value[3] << 24) | (item.Value[2] << 16) | (item.Value[1] << 8) | item.Value[0];
                             b = (item.Value[7] << 24) | (item.Value[6] << 16) | (item.Value[5] << 8) | item.Value[4];
                             fvalue = (float)a / b;
@@ -134,7 +135,8 @@ namespace ParaParaView
                             s +=  "ISO " + svalue;
                             break;
                         case ExifId.ExposureBiasValue:
-                            s += fvalue.ToString("+#;-#; ") + "(" + fvalue.ToString() + ")";
+                            //s += fvalue.ToString("+#;-#; ") + "(" + fvalue.ToString() + ")";
+                            s += fvalue.ToString("+0.#;-0.#; ");
                             break;
                         case ExifId.Orientation:
                             s += "orientation:" + svalue + "\r\n";
