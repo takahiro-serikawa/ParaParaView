@@ -50,6 +50,7 @@
             this.KeyPreview = true;
             this.Name = "AboutForm";
             this.TransparencyKey = System.Drawing.Color.Purple;
+            this.Shown += new System.EventHandler(this.AboutForm_Shown);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HelpForm_KeyDown);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.HelpForm_KeyUp);
             this.ResumeLayout(false);

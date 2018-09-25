@@ -431,45 +431,24 @@ namespace ParaParaView
             this.Close();
         }
 
-#if xxx
-        //AboutForm about_box = null;
-
-        private void HelpAboutItem_Click(object sender, EventArgs e)
-        {
-            if (about_box == null)
-                about_box = new AboutForm(this);
-
-            if (about_box.Visible) {
-                about_box.FadeOut();
-            } else {
-                about_box.Params["app_ver"] = app_ver;
-                about_box.Params["first_date"] = first_date;
-                float[] w = { cache.TotalCacheWrite };
-                string u = _media_space_unit(w);
-                about_box.Params["cache_total_write"] = string.Format("{0:F3} {1}", w[0], u);
-                about_box.Params["total_photo_count"] = total_photo_count.ToString();
-                about_box.FadeIn();
-            }
-        }
-#endif
         AboutForm about_box = null;
 
         private void HelpAboutItem_Click(object sender, EventArgs e)
         {
-            if (about_box == null)
+            if (about_box == null) {
                 about_box = new AboutForm(this);
-
-            if (about_box.Visible) {
-                about_box.FadeOut();
-            } else {
                 about_box.Params["app_ver"] = app_ver;
                 about_box.Params["first_date"] = first_date;
                 float[] w = { cache.TotalCacheWrite };
                 string u = _media_space_unit(w);
                 about_box.Params["cache_total_write"] = string.Format("{0:F3} {1}", w[0], u);
                 about_box.Params["total_photo_count"] = total_photo_count.ToString();
-                about_box.FadeIn();
             }
+
+            if (about_box.Visible)
+                about_box.FadeOut();
+            else
+                about_box.FadeIn();
         }
 
         private void ParaParaMain_DragEnter(object sender, DragEventArgs e)
@@ -1417,7 +1396,7 @@ namespace ParaParaView
                     dbg_time_load = sw.ElapsedMilliseconds;
                 } else {
                     int orientation;
-                    using(var stream = new FileStream(filename, FileMode.Open, FileAccess.Read)) {
+                    using (var stream = new FileStream(filename, FileMode.Open, FileAccess.Read)) {
                         Photo.Image = Bitmap.FromStream(stream);
                         Exif.Text = ExifInfo.MakeExifStr(Photo.Image);
                         orientation = ExifInfo.GetOrientation(Photo.Image);
@@ -1427,14 +1406,12 @@ namespace ParaParaView
                     var fi = new FileInfo(filename);
                     ExifLabel.Text = string.Format("{0}x{1} {2:N0}bytes", Photo.Image.Width, Photo.Image.Height, fi.Length);
 
-                    //if (opt_exif_orientation && orientation > 1) {
+                    if (opt_exif_orientation && orientation > 1) {
                         image_orientation = image_orientation.FromExif(orientation);
-                    //bitmap.RotateFlip(RotateFlipOperation.FromExif(orientation));
-                    var sw5 = Stopwatch.StartNew();
-                    Photo.Bitmap.RotateFlip(image_orientation);
-                    Console.WriteLine("RotateFlip; {0}msec", sw5.ElapsedMilliseconds);
-
-                    //}
+                        var sw5 = Stopwatch.StartNew();
+                        Photo.Bitmap.RotateFlip(image_orientation);
+                        Console.WriteLine("RotateFlip; {0}msec", sw5.ElapsedMilliseconds);
+                    }
 
                     if (!Photo.Bitmap.RawFormat.Equals(ImageFormat.Bmp))
                         cache[filename, 1f] = Photo.Bitmap;

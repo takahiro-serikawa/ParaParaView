@@ -12,7 +12,7 @@ body {
 	padding: 0;
 	margin: 0;
 
-	/*background-color: black;*/
+	background-color: black;
 }
 
 #license-box {
@@ -85,6 +85,15 @@ svg .key-shape {
 	stroke-width: 1px;
 	fill: none;
 }
+
+.logo-title {
+	fill: #dcf;
+	font-size: 18pt;
+}
+.logo-desc {
+	fill: #ffe;
+	font-size: 7pt;
+}
 </style>
 </head>
 
@@ -149,15 +158,19 @@ svg .key-shape {
 			<path fill="none" stroke="white" stroke-width="2" d="M12,4 h-3 l-5,4 h-3 l2,3 M12,8 h-3 l-5,-4 h-3 l2,-3"></path>
 		</g>
 		<g id="icon-screen" transform="translate(0,-12)">
-			<rect x="0" y="2" width="12" height="8" fill="white"></rect>
-			<circle cx="6" cy="6" r="2" fill="red"></circle>
-			<rect x="1" y="3" width="10" height="6" stroke="black" fill="none"></rect>
+			<rect x="0" y="2" width="12" height="8" fill="red"></rect>
+			<circle cx="6" cy="6" r="2" fill="yellow"></circle>
+			<rect x="0" y="7" width="12" height="2" fill="blue"></rect>
+			<!--rect x="1" y="3" width="10" height="6" stroke="black" fill="none"></rect-->
 			<rect x="0" y="2" width="12" height="8" stroke="white" fill="none"></rect>
 			<path stroke="white" fill="none" d="M2,12 h8 M5,12 v-2 M7,12 v-2"></path>
 		</g>
 		<g id="icon-only" transform="translate(0,-12)">
-			<rect x="0" y="2" width="12" height="8" fill="white"></rect>
-			<circle cx="6" cy="6" r="3" fill="red"></circle>
+			<rect x="0" y="2" width="12" height="8" fill="red"></rect>
+			<circle cx="6" cy="6" r="3" fill="yellow"></circle>
+			<rect x="0" y="7" width="12" height="3" fill="blue"></rect>
+			<!--rect x="0" y="2" width="12" height="8" fill="white"></rect>
+			<circle cx="6" cy="6" r="3" fill="red"></circle-->
 		</g>
 	</defs>
 
@@ -355,8 +368,8 @@ svg .key-shape {
 	</g>
 	
 	<!-- license -->
-	<g fill="white" transform="translate(770,440)">
-		<text text-anchor="middle" fill="#edf" font-size="24">para para Photo viewer</text>
+	<g class="logo-desc" transform="translate(770,440)">
+		<text text-anchor="middle" class="logo-title">para para Photo viewer</text>
 		<text text-anchor="middle" y="15"> version <tspan id="app_ver">0.62</tspan></text>
 		<text text-anchor="middle" y="30"> --- browse for DegiCame photos --- </text>
 		

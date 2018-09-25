@@ -19,14 +19,18 @@ namespace ParaParaView
 
             LoadLicense();
 
+        }
+
+        public Dictionary<string, string> Params = new Dictionary<string, string>();
+
+        private void AboutForm_Shown(object sender, EventArgs e)
+        {
             foreach (var p in Params) {
                 var elem = webBrowser1.Document.GetElementById(p.Key);
                 if (elem != null)
                     elem.InnerHtml = p.Value;
             }
         }
-
-        public Dictionary<string, string> Params = new Dictionary<string, string>();
 
         void LoadLicense()
         {
