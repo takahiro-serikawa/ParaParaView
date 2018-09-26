@@ -1253,7 +1253,6 @@ namespace ParaParaView
         {
             if (e.KeyChar == '\r') {
                 if (float.TryParse(ScaleEdit.Text, out float value)) {
-                    //Photo.ImageScaleMode = ImageScaleMode.FixedScale;
                     Photo.ImageFixedScale = value/100f;
                     e.Handled = true;
                     ScaleEdit.ForeColor = Color.Black;

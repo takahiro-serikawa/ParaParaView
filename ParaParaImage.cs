@@ -381,22 +381,21 @@ namespace ParaParaView
 
             int m = 3;
             if (offset.X > w/2)
-                offset = new Point(w/2, 0);
+                offset.X = w/2;
             else if (offset.X < -w/2)
-                offset = new Point(-w/2, 0);
+                offset.X = -w/2;
             else
                 m ^= 1;
 
             if (offset.Y > h/2)
-                offset = new Point(0, h/2);
+                offset.Y = h/2;
             else if (offset.Y < -h/2)
-                offset = new Point(0, -h/2);
+                offset.Y = -h/2;
             else
                 m ^= 2;
 
             // cancel thumb scroll
             if (m != 0) {
-                //Cursor.Current = Cursors.Default;
                 Cursor = Cursors.Cross;
                 //thumb_scroll_flag = false;
             }

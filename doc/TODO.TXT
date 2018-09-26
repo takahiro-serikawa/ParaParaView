@@ -1,8 +1,8 @@
-﻿	help.html + license.html 統合
-	起動時にAboutBox
+﻿scroll limit bug
 
 ■バグ
-cacheされた画像のEXIF
+crush bitmap on rotate
+cacheされた画像のEXIF + orientation
 メモリ不足のとき、表示中のBitmapを開放してしまう
 ○ 初回フルスクリーンのメニューが消えない
 回転とキャッシュのからみ
