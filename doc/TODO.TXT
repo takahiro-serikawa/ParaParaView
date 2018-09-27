@@ -1,6 +1,4 @@
-﻿scroll limit bug
-
-■バグ
+﻿■バグ
 crush bitmap on rotate
 cacheされた画像のEXIF + orientation
 メモリ不足のとき、表示中のBitmapを開放してしまう

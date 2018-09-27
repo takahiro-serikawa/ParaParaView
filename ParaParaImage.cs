@@ -88,6 +88,7 @@ namespace ParaParaView
             if (Bitmap != null) {
                 try {
                     float scale = ActualScale;
+                    _refresh_visible_rect();
 
                     int w = (int)(Bitmap.Width*scale + 0.5);
                     int h = (int)(Bitmap.Height*scale + 0.5);
@@ -127,7 +128,7 @@ namespace ParaParaView
                         dbg_draw_quality = "L";
                     } else {
                         g.InterpolationMode = (scale < 1.0f) ? high_quality_shrink_mode : high_quality_expand_mode;
-                        g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                        //g.PixelOffsetMode = PixelOffsetMode.HighQuality;
                         dbg_draw_quality = "H";
                     }
 
@@ -367,10 +368,10 @@ namespace ParaParaView
         /// </summary>
         /// <param name="dx"></param>
         /// <param name="dy"></param>
-        public void ScrollRelative(int dx, int dy)
+        public void ScrollRelative(float dx, float dy)
         {
-            offset.X += dx;
-            offset.Y += dy;
+            offset.X += (int)dx;
+            offset.Y += (int)dy;
 
             if (Bitmap == null)
                 return;

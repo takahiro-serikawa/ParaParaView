@@ -1526,13 +1526,11 @@ namespace ParaParaView
             const int DASH = 6;
             thumb_pen.DashPattern = new float[] { 3, DASH-3 };
             thumb_pen.DashOffset = -Environment.TickCount % (DASH*100) / 100;
-            //thumb_pen.Color = ColorCycle.Degree(Environment.TickCount / 10 % 360);
 
             var g = e.Graphics;
             if (thumb_bitmap != null) {
                 g.DrawImage(thumb_bitmap, 0, 0, Thumb.Width, Thumb.Height);
 
-                //thumb_rect = GetViewPortRect();
                 thumb_rect = Rectangle.Round(Photo.GetVisibleRect(thumb_scale));
                 g.DrawRectangle(Pens.White, thumb_rect);
                 g.DrawRectangle(thumb_pen, thumb_rect);
@@ -1544,7 +1542,7 @@ namespace ParaParaView
 
         private void Thumb_MouseDown(object sender, MouseEventArgs e)
         {
-            Thumb.Focus();
+            //Thumb.Focus();
 
             if (e.Button == MouseButtons.Left && Photo.Image != null && thumb_rect.Contains(e.Location)) {
                 thumb_scroll_flag = true;
@@ -1561,9 +1559,19 @@ namespace ParaParaView
             }
 
             if (thumb_scroll_flag) {
+                var loc = e.Location;
+                if (loc.X < 0)
+                    loc.X = 0;
+                else if (loc.X > Thumb.Width)
+                    loc.X = Thumb.Width;
+                if (loc.Y < 0)
+                    loc.Y = 0;
+                else if (loc.Y > Thumb.Height)
+                    loc.Y = Thumb.Height;
+
                 float scale = Photo.ActualScale;
-                Photo.ScrollRelative(-(int)((e.Location.X - last_loc.X) * scale / thumb_scale), -(int)((e.Location.Y - last_loc.Y) * scale / thumb_scale));
-                last_loc = e.Location;
+                Photo.ScrollRelative(-((loc.X - last_loc.X) * scale / thumb_scale), -((loc.Y - last_loc.Y) * scale / thumb_scale));
+                last_loc = loc;
             }
         }
 
