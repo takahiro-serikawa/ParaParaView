@@ -45,7 +45,8 @@
             this.toolStripMenuItem8 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripMenuItem9 = new System.Windows.Forms.ToolStripSeparator();
             this.FilePrintItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.FileaSaveItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.FileSaveItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.FileaSaveOrigItem = new System.Windows.Forms.ToolStripMenuItem();
             this.FileCloseItem = new System.Windows.Forms.ToolStripMenuItem();
             this.EjectItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
@@ -184,7 +185,8 @@
             this.RecentMenu,
             this.toolStripMenuItem9,
             this.FilePrintItem,
-            this.FileaSaveItem,
+            this.FileSaveItem,
+            this.FileaSaveOrigItem,
             this.FileCloseItem,
             this.EjectItem,
             this.toolStripMenuItem3,
@@ -247,13 +249,20 @@
             this.FilePrintItem.Text = "&Print ...";
             this.FilePrintItem.Click += new System.EventHandler(this.FilePrintItem_Click);
             // 
-            // FileaSaveItem
+            // FileSaveItem
             // 
-            this.FileaSaveItem.Name = "FileaSaveItem";
-            this.FileaSaveItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.FileaSaveItem.Size = new System.Drawing.Size(210, 22);
-            this.FileaSaveItem.Text = "&Save ...";
-            this.FileaSaveItem.Click += new System.EventHandler(this.FileaSaveItem_Click);
+            this.FileSaveItem.Name = "FileSaveItem";
+            this.FileSaveItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+            this.FileSaveItem.Size = new System.Drawing.Size(210, 22);
+            this.FileSaveItem.Text = "&Save ...";
+            this.FileSaveItem.Click += new System.EventHandler(this.FileSaveItem_Click);
+            // 
+            // FileaSaveOrigItem
+            // 
+            this.FileaSaveOrigItem.Name = "FileaSaveOrigItem";
+            this.FileaSaveOrigItem.Size = new System.Drawing.Size(210, 22);
+            this.FileaSaveOrigItem.Text = "Save Original ...";
+            this.FileaSaveOrigItem.Click += new System.EventHandler(this.FileSaveOrigItem_Click);
             // 
             // FileCloseItem
             // 
@@ -1229,7 +1238,7 @@
         private System.Windows.Forms.Label IndexLabel;
         private System.Windows.Forms.Label ScaleLabel;
         private System.Windows.Forms.Label DrawBenchLabel;
-        private System.Windows.Forms.ToolStripMenuItem FileaSaveItem;
+        private System.Windows.Forms.ToolStripMenuItem FileSaveItem;
         private System.Windows.Forms.ToolStripMenuItem AppSettingsItem;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Timer SlideShowTimer;
@@ -1294,6 +1303,7 @@
         private System.Windows.Forms.Timer PageUpDownTimer;
         private ParaParaView.ParaParaImage Photo;
         private System.Windows.Forms.ToolStripMenuItem HelpAboutItem;
+        private System.Windows.Forms.ToolStripMenuItem FileaSaveOrigItem;
     }
 }
 

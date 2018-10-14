@@ -381,12 +381,39 @@ namespace ParaParaView
             }
         }
 
-        private void FileaSaveItem_Click(object sender, EventArgs e)
+        private void FileSaveItem_Click(object sender, EventArgs e)
         {
             if (Photo.Image == null)
                 return;
 
-            saveFileDialog1.InitialDirectory = Path.GetDirectoryName(image_filename);
+            if (saveFileDialog1.InitialDirectory == "")
+                saveFileDialog1.InitialDirectory = Path.GetDirectoryName(image_filename);
+            saveFileDialog1.FileName = Path.GetFileName(image_filename);
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK) {
+                string filename = saveFileDialog1.FileName;
+                string ext = Path.GetExtension(filename).ToLower();
+                ImageFormat format = image_formats.ContainsKey(ext) ? image_formats[ext] : ImageFormat.Png;
+
+                var sw = Stopwatch.StartNew();
+                //MemBitmap.Save(Photo.Bitmap, filename, format);
+                Size size = Photo.GetActualSize();
+                using (var bmp = new Bitmap(size.Width, size.Height, Photo.Bitmap.PixelFormat))
+                using (var g = Graphics.FromImage(bmp)) {
+                    //g.DrawImage(Photo.Bitmap, 0, 0);
+                    g.DrawImage(Photo.Bitmap, new Rectangle(0, 0, size.Width, size.Height));
+                    bmp.Save(filename, format);
+                }
+                DebugOut(Color.White, "save {0}: {1}msec", saveFileDialog1.FileName, sw.ElapsedMilliseconds);
+            }
+        }
+
+        private void FileSaveOrigItem_Click(object sender, EventArgs e)
+        {
+            if (Photo.Image == null)
+                return;
+
+            if (saveFileDialog1.InitialDirectory == "")
+                saveFileDialog1.InitialDirectory = Path.GetDirectoryName(image_filename);
             saveFileDialog1.FileName = Path.GetFileName(image_filename);
             if (saveFileDialog1.ShowDialog() == DialogResult.OK) {
                 string filename = saveFileDialog1.FileName;
@@ -398,6 +425,7 @@ namespace ParaParaView
                 DebugOut(Color.White, "save {0}: {1}msec", saveFileDialog1.FileName, sw.ElapsedMilliseconds);
             }
         }
+
 
         private void saveFileDialog1_FileOk(object sender, CancelEventArgs e)
         {
