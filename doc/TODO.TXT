@@ -1,6 +1,7 @@
-﻿■バグ
-crush bitmap on rotate
-cacheされた画像のEXIF + orientation
+﻿cacheされた画像のEXIF + orientation
+連続 page up/down 速すぎ
+
+■バグ
 メモリ不足のとき、表示中のBitmapを開放してしまう
 ○ 初回フルスクリーンのメニューが消えない
 回転とキャッシュのからみ
@@ -18,8 +19,6 @@ ver0.70
 ver0.80  
 ver0.90
 	アプリケーションアイコン	
-
-ページダウンで一枚ずつ
 
 画像保存時のEXIF
 EXIFからサムネイル取得できないか

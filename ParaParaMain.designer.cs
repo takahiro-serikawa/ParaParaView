@@ -653,7 +653,7 @@
             this.PhotoPrevItem.ShortcutKeyDisplayString = "PageUp";
             this.PhotoPrevItem.Size = new System.Drawing.Size(201, 22);
             this.PhotoPrevItem.Text = "&Previous";
-            this.PhotoPrevItem.Click += new System.EventHandler(this.PhotoPrevItem_Click);
+            this.PhotoPrevItem.Click += new System.EventHandler(this.PhotoPrevCycItem_Click);
             // 
             // PhotoNextItem
             // 
@@ -662,7 +662,7 @@
             this.PhotoNextItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Right)));
             this.PhotoNextItem.Size = new System.Drawing.Size(201, 22);
             this.PhotoNextItem.Text = "&Next";
-            this.PhotoNextItem.Click += new System.EventHandler(this.PhotoNextItem_Click);
+            this.PhotoNextItem.Click += new System.EventHandler(this.PhotoNextCycItem_Click);
             // 
             // PhotoHomeItem
             // 
@@ -1112,6 +1112,7 @@
             // 
             // PageUpDownTimer
             // 
+            this.PageUpDownTimer.Interval = 150;
             this.PageUpDownTimer.Tick += new System.EventHandler(this.PageUpDownTimer_Tick);
             // 
             // Photo

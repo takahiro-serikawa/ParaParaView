@@ -630,9 +630,27 @@ namespace ParaParaView
             }
         }
 
+        private void PhotoPrevCycItem_Click(object sender, EventArgs e)
+        {
+            string name = (photo_list.IsFirst) ? photo_list.End() : photo_list.Prev();
+            if (name != null) {
+                Photo.InHaste = 1;
+                LoadImage(name);
+            }
+        }
+
         private void PhotoNextItem_Click(object sender, EventArgs e)
         {
             string name = photo_list.Next();
+            if (name != null) {
+                Photo.InHaste = 1;
+                LoadImage(name);
+            }
+        }
+
+        private void PhotoNextCycItem_Click(object sender, EventArgs e)
+        {
+            string name = (photo_list.IsEnd) ? photo_list.First() : photo_list.Next();
             if (name != null) {
                 Photo.InHaste = 1;
                 LoadImage(name);
@@ -654,7 +672,11 @@ namespace ParaParaView
         {
             if (page_up_down != key) {
                 page_up_down = key;
-                PageUpDownTimer_Tick(null, null);
+                if (page_up_down == Keys.PageUp) {
+                    PhotoPrevCycItem_Click(null, null);
+                } else if (page_up_down == Keys.PageDown) {
+                    PhotoNextCycItem_Click(null, null);
+                }
                 PageUpDownTimer.Enabled = true;
             }
         }
@@ -779,12 +801,6 @@ namespace ParaParaView
             case Keys.PageDown:
                 PageUpDownStart(e.KeyCode);
                 break;
-            //case Keys.PageUp:
-            //    PhotoPrevItem_Click(null, null);
-            //    break;
-            //case Keys.PageDown:
-            //    PhotoNextItem_Click(null, null);
-            //    break;
             case Keys.Home:
                 PhotoHomeItem_Click(null, null);
                 break;
@@ -855,6 +871,9 @@ namespace ParaParaView
         class FileList: List<string>
         {
             public FileList() { }
+
+            public bool IsEnd { get { return Index == Count-1; } }
+            public bool IsFirst { get { return Index == 0; } }
 
             public string Prev()
             {
@@ -1271,7 +1290,7 @@ namespace ParaParaView
                 Photo.Bitmap.RotateFlip(op);
                 image_orientation = RotateFlipOperation.Op(image_orientation, op);
 
-                cache.Discard(image_filename);
+                //cache.Discard(image_filename);
                 Photo.Refresh();
                 DebugOut(Color.White, "rotate flip{0}; {1}msec", op, sw2.ElapsedMilliseconds);
 
@@ -1486,8 +1505,9 @@ namespace ParaParaView
 
         void FitThumb()
         {
-            Thumb.Width = (int)(Photo.Image.Width*thumb_scale);
-            Thumb.Height = (int)(Photo.Image.Height*thumb_scale);
+            //Thumb.Width = (int)(Photo.Image.Width*thumb_scale);
+            Thumb.Width = (int)(Photo.Bitmap.Width*thumb_scale);
+            Thumb.Height = (int)(Photo.Bitmap.Height*thumb_scale);
             ViewPort.Width = Thumb.Width;
             ViewPort.Height = Thumb.Height;
             Thumb.Invalidate();
